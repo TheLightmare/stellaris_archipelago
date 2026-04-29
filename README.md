@@ -14,6 +14,18 @@ Trade discoveries with players in other games. Your milestones and tech research
 
 ## Quick Start
 
+The mod has a graphical UI to set up everything, but you can do it manually as well :
+
+```powershell
+# 1. Install Python dependencies
+pip install websocket-client
+
+# 2. Run the Dashboard
+python dashboard.py
+```
+
+Manual set up:
+
 ```powershell
 # 1. Install Python dependencies
 pip install websocket-client
