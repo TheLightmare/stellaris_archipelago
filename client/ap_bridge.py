@@ -188,29 +188,37 @@ class WSConnection:
         self._lock = threading.Lock()
 
     def connect(self):
-        # Try websocket-client first (synchronous, simpler)
+        # Pick whichever WebSocket library is available. Library-import
+        # failure and connection failure are handled separately so a
+        # failed connect() returns False instead of raising — otherwise
+        # the bridge crashes through main() instead of retrying.
+        create = None
+        lib = None
         try:
             import websocket
-            self._lib = "websocket-client"
-            self._ws = websocket.create_connection(self.url)
-            logger.info(f"Connected via websocket-client to {self.url}")
-            return True
+            lib = "websocket-client"
+            create = lambda: websocket.create_connection(self.url)
         except ImportError:
-            pass
+            try:
+                import websockets.sync.client
+                lib = "websockets-sync"
+                create = lambda: websockets.sync.client.connect(self.url)
+            except (ImportError, AttributeError):
+                logger.error("No WebSocket library found!")
+                logger.error("Install one: pip install websocket-client")
+                return False
 
-        # Fallback to websockets (async) used synchronously
+        # Any connect-time failure (TLS mismatch, DNS, refused,
+        # remote close mid-handshake, timeout, ...) is logged and
+        # converted to a False return so run() can retry.
         try:
-            import websockets.sync.client
-            self._lib = "websockets-sync"
-            self._ws = websockets.sync.client.connect(self.url)
-            logger.info(f"Connected via websockets.sync to {self.url}")
+            self._ws = create()
+            self._lib = lib
+            logger.info(f"Connected via {lib} to {self.url}")
             return True
-        except (ImportError, AttributeError):
-            pass
-
-        logger.error("No WebSocket library found!")
-        logger.error("Install one: pip install websocket-client")
-        return False
+        except Exception as e:
+            logger.warning(f"Connect to {self.url} failed: {type(e).__name__}: {e}")
+            return False
 
     def send(self, data: str):
         with self._lock:
@@ -274,16 +282,29 @@ class StellarisAPBridge:
         self._load_state()
 
     def run(self):
-        # Support ws:// and wss://
-        if self.server.startswith("ws://") or self.server.startswith("wss://"):
-            url = self.server
+        # Determine candidate URL(s) for the connection.
+        # If the user provided a scheme, respect it exactly. Otherwise
+        # try wss:// first (matches the public archipelago.gg service,
+        # which terminates TLS) and fall back to ws:// for self-hosted
+        # servers that don't. Once a candidate works it's reused on
+        # reconnect so we don't pay the fallback cost every blip.
+        if self.server.startswith(("ws://", "wss://")):
+            url_candidates = [self.server]
         else:
-            url = f"ws://{self.server}"
+            url_candidates = [f"wss://{self.server}", f"ws://{self.server}"]
+
+        working_url: Optional[str] = None
 
         while self.running:
-            logger.info(f"Connecting to {url} as '{self.slot}'...")
-            self.ws = WSConnection(url)
-            if not self.ws.connect():
+            urls = [working_url] if working_url else url_candidates
+            for url in urls:
+                logger.info(f"Connecting to {url} as '{self.slot}'...")
+                self.ws = WSConnection(url)
+                if self.ws.connect():
+                    working_url = url
+                    break
+            else:
+                # No candidate succeeded.
                 logger.warning("Connection failed, retrying in 5s...")
                 time.sleep(5)
                 continue
