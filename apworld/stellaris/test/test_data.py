@@ -40,14 +40,26 @@ class TestItemData(unittest.TestCase):
             self.assertGreater(len(name.strip()), 0)
 
     def test_all_items_combines_all_dicts(self) -> None:
-        """ALL_ITEMS is the union of all sub-dictionaries."""
+        """ALL_ITEMS is the union of all sub-dictionaries plus catalog Tech items."""
+        from ..data.tech_catalog import TECH_CATALOG, item_name as _tech_item_name
         expected = {
             **PROGRESSIVE_ITEMS,
             **UNIQUE_ITEMS,
             **FILLER_ITEMS,
             **TRAP_ITEMS,
         }
-        self.assertEqual(set(ALL_ITEMS.keys()), set(expected.keys()))
+        catalog_item_names = {_tech_item_name(t) for t in TECH_CATALOG}
+        self.assertEqual(
+            set(ALL_ITEMS.keys()),
+            set(expected.keys()) | catalog_item_names,
+        )
+        # Each catalog tech contributes exactly one Tech: <name> item.
+        for t in TECH_CATALOG:
+            self.assertIn(_tech_item_name(t), ALL_ITEMS)
+            self.assertEqual(
+                ALL_ITEMS[_tech_item_name(t)].code,
+                7_471_000 + 20000 + t.offset,
+            )
 
     def test_filler_names_returns_only_filler(self) -> None:
         """get_filler_item_names only returns filler items."""
@@ -162,3 +174,64 @@ class TestLocationData(unittest.TestCase):
         for name, data in ALL_LOCATIONS.items():
             if data.category == "crisis":
                 self.assertNotIn(name, locs)
+
+    def test_catalog_locations_present_in_all(self) -> None:
+        """Every catalog tech has a matching Research-X location at the
+        expected ID."""
+        from ..data.tech_catalog import (
+            TECH_CATALOG,
+            location_name as _tech_location_name,
+        )
+        for t in TECH_CATALOG:
+            name = _tech_location_name(t)
+            self.assertIn(name, ALL_LOCATIONS,
+                          f"Catalog tech {t.key!r} missing its Research-X location")
+            self.assertEqual(ALL_LOCATIONS[name].code,
+                             7_471_000 + 10000 + t.offset)
+            self.assertEqual(ALL_LOCATIONS[name].location_type, "tech")
+
+    def test_randomized_techs_filter_drops_unselected(self) -> None:
+        """A subset selection drops the unselected catalog locations
+        without affecting non-catalog Research-* locations like
+        'Research Mega-Engineering'."""
+        from ..data.tech_catalog import (
+            TECH_CATALOG,
+            location_name as _tech_location_name,
+        )
+        chosen = {"tech_synthetic_workers", "tech_planetary_unification"}
+        locs = get_locations_for_options(
+            dlc_utopia=True, dlc_federations=True, dlc_nemesis=True,
+            dlc_leviathans=True, dlc_apocalypse=True, dlc_megacorp=True,
+            dlc_overlord=True,
+            randomized_techs=chosen,
+        )
+        for t in TECH_CATALOG:
+            name = _tech_location_name(t)
+            if t.key in chosen:
+                self.assertIn(name, locs)
+            else:
+                self.assertNotIn(name, locs)
+        # The non-catalog tech-type locations stay regardless
+        self.assertIn("Research a Rare Tech", locs)
+        self.assertIn("Research a Repeatable Tech", locs)
+
+    def test_randomized_techs_filter_drops_unselected_items(self) -> None:
+        """The matching item filter on items.py keeps only selected Tech: items."""
+        from ..data.tech_catalog import (
+            TECH_CATALOG,
+            item_name as _tech_item_name,
+        )
+        chosen = {"tech_synthetic_workers", "tech_planetary_unification"}
+        items = get_items_for_options(
+            traps_enabled=False,
+            dlc_utopia=True, dlc_federations=True, dlc_nemesis=True,
+            dlc_leviathans=True, dlc_apocalypse=True, dlc_megacorp=True,
+            dlc_overlord=True,
+            randomized_techs=chosen,
+        )
+        for t in TECH_CATALOG:
+            name = _tech_item_name(t)
+            if t.key in chosen:
+                self.assertIn(name, items)
+            else:
+                self.assertNotIn(name, items)

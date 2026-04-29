@@ -551,3 +551,4197 @@ ap_grant_minor_relic = {
     set_country_flag = ap_notify_resource_small
     country_event = { id = ap_bridge.200 }
 }
+
+# ==========================================================================
+# Catalog-driven tech-grant effects (Model A randomization)
+# Triggered by the bridge when the player receives a "Tech: <X>" item
+# from the multiworld. Also un-blocks the vanilla tech so the player
+# can see it as completed in their research history.
+# Source: client/tech_catalog.py — 598 entries.
+# ==========================================================================
+
+ap_grant_tech_tech_adaptive_bureaucracy = {
+    give_technology = { tech = tech_adaptive_bureaucracy message = no }
+    remove_country_flag = ap_tech_blocked_tech_adaptive_bureaucracy
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_adaptive_combat_algorithms = {
+    give_technology = { tech = tech_adaptive_combat_algorithms message = no }
+    remove_country_flag = ap_tech_blocked_tech_adaptive_combat_algorithms
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_administrative_ai = {
+    give_technology = { tech = tech_administrative_ai message = no }
+    remove_country_flag = ap_tech_blocked_tech_administrative_ai
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_advanced_industrial_storm_protection = {
+    give_technology = { tech = tech_advanced_industrial_storm_protection message = no }
+    remove_country_flag = ap_tech_blocked_tech_advanced_industrial_storm_protection
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_advanced_metallurgy_1 = {
+    give_technology = { tech = tech_advanced_metallurgy_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_advanced_metallurgy_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_advanced_metallurgy_2 = {
+    give_technology = { tech = tech_advanced_metallurgy_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_advanced_metallurgy_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_advanced_storm_manipulation = {
+    give_technology = { tech = tech_advanced_storm_manipulation message = no }
+    remove_country_flag = ap_tech_blocked_tech_advanced_storm_manipulation
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_afterburners_1 = {
+    give_technology = { tech = tech_afterburners_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_afterburners_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_afterburners_2 = {
+    give_technology = { tech = tech_afterburners_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_afterburners_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_akx_worm_1 = {
+    give_technology = { tech = tech_akx_worm_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_akx_worm_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_akx_worm_2 = {
+    give_technology = { tech = tech_akx_worm_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_akx_worm_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_akx_worm_3 = {
+    give_technology = { tech = tech_akx_worm_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_akx_worm_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_alien_cloning = {
+    give_technology = { tech = tech_alien_cloning message = no }
+    remove_country_flag = ap_tech_blocked_tech_alien_cloning
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_alien_life_studies = {
+    give_technology = { tech = tech_alien_life_studies message = no }
+    remove_country_flag = ap_tech_blocked_tech_alien_life_studies
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_alien_topography = {
+    give_technology = { tech = tech_alien_topography message = no }
+    remove_country_flag = ap_tech_blocked_tech_alien_topography
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_alloy_fossilization = {
+    give_technology = { tech = tech_alloy_fossilization message = no }
+    remove_country_flag = ap_tech_blocked_tech_alloy_fossilization
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_alloys_1 = {
+    give_technology = { tech = tech_alloys_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_alloys_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_alloys_2 = {
+    give_technology = { tech = tech_alloys_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_alloys_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_amoeba_strike_craft_1 = {
+    give_technology = { tech = tech_amoeba_strike_craft_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_amoeba_strike_craft_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_antimatter_power = {
+    give_technology = { tech = tech_antimatter_power message = no }
+    remove_country_flag = ap_tech_blocked_tech_antimatter_power
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_arc_emitter_1 = {
+    give_technology = { tech = tech_arc_emitter_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_arc_emitter_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_arc_emitter_2 = {
+    give_technology = { tech = tech_arc_emitter_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_arc_emitter_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_arcane_deciphering = {
+    give_technology = { tech = tech_arcane_deciphering message = no }
+    remove_country_flag = ap_tech_blocked_tech_arcane_deciphering
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archaeo_detection_scrambler = {
+    give_technology = { tech = tech_archaeo_detection_scrambler message = no }
+    remove_country_flag = ap_tech_blocked_tech_archaeo_detection_scrambler
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archaeo_lasers = {
+    give_technology = { tech = tech_archaeo_lasers message = no }
+    remove_country_flag = ap_tech_blocked_tech_archaeo_lasers
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archaeo_mass_accelerator = {
+    give_technology = { tech = tech_archaeo_mass_accelerator message = no }
+    remove_country_flag = ap_tech_blocked_tech_archaeo_mass_accelerator
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archaeo_mass_drivers = {
+    give_technology = { tech = tech_archaeo_mass_drivers message = no }
+    remove_country_flag = ap_tech_blocked_tech_archaeo_mass_drivers
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archaeo_missiles = {
+    give_technology = { tech = tech_archaeo_missiles message = no }
+    remove_country_flag = ap_tech_blocked_tech_archaeo_missiles
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archaeo_overcharger = {
+    give_technology = { tech = tech_archaeo_overcharger message = no }
+    remove_country_flag = ap_tech_blocked_tech_archaeo_overcharger
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archaeo_pk_devolving_beam = {
+    give_technology = { tech = tech_archaeo_pk_devolving_beam message = no }
+    remove_country_flag = ap_tech_blocked_tech_archaeo_pk_devolving_beam
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archaeo_point_defence = {
+    give_technology = { tech = tech_archaeo_point_defence message = no }
+    remove_country_flag = ap_tech_blocked_tech_archaeo_point_defence
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archaeo_rampart = {
+    give_technology = { tech = tech_archaeo_rampart message = no }
+    remove_country_flag = ap_tech_blocked_tech_archaeo_rampart
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archaeo_refinery = {
+    give_technology = { tech = tech_archaeo_refinery message = no }
+    remove_country_flag = ap_tech_blocked_tech_archaeo_refinery
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archaeo_strike_crafts = {
+    give_technology = { tech = tech_archaeo_strike_crafts message = no }
+    remove_country_flag = ap_tech_blocked_tech_archaeo_strike_crafts
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archaeo_titan_beam = {
+    give_technology = { tech = tech_archaeo_titan_beam message = no }
+    remove_country_flag = ap_tech_blocked_tech_archaeo_titan_beam
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archaeoarmor = {
+    give_technology = { tech = tech_archaeoarmor message = no }
+    remove_country_flag = ap_tech_blocked_tech_archaeoarmor
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archaeoshield = {
+    give_technology = { tech = tech_archaeoshield message = no }
+    remove_country_flag = ap_tech_blocked_tech_archaeoshield
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archaeostudies = {
+    give_technology = { tech = tech_archaeostudies message = no }
+    remove_country_flag = ap_tech_blocked_tech_archaeostudies
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archeology_lab = {
+    give_technology = { tech = tech_archeology_lab message = no }
+    remove_country_flag = ap_tech_blocked_tech_archeology_lab
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_archeology_lab_ancrel = {
+    give_technology = { tech = tech_archeology_lab_ancrel message = no }
+    remove_country_flag = ap_tech_blocked_tech_archeology_lab_ancrel
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_armor_hardeners_1 = {
+    give_technology = { tech = tech_armor_hardeners_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_armor_hardeners_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_armor_hardeners_2 = {
+    give_technology = { tech = tech_armor_hardeners_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_armor_hardeners_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_artificial_moral_codes = {
+    give_technology = { tech = tech_artificial_moral_codes message = no }
+    remove_country_flag = ap_tech_blocked_tech_artificial_moral_codes
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_ascension_theory = {
+    give_technology = { tech = tech_ascension_theory message = no }
+    remove_country_flag = ap_tech_blocked_tech_ascension_theory
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_assembly_pattern = {
+    give_technology = { tech = tech_assembly_pattern message = no }
+    remove_country_flag = ap_tech_blocked_tech_assembly_pattern
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_assisted_detection = {
+    give_technology = { tech = tech_assisted_detection message = no }
+    remove_country_flag = ap_tech_blocked_tech_assisted_detection
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_asteroidal_carapace = {
+    give_technology = { tech = tech_asteroidal_carapace message = no }
+    remove_country_flag = ap_tech_blocked_tech_asteroidal_carapace
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_astral_harvesting = {
+    give_technology = { tech = tech_astral_harvesting message = no }
+    remove_country_flag = ap_tech_blocked_tech_astral_harvesting
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_atmospheric_orbital_mechanics = {
+    give_technology = { tech = tech_atmospheric_orbital_mechanics message = no }
+    remove_country_flag = ap_tech_blocked_tech_atmospheric_orbital_mechanics
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_aura_intensification = {
+    give_technology = { tech = tech_aura_intensification message = no }
+    remove_country_flag = ap_tech_blocked_tech_aura_intensification
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_aura_resonation = {
+    give_technology = { tech = tech_aura_resonation message = no }
+    remove_country_flag = ap_tech_blocked_tech_aura_resonation
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_autocannons_1 = {
+    give_technology = { tech = tech_autocannons_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_autocannons_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_autocannons_2 = {
+    give_technology = { tech = tech_autocannons_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_autocannons_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_autocannons_3 = {
+    give_technology = { tech = tech_autocannons_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_autocannons_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_autocurating_vault = {
+    give_technology = { tech = tech_autocurating_vault message = no }
+    remove_country_flag = ap_tech_blocked_tech_autocurating_vault
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_automated_exploration = {
+    give_technology = { tech = tech_automated_exploration message = no }
+    remove_country_flag = ap_tech_blocked_tech_automated_exploration
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_autonomous_agents = {
+    give_technology = { tech = tech_autonomous_agents message = no }
+    remove_country_flag = ap_tech_blocked_tech_autonomous_agents
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_auxiliary_fire_control = {
+    give_technology = { tech = tech_auxiliary_fire_control message = no }
+    remove_country_flag = ap_tech_blocked_tech_auxiliary_fire_control
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_basic_science_lab_2 = {
+    give_technology = { tech = tech_basic_science_lab_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_basic_science_lab_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_basic_science_lab_3 = {
+    give_technology = { tech = tech_basic_science_lab_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_basic_science_lab_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_battleship_build_speed = {
+    give_technology = { tech = tech_battleship_build_speed message = no }
+    remove_country_flag = ap_tech_blocked_tech_battleship_build_speed
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_battleship_hull_1 = {
+    give_technology = { tech = tech_battleship_hull_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_battleship_hull_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_battleship_hull_2 = {
+    give_technology = { tech = tech_battleship_hull_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_battleship_hull_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_battleships = {
+    give_technology = { tech = tech_battleships message = no }
+    remove_country_flag = ap_tech_blocked_tech_battleships
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_binary_motivators = {
+    give_technology = { tech = tech_binary_motivators message = no }
+    remove_country_flag = ap_tech_blocked_tech_binary_motivators
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_bio_reactor = {
+    give_technology = { tech = tech_bio_reactor message = no }
+    remove_country_flag = ap_tech_blocked_tech_bio_reactor
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_bio_reactor_2 = {
+    give_technology = { tech = tech_bio_reactor_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_bio_reactor_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_biomechanics = {
+    give_technology = { tech = tech_biomechanics message = no }
+    remove_country_flag = ap_tech_blocked_tech_biomechanics
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_boarding_cables = {
+    give_technology = { tech = tech_boarding_cables message = no }
+    remove_country_flag = ap_tech_blocked_tech_boarding_cables
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_btc_1 = {
+    give_technology = { tech = tech_btc_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_btc_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_capacity_boosters = {
+    give_technology = { tech = tech_capacity_boosters message = no }
+    remove_country_flag = ap_tech_blocked_tech_capacity_boosters
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_capital_productivity_1 = {
+    give_technology = { tech = tech_capital_productivity_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_capital_productivity_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_capital_productivity_2 = {
+    give_technology = { tech = tech_capital_productivity_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_capital_productivity_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_capital_productivity_3 = {
+    give_technology = { tech = tech_capital_productivity_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_capital_productivity_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_centralized_command = {
+    give_technology = { tech = tech_centralized_command message = no }
+    remove_country_flag = ap_tech_blocked_tech_centralized_command
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_climate_restoration = {
+    give_technology = { tech = tech_climate_restoration message = no }
+    remove_country_flag = ap_tech_blocked_tech_climate_restoration
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cloaking_1 = {
+    give_technology = { tech = tech_cloaking_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_cloaking_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cloaking_2 = {
+    give_technology = { tech = tech_cloaking_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_cloaking_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cloaking_3 = {
+    give_technology = { tech = tech_cloaking_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_cloaking_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cloaking_dark_matter = {
+    give_technology = { tech = tech_cloaking_dark_matter message = no }
+    remove_country_flag = ap_tech_blocked_tech_cloaking_dark_matter
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cloaking_psi = {
+    give_technology = { tech = tech_cloaking_psi message = no }
+    remove_country_flag = ap_tech_blocked_tech_cloaking_psi
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cloning = {
+    give_technology = { tech = tech_cloning message = no }
+    remove_country_flag = ap_tech_blocked_tech_cloning
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cold_fusion_power = {
+    give_technology = { tech = tech_cold_fusion_power message = no }
+    remove_country_flag = ap_tech_blocked_tech_cold_fusion_power
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_collective_production_methods = {
+    give_technology = { tech = tech_collective_production_methods message = no }
+    remove_country_flag = ap_tech_blocked_tech_collective_production_methods
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_collective_self = {
+    give_technology = { tech = tech_collective_self message = no }
+    remove_country_flag = ap_tech_blocked_tech_collective_self
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_colonial_bureaucracy = {
+    give_technology = { tech = tech_colonial_bureaucracy message = no }
+    remove_country_flag = ap_tech_blocked_tech_colonial_bureaucracy
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_colonial_centralization = {
+    give_technology = { tech = tech_colonial_centralization message = no }
+    remove_country_flag = ap_tech_blocked_tech_colonial_centralization
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_colonization_2 = {
+    give_technology = { tech = tech_colonization_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_colonization_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_colonization_3 = {
+    give_technology = { tech = tech_colonization_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_colonization_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_colonization_4 = {
+    give_technology = { tech = tech_colonization_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_colonization_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_colonization_5 = {
+    give_technology = { tech = tech_colonization_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_colonization_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_colossus = {
+    give_technology = { tech = tech_colossus message = no }
+    remove_country_flag = ap_tech_blocked_tech_colossus
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_combat_computers_1 = {
+    give_technology = { tech = tech_combat_computers_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_combat_computers_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_combat_computers_2 = {
+    give_technology = { tech = tech_combat_computers_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_combat_computers_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_combat_computers_3 = {
+    give_technology = { tech = tech_combat_computers_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_combat_computers_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_combat_computers_autonomous = {
+    give_technology = { tech = tech_combat_computers_autonomous message = no }
+    remove_country_flag = ap_tech_blocked_tech_combat_computers_autonomous
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_combat_computers_bio_integration = {
+    give_technology = { tech = tech_combat_computers_bio_integration message = no }
+    remove_country_flag = ap_tech_blocked_tech_combat_computers_bio_integration
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_combat_training = {
+    give_technology = { tech = tech_combat_training message = no }
+    remove_country_flag = ap_tech_blocked_tech_combat_training
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_command_matrix = {
+    give_technology = { tech = tech_command_matrix message = no }
+    remove_country_flag = ap_tech_blocked_tech_command_matrix
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_compact_living = {
+    give_technology = { tech = tech_compact_living message = no }
+    remove_country_flag = ap_tech_blocked_tech_compact_living
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_consecration_fields = {
+    give_technology = { tech = tech_consecration_fields message = no }
+    remove_country_flag = ap_tech_blocked_tech_consecration_fields
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_construction_templates = {
+    give_technology = { tech = tech_construction_templates message = no }
+    remove_country_flag = ap_tech_blocked_tech_construction_templates
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_consumer_good_refinement_1 = {
+    give_technology = { tech = tech_consumer_good_refinement_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_consumer_good_refinement_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_consumer_good_refinement_2 = {
+    give_technology = { tech = tech_consumer_good_refinement_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_consumer_good_refinement_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_containment_vessel = {
+    give_technology = { tech = tech_containment_vessel message = no }
+    remove_country_flag = ap_tech_blocked_tech_containment_vessel
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_controlled_mutations = {
+    give_technology = { tech = tech_controlled_mutations message = no }
+    remove_country_flag = ap_tech_blocked_tech_controlled_mutations
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_controlled_mutations_2 = {
+    give_technology = { tech = tech_controlled_mutations_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_controlled_mutations_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_corvette_build_speed = {
+    give_technology = { tech = tech_corvette_build_speed message = no }
+    remove_country_flag = ap_tech_blocked_tech_corvette_build_speed
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_corvette_hull_1 = {
+    give_technology = { tech = tech_corvette_hull_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_corvette_hull_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_corvette_hull_2 = {
+    give_technology = { tech = tech_corvette_hull_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_corvette_hull_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cosmogenesis_FE_titan = {
+    give_technology = { tech = tech_cosmogenesis_FE_titan message = no }
+    remove_country_flag = ap_tech_blocked_tech_cosmogenesis_FE_titan
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cosmogenesis_battlecruiser = {
+    give_technology = { tech = tech_cosmogenesis_battlecruiser message = no }
+    remove_country_flag = ap_tech_blocked_tech_cosmogenesis_battlecruiser
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cosmogenesis_crisis_1 = {
+    give_technology = { tech = tech_cosmogenesis_crisis_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_cosmogenesis_crisis_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cosmogenesis_crisis_2 = {
+    give_technology = { tech = tech_cosmogenesis_crisis_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_cosmogenesis_crisis_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cosmogenesis_crisis_3 = {
+    give_technology = { tech = tech_cosmogenesis_crisis_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_cosmogenesis_crisis_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cosmogenesis_crisis_4 = {
+    give_technology = { tech = tech_cosmogenesis_crisis_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_cosmogenesis_crisis_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cosmogenesis_crisis_5 = {
+    give_technology = { tech = tech_cosmogenesis_crisis_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_cosmogenesis_crisis_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cosmogenesis_escort = {
+    give_technology = { tech = tech_cosmogenesis_escort message = no }
+    remove_country_flag = ap_tech_blocked_tech_cosmogenesis_escort
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cosmogenesis_harbinger = {
+    give_technology = { tech = tech_cosmogenesis_harbinger message = no }
+    remove_country_flag = ap_tech_blocked_tech_cosmogenesis_harbinger
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cosmogenesis_mauler = {
+    give_technology = { tech = tech_cosmogenesis_mauler message = no }
+    remove_country_flag = ap_tech_blocked_tech_cosmogenesis_mauler
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cosmogenesis_stinger = {
+    give_technology = { tech = tech_cosmogenesis_stinger message = no }
+    remove_country_flag = ap_tech_blocked_tech_cosmogenesis_stinger
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cosmogenesis_thesis = {
+    give_technology = { tech = tech_cosmogenesis_thesis message = no }
+    remove_country_flag = ap_tech_blocked_tech_cosmogenesis_thesis
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cosmogenesis_weaver = {
+    give_technology = { tech = tech_cosmogenesis_weaver message = no }
+    remove_country_flag = ap_tech_blocked_tech_cosmogenesis_weaver
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cosmogenesis_world = {
+    give_technology = { tech = tech_cosmogenesis_world message = no }
+    remove_country_flag = ap_tech_blocked_tech_cosmogenesis_world
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_covenant_composer = {
+    give_technology = { tech = tech_covenant_composer message = no }
+    remove_country_flag = ap_tech_blocked_tech_covenant_composer
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_covenant_cradle = {
+    give_technology = { tech = tech_covenant_cradle message = no }
+    remove_country_flag = ap_tech_blocked_tech_covenant_cradle
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_covenant_eater = {
+    give_technology = { tech = tech_covenant_eater message = no }
+    remove_country_flag = ap_tech_blocked_tech_covenant_eater
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_covenant_instrument = {
+    give_technology = { tech = tech_covenant_instrument message = no }
+    remove_country_flag = ap_tech_blocked_tech_covenant_instrument
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_covenant_whisperers = {
+    give_technology = { tech = tech_covenant_whisperers message = no }
+    remove_country_flag = ap_tech_blocked_tech_covenant_whisperers
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cruiser_build_speed = {
+    give_technology = { tech = tech_cruiser_build_speed message = no }
+    remove_country_flag = ap_tech_blocked_tech_cruiser_build_speed
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cruiser_hull_1 = {
+    give_technology = { tech = tech_cruiser_hull_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_cruiser_hull_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cruiser_hull_2 = {
+    give_technology = { tech = tech_cruiser_hull_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_cruiser_hull_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cruisers = {
+    give_technology = { tech = tech_cruisers message = no }
+    remove_country_flag = ap_tech_blocked_tech_cruisers
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cryostasis_1 = {
+    give_technology = { tech = tech_cryostasis_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_cryostasis_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cryostasis_2 = {
+    give_technology = { tech = tech_cryostasis_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_cryostasis_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cryovault = {
+    give_technology = { tech = tech_cryovault message = no }
+    remove_country_flag = ap_tech_blocked_tech_cryovault
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_crystal_armor_1 = {
+    give_technology = { tech = tech_crystal_armor_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_crystal_armor_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_crystal_armor_2 = {
+    give_technology = { tech = tech_crystal_armor_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_crystal_armor_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_cultural_heritage = {
+    give_technology = { tech = tech_cultural_heritage message = no }
+    remove_country_flag = ap_tech_blocked_tech_cultural_heritage
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_curator_lab = {
+    give_technology = { tech = tech_curator_lab message = no }
+    remove_country_flag = ap_tech_blocked_tech_curator_lab
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_dangerous_wildlife = {
+    give_technology = { tech = tech_dangerous_wildlife message = no }
+    remove_country_flag = ap_tech_blocked_tech_dangerous_wildlife
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_dark_matter_deflector = {
+    give_technology = { tech = tech_dark_matter_deflector message = no }
+    remove_country_flag = ap_tech_blocked_tech_dark_matter_deflector
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_dark_matter_detection = {
+    give_technology = { tech = tech_dark_matter_detection message = no }
+    remove_country_flag = ap_tech_blocked_tech_dark_matter_detection
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_dark_matter_power_core = {
+    give_technology = { tech = tech_dark_matter_power_core message = no }
+    remove_country_flag = ap_tech_blocked_tech_dark_matter_power_core
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_dark_matter_propulsion = {
+    give_technology = { tech = tech_dark_matter_propulsion message = no }
+    remove_country_flag = ap_tech_blocked_tech_dark_matter_propulsion
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_decryption_1 = {
+    give_technology = { tech = tech_decryption_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_decryption_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_decryption_2 = {
+    give_technology = { tech = tech_decryption_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_decryption_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_decryption_3 = {
+    give_technology = { tech = tech_decryption_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_decryption_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_deep_sinkhole = {
+    give_technology = { tech = tech_deep_sinkhole message = no }
+    remove_country_flag = ap_tech_blocked_tech_deep_sinkhole
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_deep_space_citadel = {
+    give_technology = { tech = tech_deep_space_citadel message = no }
+    remove_country_flag = ap_tech_blocked_tech_deep_space_citadel
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_defense_platform_hull_1 = {
+    give_technology = { tech = tech_defense_platform_hull_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_defense_platform_hull_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_dense_jungle = {
+    give_technology = { tech = tech_dense_jungle message = no }
+    remove_country_flag = ap_tech_blocked_tech_dense_jungle
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_destroyer_build_speed = {
+    give_technology = { tech = tech_destroyer_build_speed message = no }
+    remove_country_flag = ap_tech_blocked_tech_destroyer_build_speed
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_destroyer_hull_1 = {
+    give_technology = { tech = tech_destroyer_hull_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_destroyer_hull_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_destroyer_hull_2 = {
+    give_technology = { tech = tech_destroyer_hull_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_destroyer_hull_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_destroyers = {
+    give_technology = { tech = tech_destroyers message = no }
+    remove_country_flag = ap_tech_blocked_tech_destroyers
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_detection_array = {
+    give_technology = { tech = tech_detection_array message = no }
+    remove_country_flag = ap_tech_blocked_tech_detection_array
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_disruptors_1 = {
+    give_technology = { tech = tech_disruptors_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_disruptors_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_disruptors_2 = {
+    give_technology = { tech = tech_disruptors_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_disruptors_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_disruptors_3 = {
+    give_technology = { tech = tech_disruptors_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_disruptors_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_doctrine_fleet_size_1 = {
+    give_technology = { tech = tech_doctrine_fleet_size_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_doctrine_fleet_size_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_doctrine_fleet_size_2 = {
+    give_technology = { tech = tech_doctrine_fleet_size_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_doctrine_fleet_size_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_doctrine_fleet_size_3 = {
+    give_technology = { tech = tech_doctrine_fleet_size_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_doctrine_fleet_size_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_doctrine_fleet_size_4 = {
+    give_technology = { tech = tech_doctrine_fleet_size_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_doctrine_fleet_size_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_doctrine_fleet_size_5 = {
+    give_technology = { tech = tech_doctrine_fleet_size_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_doctrine_fleet_size_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_doctrine_navy_size_1 = {
+    give_technology = { tech = tech_doctrine_navy_size_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_doctrine_navy_size_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_doctrine_navy_size_2 = {
+    give_technology = { tech = tech_doctrine_navy_size_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_doctrine_navy_size_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_doctrine_navy_size_3 = {
+    give_technology = { tech = tech_doctrine_navy_size_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_doctrine_navy_size_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_doctrine_navy_size_4 = {
+    give_technology = { tech = tech_doctrine_navy_size_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_doctrine_navy_size_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_dragon_armor = {
+    give_technology = { tech = tech_dragon_armor message = no }
+    remove_country_flag = ap_tech_blocked_tech_dragon_armor
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_droid_workers = {
+    give_technology = { tech = tech_droid_workers message = no }
+    remove_country_flag = ap_tech_blocked_tech_droid_workers
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_dyson_sphere = {
+    give_technology = { tech = tech_dyson_sphere message = no }
+    remove_country_flag = ap_tech_blocked_tech_dyson_sphere
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_dyson_swarm = {
+    give_technology = { tech = tech_dyson_swarm message = no }
+    remove_country_flag = ap_tech_blocked_tech_dyson_swarm
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_eco_simulation = {
+    give_technology = { tech = tech_eco_simulation message = no }
+    remove_country_flag = ap_tech_blocked_tech_eco_simulation
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_ecological_adaptation = {
+    give_technology = { tech = tech_ecological_adaptation message = no }
+    remove_country_flag = ap_tech_blocked_tech_ecological_adaptation
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_effective_bureaucracy = {
+    give_technology = { tech = tech_effective_bureaucracy message = no }
+    remove_country_flag = ap_tech_blocked_tech_effective_bureaucracy
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_embodied_dynamism = {
+    give_technology = { tech = tech_embodied_dynamism message = no }
+    remove_country_flag = ap_tech_blocked_tech_embodied_dynamism
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_encryption_1 = {
+    give_technology = { tech = tech_encryption_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_encryption_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_encryption_2 = {
+    give_technology = { tech = tech_encryption_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_encryption_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_encryption_3 = {
+    give_technology = { tech = tech_encryption_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_encryption_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_energy_lance_1 = {
+    give_technology = { tech = tech_energy_lance_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_energy_lance_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_energy_lance_2 = {
+    give_technology = { tech = tech_energy_lance_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_energy_lance_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_energy_torpedoes_1 = {
+    give_technology = { tech = tech_energy_torpedoes_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_energy_torpedoes_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_energy_torpedoes_2 = {
+    give_technology = { tech = tech_energy_torpedoes_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_energy_torpedoes_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_engineering_1 = {
+    give_technology = { tech = tech_engineering_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_engineering_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_engineering_2 = {
+    give_technology = { tech = tech_engineering_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_engineering_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_engineering_3 = {
+    give_technology = { tech = tech_engineering_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_engineering_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_enhanced_cryosleep_sedatives = {
+    give_technology = { tech = tech_enhanced_cryosleep_sedatives message = no }
+    remove_country_flag = ap_tech_blocked_tech_enhanced_cryosleep_sedatives
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_enigmatic_decoder = {
+    give_technology = { tech = tech_enigmatic_decoder message = no }
+    remove_country_flag = ap_tech_blocked_tech_enigmatic_decoder
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_enigmatic_encoder = {
+    give_technology = { tech = tech_enigmatic_encoder message = no }
+    remove_country_flag = ap_tech_blocked_tech_enigmatic_encoder
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_epigenetic_triggers = {
+    give_technology = { tech = tech_epigenetic_triggers message = no }
+    remove_country_flag = ap_tech_blocked_tech_epigenetic_triggers
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_executive_retreat = {
+    give_technology = { tech = tech_executive_retreat message = no }
+    remove_country_flag = ap_tech_blocked_tech_executive_retreat
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_existential_campaigns = {
+    give_technology = { tech = tech_existential_campaigns message = no }
+    remove_country_flag = ap_tech_blocked_tech_existential_campaigns
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_exotic_gases = {
+    give_technology = { tech = tech_exotic_gases message = no }
+    remove_country_flag = ap_tech_blocked_tech_exotic_gases
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_experimental_subspace_navigation = {
+    give_technology = { tech = tech_experimental_subspace_navigation message = no }
+    remove_country_flag = ap_tech_blocked_tech_experimental_subspace_navigation
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_extradimensional_weapon_1 = {
+    give_technology = { tech = tech_extradimensional_weapon_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_extradimensional_weapon_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_administration_1 = {
+    give_technology = { tech = tech_fe_administration_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_administration_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_administration_2 = {
+    give_technology = { tech = tech_fe_administration_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_administration_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_affluence_1 = {
+    give_technology = { tech = tech_fe_affluence_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_affluence_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_affluence_2 = {
+    give_technology = { tech = tech_fe_affluence_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_affluence_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_assembly_1 = {
+    give_technology = { tech = tech_fe_assembly_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_assembly_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_assembly_2 = {
+    give_technology = { tech = tech_fe_assembly_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_assembly_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_clinic_1 = {
+    give_technology = { tech = tech_fe_clinic_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_clinic_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_clinic_2 = {
+    give_technology = { tech = tech_fe_clinic_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_clinic_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_dome_1 = {
+    give_technology = { tech = tech_fe_dome_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_dome_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_dome_2 = {
+    give_technology = { tech = tech_fe_dome_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_dome_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_entertainment_1 = {
+    give_technology = { tech = tech_fe_entertainment_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_entertainment_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_entertainment_2 = {
+    give_technology = { tech = tech_fe_entertainment_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_entertainment_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_fabricator_1 = {
+    give_technology = { tech = tech_fe_fabricator_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_fabricator_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_fabricator_2 = {
+    give_technology = { tech = tech_fe_fabricator_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_fabricator_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_forge_1 = {
+    give_technology = { tech = tech_fe_forge_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_forge_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_forge_2 = {
+    give_technology = { tech = tech_fe_forge_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_forge_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_fortress_1 = {
+    give_technology = { tech = tech_fe_fortress_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_fortress_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_fortress_2 = {
+    give_technology = { tech = tech_fe_fortress_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_fortress_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_lab_1 = {
+    give_technology = { tech = tech_fe_lab_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_lab_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_lab_2 = {
+    give_technology = { tech = tech_fe_lab_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_lab_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_market_1 = {
+    give_technology = { tech = tech_fe_market_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_market_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_market_2 = {
+    give_technology = { tech = tech_fe_market_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_market_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_mine_1 = {
+    give_technology = { tech = tech_fe_mine_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_mine_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_mine_2 = {
+    give_technology = { tech = tech_fe_mine_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_mine_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_nourishment_1 = {
+    give_technology = { tech = tech_fe_nourishment_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_nourishment_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_nourishment_2 = {
+    give_technology = { tech = tech_fe_nourishment_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_nourishment_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_security_1 = {
+    give_technology = { tech = tech_fe_security_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_security_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_security_2 = {
+    give_technology = { tech = tech_fe_security_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_security_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_silo_1 = {
+    give_technology = { tech = tech_fe_silo_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_silo_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_silo_2 = {
+    give_technology = { tech = tech_fe_silo_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_silo_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_singularity_1 = {
+    give_technology = { tech = tech_fe_singularity_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_singularity_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fe_singularity_2 = {
+    give_technology = { tech = tech_fe_singularity_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_fe_singularity_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_federation_code = {
+    give_technology = { tech = tech_federation_code message = no }
+    remove_country_flag = ap_tech_blocked_tech_federation_code
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_flak_batteries_2 = {
+    give_technology = { tech = tech_flak_batteries_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_flak_batteries_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_flak_batteries_3 = {
+    give_technology = { tech = tech_flak_batteries_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_flak_batteries_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_food_processing_1 = {
+    give_technology = { tech = tech_food_processing_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_food_processing_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_food_processing_2 = {
+    give_technology = { tech = tech_food_processing_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_food_processing_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_frontier_health = {
+    give_technology = { tech = tech_frontier_health message = no }
+    remove_country_flag = ap_tech_blocked_tech_frontier_health
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_frontier_hospital = {
+    give_technology = { tech = tech_frontier_hospital message = no }
+    remove_country_flag = ap_tech_blocked_tech_frontier_hospital
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_ftl_inhibitor = {
+    give_technology = { tech = tech_ftl_inhibitor message = no }
+    remove_country_flag = ap_tech_blocked_tech_ftl_inhibitor
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_fusion_power = {
+    give_technology = { tech = tech_fusion_power message = no }
+    remove_country_flag = ap_tech_blocked_tech_fusion_power
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_galactic_administration = {
+    give_technology = { tech = tech_galactic_administration message = no }
+    remove_country_flag = ap_tech_blocked_tech_galactic_administration
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_galactic_ambitions = {
+    give_technology = { tech = tech_galactic_ambitions message = no }
+    remove_country_flag = ap_tech_blocked_tech_galactic_ambitions
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_galactic_archivism = {
+    give_technology = { tech = tech_galactic_archivism message = no }
+    remove_country_flag = ap_tech_blocked_tech_galactic_archivism
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_galactic_bureaucracy = {
+    give_technology = { tech = tech_galactic_bureaucracy message = no }
+    remove_country_flag = ap_tech_blocked_tech_galactic_bureaucracy
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_galactic_campaigns = {
+    give_technology = { tech = tech_galactic_campaigns message = no }
+    remove_country_flag = ap_tech_blocked_tech_galactic_campaigns
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_galactic_markets = {
+    give_technology = { tech = tech_galactic_markets message = no }
+    remove_country_flag = ap_tech_blocked_tech_galactic_markets
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_gargantuan_evolution = {
+    give_technology = { tech = tech_gargantuan_evolution message = no }
+    remove_country_flag = ap_tech_blocked_tech_gargantuan_evolution
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_gateway_activation = {
+    give_technology = { tech = tech_gateway_activation message = no }
+    remove_country_flag = ap_tech_blocked_tech_gateway_activation
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_gateway_construction = {
+    give_technology = { tech = tech_gateway_construction message = no }
+    remove_country_flag = ap_tech_blocked_tech_gateway_construction
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_gene_banks = {
+    give_technology = { tech = tech_gene_banks message = no }
+    remove_country_flag = ap_tech_blocked_tech_gene_banks
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_gene_crops = {
+    give_technology = { tech = tech_gene_crops message = no }
+    remove_country_flag = ap_tech_blocked_tech_gene_crops
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_gene_expressions = {
+    give_technology = { tech = tech_gene_expressions message = no }
+    remove_country_flag = ap_tech_blocked_tech_gene_expressions
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_gene_seed_purification = {
+    give_technology = { tech = tech_gene_seed_purification message = no }
+    remove_country_flag = ap_tech_blocked_tech_gene_seed_purification
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_gene_tailoring = {
+    give_technology = { tech = tech_gene_tailoring message = no }
+    remove_country_flag = ap_tech_blocked_tech_gene_tailoring
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_genome_mapping = {
+    give_technology = { tech = tech_genome_mapping message = no }
+    remove_country_flag = ap_tech_blocked_tech_genome_mapping
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_georadiation_terraforming = {
+    give_technology = { tech = tech_georadiation_terraforming message = no }
+    remove_country_flag = ap_tech_blocked_tech_georadiation_terraforming
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_glandular_acclimation = {
+    give_technology = { tech = tech_glandular_acclimation message = no }
+    remove_country_flag = ap_tech_blocked_tech_glandular_acclimation
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_global_defense_grid = {
+    give_technology = { tech = tech_global_defense_grid message = no }
+    remove_country_flag = ap_tech_blocked_tech_global_defense_grid
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_global_production_strategy = {
+    give_technology = { tech = tech_global_production_strategy message = no }
+    remove_country_flag = ap_tech_blocked_tech_global_production_strategy
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_global_research_initiative = {
+    give_technology = { tech = tech_global_research_initiative message = no }
+    remove_country_flag = ap_tech_blocked_tech_global_research_initiative
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_gravity_snare_capacity_1 = {
+    give_technology = { tech = tech_gravity_snare_capacity_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_gravity_snare_capacity_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_gravity_snare_capacity_2 = {
+    give_technology = { tech = tech_gravity_snare_capacity_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_gravity_snare_capacity_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_gravity_snare_capacity_3 = {
+    give_technology = { tech = tech_gravity_snare_capacity_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_gravity_snare_capacity_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_gravity_wells = {
+    give_technology = { tech = tech_gravity_wells message = no }
+    remove_country_flag = ap_tech_blocked_tech_gravity_wells
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_ground_defense_planning = {
+    give_technology = { tech = tech_ground_defense_planning message = no }
+    remove_country_flag = ap_tech_blocked_tech_ground_defense_planning
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_growth_chamber_1 = {
+    give_technology = { tech = tech_growth_chamber_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_growth_chamber_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_growth_chamber_2 = {
+    give_technology = { tech = tech_growth_chamber_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_growth_chamber_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_habitat_1 = {
+    give_technology = { tech = tech_habitat_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_habitat_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_habitat_2 = {
+    give_technology = { tech = tech_habitat_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_habitat_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_habitat_3 = {
+    give_technology = { tech = tech_habitat_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_habitat_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_harbinger_build_speed = {
+    give_technology = { tech = tech_harbinger_build_speed message = no }
+    remove_country_flag = ap_tech_blocked_tech_harbinger_build_speed
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_harbinger_growth_1 = {
+    give_technology = { tech = tech_harbinger_growth_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_harbinger_growth_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_harbinger_growth_2 = {
+    give_technology = { tech = tech_harbinger_growth_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_harbinger_growth_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_harbingers = {
+    give_technology = { tech = tech_harbingers message = no }
+    remove_country_flag = ap_tech_blocked_tech_harbingers
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_heritage_site = {
+    give_technology = { tech = tech_heritage_site message = no }
+    remove_country_flag = ap_tech_blocked_tech_heritage_site
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_hive_cluster = {
+    give_technology = { tech = tech_hive_cluster message = no }
+    remove_country_flag = ap_tech_blocked_tech_hive_cluster
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_hive_confluence = {
+    give_technology = { tech = tech_hive_confluence message = no }
+    remove_country_flag = ap_tech_blocked_tech_hive_confluence
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_holographic_rituals = {
+    give_technology = { tech = tech_holographic_rituals message = no }
+    remove_country_flag = ap_tech_blocked_tech_holographic_rituals
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_housing_1 = {
+    give_technology = { tech = tech_housing_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_housing_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_housing_2 = {
+    give_technology = { tech = tech_housing_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_housing_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_housing_agrarian_idyll = {
+    give_technology = { tech = tech_housing_agrarian_idyll message = no }
+    remove_country_flag = ap_tech_blocked_tech_housing_agrarian_idyll
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_hyper_drive_2 = {
+    give_technology = { tech = tech_hyper_drive_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_hyper_drive_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_hyper_drive_3 = {
+    give_technology = { tech = tech_hyper_drive_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_hyper_drive_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_hyper_drive_bio_integration = {
+    give_technology = { tech = tech_hyper_drive_bio_integration message = no }
+    remove_country_flag = ap_tech_blocked_tech_hyper_drive_bio_integration
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_hyper_entertainment_forum = {
+    give_technology = { tech = tech_hyper_entertainment_forum message = no }
+    remove_country_flag = ap_tech_blocked_tech_hyper_entertainment_forum
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_hyper_relays = {
+    give_technology = { tech = tech_hyper_relays message = no }
+    remove_country_flag = ap_tech_blocked_tech_hyper_relays
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_hypercomms_forum = {
+    give_technology = { tech = tech_hypercomms_forum message = no }
+    remove_country_flag = ap_tech_blocked_tech_hypercomms_forum
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_identity_copy = {
+    give_technology = { tech = tech_identity_copy message = no }
+    remove_country_flag = ap_tech_blocked_tech_identity_copy
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_identity_fusion = {
+    give_technology = { tech = tech_identity_fusion message = no }
+    remove_country_flag = ap_tech_blocked_tech_identity_fusion
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_identity_initialization = {
+    give_technology = { tech = tech_identity_initialization message = no }
+    remove_country_flag = ap_tech_blocked_tech_identity_initialization
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_improved_incubators = {
+    give_technology = { tech = tech_improved_incubators message = no }
+    remove_country_flag = ap_tech_blocked_tech_improved_incubators
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_industrial_storm_protection = {
+    give_technology = { tech = tech_industrial_storm_protection message = no }
+    remove_country_flag = ap_tech_blocked_tech_industrial_storm_protection
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_integrated_cybernetics = {
+    give_technology = { tech = tech_integrated_cybernetics message = no }
+    remove_country_flag = ap_tech_blocked_tech_integrated_cybernetics
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_interstellar_assembly = {
+    give_technology = { tech = tech_interstellar_assembly message = no }
+    remove_country_flag = ap_tech_blocked_tech_interstellar_assembly
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_interstellar_campaigns = {
+    give_technology = { tech = tech_interstellar_campaigns message = no }
+    remove_country_flag = ap_tech_blocked_tech_interstellar_campaigns
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_interstellar_economics = {
+    give_technology = { tech = tech_interstellar_economics message = no }
+    remove_country_flag = ap_tech_blocked_tech_interstellar_economics
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_interstellar_fleet_traditions = {
+    give_technology = { tech = tech_interstellar_fleet_traditions message = no }
+    remove_country_flag = ap_tech_blocked_tech_interstellar_fleet_traditions
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_juggernaut = {
+    give_technology = { tech = tech_juggernaut message = no }
+    remove_country_flag = ap_tech_blocked_tech_juggernaut
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_jump_drive_1 = {
+    give_technology = { tech = tech_jump_drive_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_jump_drive_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_kinetic_artillery_1 = {
+    give_technology = { tech = tech_kinetic_artillery_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_kinetic_artillery_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_kinetic_artillery_2 = {
+    give_technology = { tech = tech_kinetic_artillery_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_kinetic_artillery_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_lasers_2 = {
+    give_technology = { tech = tech_lasers_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_lasers_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_lasers_3 = {
+    give_technology = { tech = tech_lasers_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_lasers_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_lasers_4 = {
+    give_technology = { tech = tech_lasers_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_lasers_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_lasers_5 = {
+    give_technology = { tech = tech_lasers_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_lasers_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_lathe_cogitator = {
+    give_technology = { tech = tech_lathe_cogitator message = no }
+    remove_country_flag = ap_tech_blocked_tech_lathe_cogitator
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_lathe_life_support = {
+    give_technology = { tech = tech_lathe_life_support message = no }
+    remove_country_flag = ap_tech_blocked_tech_lathe_life_support
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_lathe_overclocker = {
+    give_technology = { tech = tech_lathe_overclocker message = no }
+    remove_country_flag = ap_tech_blocked_tech_lathe_overclocker
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_lathe_preserver = {
+    give_technology = { tech = tech_lathe_preserver message = no }
+    remove_country_flag = ap_tech_blocked_tech_lathe_preserver
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_lathe_resonator = {
+    give_technology = { tech = tech_lathe_resonator message = no }
+    remove_country_flag = ap_tech_blocked_tech_lathe_resonator
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_lathe_validator = {
+    give_technology = { tech = tech_lathe_validator message = no }
+    remove_country_flag = ap_tech_blocked_tech_lathe_validator
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_leviathan_techgenesis = {
+    give_technology = { tech = tech_leviathan_techgenesis message = no }
+    remove_country_flag = ap_tech_blocked_tech_leviathan_techgenesis
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_lgate_activation = {
+    give_technology = { tech = tech_lgate_activation message = no }
+    remove_country_flag = ap_tech_blocked_tech_lgate_activation
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_living_state = {
+    give_technology = { tech = tech_living_state message = no }
+    remove_country_flag = ap_tech_blocked_tech_living_state
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_living_test_subjects = {
+    give_technology = { tech = tech_living_test_subjects message = no }
+    remove_country_flag = ap_tech_blocked_tech_living_test_subjects
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_lost_building_methods = {
+    give_technology = { tech = tech_lost_building_methods message = no }
+    remove_country_flag = ap_tech_blocked_tech_lost_building_methods
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_luxuries_1 = {
+    give_technology = { tech = tech_luxuries_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_luxuries_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_luxuries_2 = {
+    give_technology = { tech = tech_luxuries_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_luxuries_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mandibles_2 = {
+    give_technology = { tech = tech_mandibles_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_mandibles_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mandibles_3 = {
+    give_technology = { tech = tech_mandibles_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_mandibles_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_manifest_destiny = {
+    give_technology = { tech = tech_manifest_destiny message = no }
+    remove_country_flag = ap_tech_blocked_tech_manifest_destiny
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mass_accelerator_1 = {
+    give_technology = { tech = tech_mass_accelerator_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_mass_accelerator_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mass_accelerator_2 = {
+    give_technology = { tech = tech_mass_accelerator_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_mass_accelerator_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mass_drivers_2 = {
+    give_technology = { tech = tech_mass_drivers_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_mass_drivers_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mass_drivers_3 = {
+    give_technology = { tech = tech_mass_drivers_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_mass_drivers_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mass_drivers_4 = {
+    give_technology = { tech = tech_mass_drivers_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_mass_drivers_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mass_drivers_5 = {
+    give_technology = { tech = tech_mass_drivers_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_mass_drivers_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_massive_glacier = {
+    give_technology = { tech = tech_massive_glacier message = no }
+    remove_country_flag = ap_tech_blocked_tech_massive_glacier
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_materiality_engine = {
+    give_technology = { tech = tech_materiality_engine message = no }
+    remove_country_flag = ap_tech_blocked_tech_materiality_engine
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_matter_decompressor = {
+    give_technology = { tech = tech_matter_decompressor message = no }
+    remove_country_flag = ap_tech_blocked_tech_matter_decompressor
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mauler_build_speed = {
+    give_technology = { tech = tech_mauler_build_speed message = no }
+    remove_country_flag = ap_tech_blocked_tech_mauler_build_speed
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mauler_growth_1 = {
+    give_technology = { tech = tech_mauler_growth_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_mauler_growth_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mauler_growth_2 = {
+    give_technology = { tech = tech_mauler_growth_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_mauler_growth_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mega_art = {
+    give_technology = { tech = tech_mega_art message = no }
+    remove_country_flag = ap_tech_blocked_tech_mega_art
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mega_assembly = {
+    give_technology = { tech = tech_mega_assembly message = no }
+    remove_country_flag = ap_tech_blocked_tech_mega_assembly
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mega_engineering = {
+    give_technology = { tech = tech_mega_engineering message = no }
+    remove_country_flag = ap_tech_blocked_tech_mega_engineering
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mega_shipyard = {
+    give_technology = { tech = tech_mega_shipyard message = no }
+    remove_country_flag = ap_tech_blocked_tech_mega_shipyard
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_metabolic_gases = {
+    give_technology = { tech = tech_metabolic_gases message = no }
+    remove_country_flag = ap_tech_blocked_tech_metabolic_gases
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_micro_replicators = {
+    give_technology = { tech = tech_micro_replicators message = no }
+    remove_country_flag = ap_tech_blocked_tech_micro_replicators
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mine_betharian = {
+    give_technology = { tech = tech_mine_betharian message = no }
+    remove_country_flag = ap_tech_blocked_tech_mine_betharian
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mine_dark_matter = {
+    give_technology = { tech = tech_mine_dark_matter message = no }
+    remove_country_flag = ap_tech_blocked_tech_mine_dark_matter
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mine_exotic_gases = {
+    give_technology = { tech = tech_mine_exotic_gases message = no }
+    remove_country_flag = ap_tech_blocked_tech_mine_exotic_gases
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mine_living_metal = {
+    give_technology = { tech = tech_mine_living_metal message = no }
+    remove_country_flag = ap_tech_blocked_tech_mine_living_metal
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mine_rare_crystals = {
+    give_technology = { tech = tech_mine_rare_crystals message = no }
+    remove_country_flag = ap_tech_blocked_tech_mine_rare_crystals
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mine_volatile_motes = {
+    give_technology = { tech = tech_mine_volatile_motes message = no }
+    remove_country_flag = ap_tech_blocked_tech_mine_volatile_motes
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mine_zro = {
+    give_technology = { tech = tech_mine_zro message = no }
+    remove_country_flag = ap_tech_blocked_tech_mine_zro
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mineral_purification_1 = {
+    give_technology = { tech = tech_mineral_purification_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_mineral_purification_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mineral_purification_2 = {
+    give_technology = { tech = tech_mineral_purification_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_mineral_purification_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mining_1 = {
+    give_technology = { tech = tech_mining_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_mining_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mining_2 = {
+    give_technology = { tech = tech_mining_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_mining_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mining_3 = {
+    give_technology = { tech = tech_mining_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_mining_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mining_drone_weapon_1 = {
+    give_technology = { tech = tech_mining_drone_weapon_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_mining_drone_weapon_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_missiles_2 = {
+    give_technology = { tech = tech_missiles_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_missiles_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_missiles_3 = {
+    give_technology = { tech = tech_missiles_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_missiles_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_missiles_4 = {
+    give_technology = { tech = tech_missiles_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_missiles_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_missiles_5 = {
+    give_technology = { tech = tech_missiles_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_missiles_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_modular_engineering = {
+    give_technology = { tech = tech_modular_engineering message = no }
+    remove_country_flag = ap_tech_blocked_tech_modular_engineering
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_morphogenetic_field_mastery = {
+    give_technology = { tech = tech_morphogenetic_field_mastery message = no }
+    remove_country_flag = ap_tech_blocked_tech_morphogenetic_field_mastery
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_mountain_range = {
+    give_technology = { tech = tech_mountain_range message = no }
+    remove_country_flag = ap_tech_blocked_tech_mountain_range
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_nanite_assemblers = {
+    give_technology = { tech = tech_nanite_assemblers message = no }
+    remove_country_flag = ap_tech_blocked_tech_nanite_assemblers
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_nanite_autocannon = {
+    give_technology = { tech = tech_nanite_autocannon message = no }
+    remove_country_flag = ap_tech_blocked_tech_nanite_autocannon
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_nanite_flak_batteries = {
+    give_technology = { tech = tech_nanite_flak_batteries message = no }
+    remove_country_flag = ap_tech_blocked_tech_nanite_flak_batteries
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_nanite_repair_system = {
+    give_technology = { tech = tech_nanite_repair_system message = no }
+    remove_country_flag = ap_tech_blocked_tech_nanite_repair_system
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_nanite_repair_system_synth_queen = {
+    give_technology = { tech = tech_nanite_repair_system_synth_queen message = no }
+    remove_country_flag = ap_tech_blocked_tech_nanite_repair_system_synth_queen
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_nanite_transmutation = {
+    give_technology = { tech = tech_nanite_transmutation message = no }
+    remove_country_flag = ap_tech_blocked_tech_nanite_transmutation
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_nano_vitality_crops = {
+    give_technology = { tech = tech_nano_vitality_crops message = no }
+    remove_country_flag = ap_tech_blocked_tech_nano_vitality_crops
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_neural_implants = {
+    give_technology = { tech = tech_neural_implants message = no }
+    remove_country_flag = ap_tech_blocked_tech_neural_implants
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_neuro_quantum_links = {
+    give_technology = { tech = tech_neuro_quantum_links message = no }
+    remove_country_flag = ap_tech_blocked_tech_neuro_quantum_links
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_neuroregeneration = {
+    give_technology = { tech = tech_neuroregeneration message = no }
+    remove_country_flag = ap_tech_blocked_tech_neuroregeneration
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_new_numbers = {
+    give_technology = { tech = tech_new_numbers message = no }
+    remove_country_flag = ap_tech_blocked_tech_new_numbers
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_node_culling_1 = {
+    give_technology = { tech = tech_node_culling_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_node_culling_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_node_culling_2 = {
+    give_technology = { tech = tech_node_culling_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_node_culling_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_node_culling_3 = {
+    give_technology = { tech = tech_node_culling_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_node_culling_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_node_reformatting_1 = {
+    give_technology = { tech = tech_node_reformatting_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_node_reformatting_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_node_reformatting_2 = {
+    give_technology = { tech = tech_node_reformatting_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_node_reformatting_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_node_reformatting_3 = {
+    give_technology = { tech = tech_node_reformatting_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_node_reformatting_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_noxious_swamp = {
+    give_technology = { tech = tech_noxious_swamp message = no }
+    remove_country_flag = ap_tech_blocked_tech_noxious_swamp
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_nutrient_replication = {
+    give_technology = { tech = tech_nutrient_replication message = no }
+    remove_country_flag = ap_tech_blocked_tech_nutrient_replication
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_orbital_arc_furnace = {
+    give_technology = { tech = tech_orbital_arc_furnace message = no }
+    remove_country_flag = ap_tech_blocked_tech_orbital_arc_furnace
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_orbital_maneuvers = {
+    give_technology = { tech = tech_orbital_maneuvers message = no }
+    remove_country_flag = ap_tech_blocked_tech_orbital_maneuvers
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_orbital_ring_tier_1 = {
+    give_technology = { tech = tech_orbital_ring_tier_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_orbital_ring_tier_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_orbital_trash_dispersal = {
+    give_technology = { tech = tech_orbital_trash_dispersal message = no }
+    remove_country_flag = ap_tech_blocked_tech_orbital_trash_dispersal
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_ordered_retreat = {
+    give_technology = { tech = tech_ordered_retreat message = no }
+    remove_country_flag = ap_tech_blocked_tech_ordered_retreat
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_paradise_dome = {
+    give_technology = { tech = tech_paradise_dome message = no }
+    remove_country_flag = ap_tech_blocked_tech_paradise_dome
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_pd_tracking_2 = {
+    give_technology = { tech = tech_pd_tracking_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_pd_tracking_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_pd_tracking_3 = {
+    give_technology = { tech = tech_pd_tracking_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_pd_tracking_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_penal_colonies = {
+    give_technology = { tech = tech_penal_colonies message = no }
+    remove_country_flag = ap_tech_blocked_tech_penal_colonies
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_physics_1 = {
+    give_technology = { tech = tech_physics_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_physics_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_physics_2 = {
+    give_technology = { tech = tech_physics_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_physics_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_physics_3 = {
+    give_technology = { tech = tech_physics_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_physics_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_pk_cracker = {
+    give_technology = { tech = tech_pk_cracker message = no }
+    remove_country_flag = ap_tech_blocked_tech_pk_cracker
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_pk_godray = {
+    give_technology = { tech = tech_pk_godray message = no }
+    remove_country_flag = ap_tech_blocked_tech_pk_godray
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_pk_nanobots = {
+    give_technology = { tech = tech_pk_nanobots message = no }
+    remove_country_flag = ap_tech_blocked_tech_pk_nanobots
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_pk_neutron = {
+    give_technology = { tech = tech_pk_neutron message = no }
+    remove_country_flag = ap_tech_blocked_tech_pk_neutron
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_pk_shielder = {
+    give_technology = { tech = tech_pk_shielder message = no }
+    remove_country_flag = ap_tech_blocked_tech_pk_shielder
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_pk_smelter = {
+    give_technology = { tech = tech_pk_smelter message = no }
+    remove_country_flag = ap_tech_blocked_tech_pk_smelter
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_planetary_infrastructure_1 = {
+    give_technology = { tech = tech_planetary_infrastructure_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_planetary_infrastructure_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_planetary_infrastructure_2 = {
+    give_technology = { tech = tech_planetary_infrastructure_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_planetary_infrastructure_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_planetary_shield_generator = {
+    give_technology = { tech = tech_planetary_shield_generator message = no }
+    remove_country_flag = ap_tech_blocked_tech_planetary_shield_generator
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_planetary_unification = {
+    give_technology = { tech = tech_planetary_unification message = no }
+    remove_country_flag = ap_tech_blocked_tech_planetary_unification
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_plasma_1 = {
+    give_technology = { tech = tech_plasma_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_plasma_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_plasma_2 = {
+    give_technology = { tech = tech_plasma_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_plasma_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_plasma_3 = {
+    give_technology = { tech = tech_plasma_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_plasma_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_positronic_implants = {
+    give_technology = { tech = tech_positronic_implants message = no }
+    remove_country_flag = ap_tech_blocked_tech_positronic_implants
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_power_hub_1 = {
+    give_technology = { tech = tech_power_hub_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_power_hub_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_power_hub_2 = {
+    give_technology = { tech = tech_power_hub_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_power_hub_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_power_plant_2 = {
+    give_technology = { tech = tech_power_plant_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_power_plant_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_power_plant_3 = {
+    give_technology = { tech = tech_power_plant_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_power_plant_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_power_plant_4 = {
+    give_technology = { tech = tech_power_plant_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_power_plant_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_powered_exoskeletons = {
+    give_technology = { tech = tech_powered_exoskeletons message = no }
+    remove_country_flag = ap_tech_blocked_tech_powered_exoskeletons
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_precognition_interface = {
+    give_technology = { tech = tech_precognition_interface message = no }
+    remove_country_flag = ap_tech_blocked_tech_precognition_interface
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_predatory_tactics = {
+    give_technology = { tech = tech_predatory_tactics message = no }
+    remove_country_flag = ap_tech_blocked_tech_predatory_tactics
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_prescient_data_modeling = {
+    give_technology = { tech = tech_prescient_data_modeling message = no }
+    remove_country_flag = ap_tech_blocked_tech_prescient_data_modeling
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_psi_jump_drive_1 = {
+    give_technology = { tech = tech_psi_jump_drive_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_psi_jump_drive_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_psionic_aura = {
+    give_technology = { tech = tech_psionic_aura message = no }
+    remove_country_flag = ap_tech_blocked_tech_psionic_aura
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_psionic_barrier = {
+    give_technology = { tech = tech_psionic_barrier message = no }
+    remove_country_flag = ap_tech_blocked_tech_psionic_barrier
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_psionic_bombers = {
+    give_technology = { tech = tech_psionic_bombers message = no }
+    remove_country_flag = ap_tech_blocked_tech_psionic_bombers
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_psionic_disruptor = {
+    give_technology = { tech = tech_psionic_disruptor message = no }
+    remove_country_flag = ap_tech_blocked_tech_psionic_disruptor
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_psionic_lightning = {
+    give_technology = { tech = tech_psionic_lightning message = no }
+    remove_country_flag = ap_tech_blocked_tech_psionic_lightning
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_psionic_shield = {
+    give_technology = { tech = tech_psionic_shield message = no }
+    remove_country_flag = ap_tech_blocked_tech_psionic_shield
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_psionic_suppression = {
+    give_technology = { tech = tech_psionic_suppression message = no }
+    remove_country_flag = ap_tech_blocked_tech_psionic_suppression
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_psionic_theory = {
+    give_technology = { tech = tech_psionic_theory message = no }
+    remove_country_flag = ap_tech_blocked_tech_psionic_theory
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_pyroclastic_resonation = {
+    give_technology = { tech = tech_pyroclastic_resonation message = no }
+    remove_country_flag = ap_tech_blocked_tech_pyroclastic_resonation
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_quantum_catapult = {
+    give_technology = { tech = tech_quantum_catapult message = no }
+    remove_country_flag = ap_tech_blocked_tech_quantum_catapult
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_quicksand_basin = {
+    give_technology = { tech = tech_quicksand_basin message = no }
+    remove_country_flag = ap_tech_blocked_tech_quicksand_basin
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_rare_crystals = {
+    give_technology = { tech = tech_rare_crystals message = no }
+    remove_country_flag = ap_tech_blocked_tech_rare_crystals
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_reactor_boosters_2 = {
+    give_technology = { tech = tech_reactor_boosters_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_reactor_boosters_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_reactor_boosters_3 = {
+    give_technology = { tech = tech_reactor_boosters_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_reactor_boosters_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_refit_standards = {
+    give_technology = { tech = tech_refit_standards message = no }
+    remove_country_flag = ap_tech_blocked_tech_refit_standards
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_regenerative_hull_tissue = {
+    give_technology = { tech = tech_regenerative_hull_tissue message = no }
+    remove_country_flag = ap_tech_blocked_tech_regenerative_hull_tissue
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_repeatable_lcluster_clue = {
+    give_technology = { tech = tech_repeatable_lcluster_clue message = no }
+    remove_country_flag = ap_tech_blocked_tech_repeatable_lcluster_clue
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_resort_colonies = {
+    give_technology = { tech = tech_resort_colonies message = no }
+    remove_country_flag = ap_tech_blocked_tech_resort_colonies
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_resource_processing_algorithms = {
+    give_technology = { tech = tech_resource_processing_algorithms message = no }
+    remove_country_flag = ap_tech_blocked_tech_resource_processing_algorithms
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_rift_sphere = {
+    give_technology = { tech = tech_rift_sphere message = no }
+    remove_country_flag = ap_tech_blocked_tech_rift_sphere
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_ring_world = {
+    give_technology = { tech = tech_ring_world message = no }
+    remove_country_flag = ap_tech_blocked_tech_ring_world
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_robomodding = {
+    give_technology = { tech = tech_robomodding message = no }
+    remove_country_flag = ap_tech_blocked_tech_robomodding
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_robomodding_m = {
+    give_technology = { tech = tech_robomodding_m message = no }
+    remove_country_flag = ap_tech_blocked_tech_robomodding_m
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_robomodding_points_1 = {
+    give_technology = { tech = tech_robomodding_points_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_robomodding_points_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_robomodding_points_2 = {
+    give_technology = { tech = tech_robomodding_points_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_robomodding_points_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_robot_assembly_complex = {
+    give_technology = { tech = tech_robot_assembly_complex message = no }
+    remove_country_flag = ap_tech_blocked_tech_robot_assembly_complex
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_robotic_workers = {
+    give_technology = { tech = tech_robotic_workers message = no }
+    remove_country_flag = ap_tech_blocked_tech_robotic_workers
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_sapient_ai = {
+    give_technology = { tech = tech_sapient_ai message = no }
+    remove_country_flag = ap_tech_blocked_tech_sapient_ai
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_satisfying_insults = {
+    give_technology = { tech = tech_satisfying_insults message = no }
+    remove_country_flag = ap_tech_blocked_tech_satisfying_insults
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_science_nexus = {
+    give_technology = { tech = tech_science_nexus message = no }
+    remove_country_flag = ap_tech_blocked_tech_science_nexus
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_scourge_missile_1 = {
+    give_technology = { tech = tech_scourge_missile_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_scourge_missile_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_secrets_baol = {
+    give_technology = { tech = tech_secrets_baol message = no }
+    remove_country_flag = ap_tech_blocked_tech_secrets_baol
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_secrets_cybrex = {
+    give_technology = { tech = tech_secrets_cybrex message = no }
+    remove_country_flag = ap_tech_blocked_tech_secrets_cybrex
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_secrets_irassian = {
+    give_technology = { tech = tech_secrets_irassian message = no }
+    remove_country_flag = ap_tech_blocked_tech_secrets_irassian
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_secrets_league = {
+    give_technology = { tech = tech_secrets_league message = no }
+    remove_country_flag = ap_tech_blocked_tech_secrets_league
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_secrets_vultaum = {
+    give_technology = { tech = tech_secrets_vultaum message = no }
+    remove_country_flag = ap_tech_blocked_tech_secrets_vultaum
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_secrets_yuht = {
+    give_technology = { tech = tech_secrets_yuht message = no }
+    remove_country_flag = ap_tech_blocked_tech_secrets_yuht
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_secrets_zroni = {
+    give_technology = { tech = tech_secrets_zroni message = no }
+    remove_country_flag = ap_tech_blocked_tech_secrets_zroni
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_selected_lineages = {
+    give_technology = { tech = tech_selected_lineages message = no }
+    remove_country_flag = ap_tech_blocked_tech_selected_lineages
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_self_assembling_components = {
+    give_technology = { tech = tech_self_assembling_components message = no }
+    remove_country_flag = ap_tech_blocked_tech_self_assembling_components
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_self_aware_logic = {
+    give_technology = { tech = tech_self_aware_logic message = no }
+    remove_country_flag = ap_tech_blocked_tech_self_aware_logic
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_sensors_2 = {
+    give_technology = { tech = tech_sensors_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_sensors_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_sensors_3 = {
+    give_technology = { tech = tech_sensors_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_sensors_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_sensors_4 = {
+    give_technology = { tech = tech_sensors_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_sensors_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_sensors_bio_integration = {
+    give_technology = { tech = tech_sensors_bio_integration message = no }
+    remove_country_flag = ap_tech_blocked_tech_sensors_bio_integration
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_sentry_array = {
+    give_technology = { tech = tech_sentry_array message = no }
+    remove_country_flag = ap_tech_blocked_tech_sentry_array
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_shield_hardeners_1 = {
+    give_technology = { tech = tech_shield_hardeners_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_shield_hardeners_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_shield_hardeners_2 = {
+    give_technology = { tech = tech_shield_hardeners_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_shield_hardeners_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_shield_rechargers_1 = {
+    give_technology = { tech = tech_shield_rechargers_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_shield_rechargers_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_shields_2 = {
+    give_technology = { tech = tech_shields_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_shields_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_shields_3 = {
+    give_technology = { tech = tech_shields_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_shields_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_shields_4 = {
+    give_technology = { tech = tech_shields_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_shields_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_shields_5 = {
+    give_technology = { tech = tech_shields_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_shields_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_ship_armor_2 = {
+    give_technology = { tech = tech_ship_armor_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_ship_armor_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_ship_armor_3 = {
+    give_technology = { tech = tech_ship_armor_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_ship_armor_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_ship_armor_4 = {
+    give_technology = { tech = tech_ship_armor_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_ship_armor_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_ship_armor_5 = {
+    give_technology = { tech = tech_ship_armor_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_ship_armor_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_ship_hull_storm_breaker_1 = {
+    give_technology = { tech = tech_ship_hull_storm_breaker_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_ship_hull_storm_breaker_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_ship_hull_storm_breaker_2 = {
+    give_technology = { tech = tech_ship_hull_storm_breaker_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_ship_hull_storm_breaker_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_ship_storm_weapons_1 = {
+    give_technology = { tech = tech_ship_storm_weapons_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_ship_storm_weapons_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_ship_storm_weapons_2 = {
+    give_technology = { tech = tech_ship_storm_weapons_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_ship_storm_weapons_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_slave_colonies = {
+    give_technology = { tech = tech_slave_colonies message = no }
+    remove_country_flag = ap_tech_blocked_tech_slave_colonies
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_society_1 = {
+    give_technology = { tech = tech_society_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_society_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_society_2 = {
+    give_technology = { tech = tech_society_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_society_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_society_3 = {
+    give_technology = { tech = tech_society_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_society_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_space_cloud_weapon_1 = {
+    give_technology = { tech = tech_space_cloud_weapon_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_space_cloud_weapon_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_space_defense_station_improvement = {
+    give_technology = { tech = tech_space_defense_station_improvement message = no }
+    remove_country_flag = ap_tech_blocked_tech_space_defense_station_improvement
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_space_mining_1 = {
+    give_technology = { tech = tech_space_mining_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_space_mining_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_space_mining_2 = {
+    give_technology = { tech = tech_space_mining_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_space_mining_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_space_mining_3 = {
+    give_technology = { tech = tech_space_mining_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_space_mining_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_space_mining_4 = {
+    give_technology = { tech = tech_space_mining_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_space_mining_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_space_mining_5 = {
+    give_technology = { tech = tech_space_mining_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_space_mining_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_space_science_1 = {
+    give_technology = { tech = tech_space_science_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_space_science_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_space_science_2 = {
+    give_technology = { tech = tech_space_science_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_space_science_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_space_science_3 = {
+    give_technology = { tech = tech_space_science_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_space_science_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_space_science_4 = {
+    give_technology = { tech = tech_space_science_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_space_science_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_space_science_5 = {
+    give_technology = { tech = tech_space_science_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_space_science_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_space_trading = {
+    give_technology = { tech = tech_space_trading message = no }
+    remove_country_flag = ap_tech_blocked_tech_space_trading
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_space_whale_weapon_1 = {
+    give_technology = { tech = tech_space_whale_weapon_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_space_whale_weapon_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_starbase_3 = {
+    give_technology = { tech = tech_starbase_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_starbase_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_starbase_4 = {
+    give_technology = { tech = tech_starbase_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_starbase_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_starbase_5 = {
+    give_technology = { tech = tech_starbase_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_starbase_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_starfire_cannon = {
+    give_technology = { tech = tech_starfire_cannon message = no }
+    remove_country_flag = ap_tech_blocked_tech_starfire_cannon
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_stinger_build_speed = {
+    give_technology = { tech = tech_stinger_build_speed message = no }
+    remove_country_flag = ap_tech_blocked_tech_stinger_build_speed
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_stinger_growth_1 = {
+    give_technology = { tech = tech_stinger_growth_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_stinger_growth_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_stinger_growth_2 = {
+    give_technology = { tech = tech_stinger_growth_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_stinger_growth_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_stingers = {
+    give_technology = { tech = tech_stingers message = no }
+    remove_country_flag = ap_tech_blocked_tech_stingers
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_storm_manipulation = {
+    give_technology = { tech = tech_storm_manipulation message = no }
+    remove_country_flag = ap_tech_blocked_tech_storm_manipulation
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_storm_prediction_1 = {
+    give_technology = { tech = tech_storm_prediction_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_storm_prediction_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_storm_prediction_2 = {
+    give_technology = { tech = tech_storm_prediction_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_storm_prediction_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_strategic_coordination = {
+    give_technology = { tech = tech_strategic_coordination message = no }
+    remove_country_flag = ap_tech_blocked_tech_strategic_coordination
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_strike_craft_1 = {
+    give_technology = { tech = tech_strike_craft_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_strike_craft_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_strike_craft_2 = {
+    give_technology = { tech = tech_strike_craft_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_strike_craft_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_strike_craft_3 = {
+    give_technology = { tech = tech_strike_craft_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_strike_craft_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_strike_craft_skrand = {
+    give_technology = { tech = tech_strike_craft_skrand message = no }
+    remove_country_flag = ap_tech_blocked_tech_strike_craft_skrand
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_subdermal_stimulation = {
+    give_technology = { tech = tech_subdermal_stimulation message = no }
+    remove_country_flag = ap_tech_blocked_tech_subdermal_stimulation
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_supreme_alloy = {
+    give_technology = { tech = tech_supreme_alloy message = no }
+    remove_country_flag = ap_tech_blocked_tech_supreme_alloy
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_swarm_strike_craft_1 = {
+    give_technology = { tech = tech_swarm_strike_craft_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_swarm_strike_craft_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_swarmer_missiles_1 = {
+    give_technology = { tech = tech_swarmer_missiles_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_swarmer_missiles_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_swarmer_missiles_2 = {
+    give_technology = { tech = tech_swarmer_missiles_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_swarmer_missiles_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_synchronized_defences = {
+    give_technology = { tech = tech_synchronized_defences message = no }
+    remove_country_flag = ap_tech_blocked_tech_synchronized_defences
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_synth_queen_knowledge = {
+    give_technology = { tech = tech_synth_queen_knowledge message = no }
+    remove_country_flag = ap_tech_blocked_tech_synth_queen_knowledge
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_synthetic_leaders = {
+    give_technology = { tech = tech_synthetic_leaders message = no }
+    remove_country_flag = ap_tech_blocked_tech_synthetic_leaders
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_synthetic_thought_patterns = {
+    give_technology = { tech = tech_synthetic_thought_patterns message = no }
+    remove_country_flag = ap_tech_blocked_tech_synthetic_thought_patterns
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_synthetic_workers = {
+    give_technology = { tech = tech_synthetic_workers message = no }
+    remove_country_flag = ap_tech_blocked_tech_synthetic_workers
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_telepathy = {
+    give_technology = { tech = tech_telepathy message = no }
+    remove_country_flag = ap_tech_blocked_tech_telepathy
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_temple_of_transportation = {
+    give_technology = { tech = tech_temple_of_transportation message = no }
+    remove_country_flag = ap_tech_blocked_tech_temple_of_transportation
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_terrestrial_sculpting = {
+    give_technology = { tech = tech_terrestrial_sculpting message = no }
+    remove_country_flag = ap_tech_blocked_tech_terrestrial_sculpting
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_thought_enforcement = {
+    give_technology = { tech = tech_thought_enforcement message = no }
+    remove_country_flag = ap_tech_blocked_tech_thought_enforcement
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_thrusters_2 = {
+    give_technology = { tech = tech_thrusters_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_thrusters_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_thrusters_3 = {
+    give_technology = { tech = tech_thrusters_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_thrusters_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_thrusters_4 = {
+    give_technology = { tech = tech_thrusters_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_thrusters_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_thrusters_bio_integration = {
+    give_technology = { tech = tech_thrusters_bio_integration message = no }
+    remove_country_flag = ap_tech_blocked_tech_thrusters_bio_integration
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_titan_hull_1 = {
+    give_technology = { tech = tech_titan_hull_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_titan_hull_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_titan_hull_2 = {
+    give_technology = { tech = tech_titan_hull_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_titan_hull_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_titans = {
+    give_technology = { tech = tech_titans message = no }
+    remove_country_flag = ap_tech_blocked_tech_titans
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_tomb_world_adaption = {
+    give_technology = { tech = tech_tomb_world_adaption message = no }
+    remove_country_flag = ap_tech_blocked_tech_tomb_world_adaption
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_torpedoes_1 = {
+    give_technology = { tech = tech_torpedoes_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_torpedoes_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_torpedoes_2 = {
+    give_technology = { tech = tech_torpedoes_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_torpedoes_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_torpedoes_3 = {
+    give_technology = { tech = tech_torpedoes_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_torpedoes_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_toxic_kelp = {
+    give_technology = { tech = tech_toxic_kelp message = no }
+    remove_country_flag = ap_tech_blocked_tech_toxic_kelp
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_tracking_implants = {
+    give_technology = { tech = tech_tracking_implants message = no }
+    remove_country_flag = ap_tech_blocked_tech_tracking_implants
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_transcendent_faith = {
+    give_technology = { tech = tech_transcendent_faith message = no }
+    remove_country_flag = ap_tech_blocked_tech_transcendent_faith
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_trinary_computing = {
+    give_technology = { tech = tech_trinary_computing message = no }
+    remove_country_flag = ap_tech_blocked_tech_trinary_computing
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_unique_mutation_crystalline_entity = {
+    give_technology = { tech = tech_unique_mutation_crystalline_entity message = no }
+    remove_country_flag = ap_tech_blocked_tech_unique_mutation_crystalline_entity
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_unique_mutation_cutholoid = {
+    give_technology = { tech = tech_unique_mutation_cutholoid message = no }
+    remove_country_flag = ap_tech_blocked_tech_unique_mutation_cutholoid
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_unique_mutation_restorative_enzymes = {
+    give_technology = { tech = tech_unique_mutation_restorative_enzymes message = no }
+    remove_country_flag = ap_tech_blocked_tech_unique_mutation_restorative_enzymes
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_unique_mutation_space_amoeba = {
+    give_technology = { tech = tech_unique_mutation_space_amoeba message = no }
+    remove_country_flag = ap_tech_blocked_tech_unique_mutation_space_amoeba
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_unique_mutation_starborne_biology = {
+    give_technology = { tech = tech_unique_mutation_starborne_biology message = no }
+    remove_country_flag = ap_tech_blocked_tech_unique_mutation_starborne_biology
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_unique_mutation_tiyanki = {
+    give_technology = { tech = tech_unique_mutation_tiyanki message = no }
+    remove_country_flag = ap_tech_blocked_tech_unique_mutation_tiyanki
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_unique_mutation_voidworm = {
+    give_technology = { tech = tech_unique_mutation_voidworm message = no }
+    remove_country_flag = ap_tech_blocked_tech_unique_mutation_voidworm
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_unity_of_purpose = {
+    give_technology = { tech = tech_unity_of_purpose message = no }
+    remove_country_flag = ap_tech_blocked_tech_unity_of_purpose
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_universal_marcophage = {
+    give_technology = { tech = tech_universal_marcophage message = no }
+    remove_country_flag = ap_tech_blocked_tech_universal_marcophage
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_unusual_senses = {
+    give_technology = { tech = tech_unusual_senses message = no }
+    remove_country_flag = ap_tech_blocked_tech_unusual_senses
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_vitality_boosters = {
+    give_technology = { tech = tech_vitality_boosters message = no }
+    remove_country_flag = ap_tech_blocked_tech_vitality_boosters
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_voidworm_immunity = {
+    give_technology = { tech = tech_voidworm_immunity message = no }
+    remove_country_flag = ap_tech_blocked_tech_voidworm_immunity
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_volatile_motes = {
+    give_technology = { tech = tech_volatile_motes message = no }
+    remove_country_flag = ap_tech_blocked_tech_volatile_motes
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_volcanic_forge = {
+    give_technology = { tech = tech_volcanic_forge message = no }
+    remove_country_flag = ap_tech_blocked_tech_volcanic_forge
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_volcanic_terraforming = {
+    give_technology = { tech = tech_volcanic_terraforming message = no }
+    remove_country_flag = ap_tech_blocked_tech_volcanic_terraforming
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_volcano = {
+    give_technology = { tech = tech_volcano message = no }
+    remove_country_flag = ap_tech_blocked_tech_volcano
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_anti_evasion_2 = {
+    give_technology = { tech = tech_weaver_bio_anti_evasion_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_anti_evasion_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_anti_evasion_3 = {
+    give_technology = { tech = tech_weaver_bio_anti_evasion_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_anti_evasion_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_anti_evasion_4 = {
+    give_technology = { tech = tech_weaver_bio_anti_evasion_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_anti_evasion_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_anti_evasion_5 = {
+    give_technology = { tech = tech_weaver_bio_anti_evasion_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_anti_evasion_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_anti_evasion_6 = {
+    give_technology = { tech = tech_weaver_bio_anti_evasion_6 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_anti_evasion_6
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_anti_fire_rate_1 = {
+    give_technology = { tech = tech_weaver_bio_anti_fire_rate_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_anti_fire_rate_2 = {
+    give_technology = { tech = tech_weaver_bio_anti_fire_rate_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_anti_fire_rate_3 = {
+    give_technology = { tech = tech_weaver_bio_anti_fire_rate_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_anti_fire_rate_4 = {
+    give_technology = { tech = tech_weaver_bio_anti_fire_rate_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_anti_fire_rate_5 = {
+    give_technology = { tech = tech_weaver_bio_anti_fire_rate_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_anti_fire_rate_6 = {
+    give_technology = { tech = tech_weaver_bio_anti_fire_rate_6 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_6
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_confuser_1 = {
+    give_technology = { tech = tech_weaver_bio_confuser_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_confuser_2 = {
+    give_technology = { tech = tech_weaver_bio_confuser_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_confuser_3 = {
+    give_technology = { tech = tech_weaver_bio_confuser_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_confuser_4 = {
+    give_technology = { tech = tech_weaver_bio_confuser_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_confuser_5 = {
+    give_technology = { tech = tech_weaver_bio_confuser_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_confuser_6 = {
+    give_technology = { tech = tech_weaver_bio_confuser_6 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_6
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_evasion_2 = {
+    give_technology = { tech = tech_weaver_bio_evasion_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_evasion_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_evasion_3 = {
+    give_technology = { tech = tech_weaver_bio_evasion_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_evasion_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_evasion_4 = {
+    give_technology = { tech = tech_weaver_bio_evasion_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_evasion_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_evasion_5 = {
+    give_technology = { tech = tech_weaver_bio_evasion_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_evasion_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_evasion_6 = {
+    give_technology = { tech = tech_weaver_bio_evasion_6 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_evasion_6
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_fire_rate_1 = {
+    give_technology = { tech = tech_weaver_bio_fire_rate_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_fire_rate_2 = {
+    give_technology = { tech = tech_weaver_bio_fire_rate_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_fire_rate_3 = {
+    give_technology = { tech = tech_weaver_bio_fire_rate_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_fire_rate_4 = {
+    give_technology = { tech = tech_weaver_bio_fire_rate_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_fire_rate_5 = {
+    give_technology = { tech = tech_weaver_bio_fire_rate_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_fire_rate_6 = {
+    give_technology = { tech = tech_weaver_bio_fire_rate_6 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_6
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_healing_1 = {
+    give_technology = { tech = tech_weaver_bio_healing_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_healing_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_healing_2 = {
+    give_technology = { tech = tech_weaver_bio_healing_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_healing_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_healing_3 = {
+    give_technology = { tech = tech_weaver_bio_healing_3 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_healing_3
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_healing_4 = {
+    give_technology = { tech = tech_weaver_bio_healing_4 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_healing_4
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_healing_5 = {
+    give_technology = { tech = tech_weaver_bio_healing_5 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_healing_5
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_bio_healing_6 = {
+    give_technology = { tech = tech_weaver_bio_healing_6 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_bio_healing_6
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_build_speed = {
+    give_technology = { tech = tech_weaver_build_speed message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_build_speed
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_growth_1 = {
+    give_technology = { tech = tech_weaver_growth_1 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_growth_1
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_weaver_growth_2 = {
+    give_technology = { tech = tech_weaver_growth_2 message = no }
+    remove_country_flag = ap_tech_blocked_tech_weaver_growth_2
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_wilderness_cluster = {
+    give_technology = { tech = tech_wilderness_cluster message = no }
+    remove_country_flag = ap_tech_blocked_tech_wilderness_cluster
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_wilderness_confluence = {
+    give_technology = { tech = tech_wilderness_confluence message = no }
+    remove_country_flag = ap_tech_blocked_tech_wilderness_confluence
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_wormhole_stabilization = {
+    give_technology = { tech = tech_wormhole_stabilization message = no }
+    remove_country_flag = ap_tech_blocked_tech_wormhole_stabilization
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_xeno_aesthetics = {
+    give_technology = { tech = tech_xeno_aesthetics message = no }
+    remove_country_flag = ap_tech_blocked_tech_xeno_aesthetics
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_xeno_diplomacy = {
+    give_technology = { tech = tech_xeno_diplomacy message = no }
+    remove_country_flag = ap_tech_blocked_tech_xeno_diplomacy
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_xeno_linguistics = {
+    give_technology = { tech = tech_xeno_linguistics message = no }
+    remove_country_flag = ap_tech_blocked_tech_xeno_linguistics
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_xeno_relations = {
+    give_technology = { tech = tech_xeno_relations message = no }
+    remove_country_flag = ap_tech_blocked_tech_xeno_relations
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_xeno_tourism_agency = {
+    give_technology = { tech = tech_xeno_tourism_agency message = no }
+    remove_country_flag = ap_tech_blocked_tech_xeno_tourism_agency
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_zero_point_power = {
+    give_technology = { tech = tech_zero_point_power message = no }
+    remove_country_flag = ap_tech_blocked_tech_zero_point_power
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_tech_tech_zro_launcher = {
+    give_technology = { tech = tech_zro_launcher message = no }
+    remove_country_flag = ap_tech_blocked_tech_zro_launcher
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}

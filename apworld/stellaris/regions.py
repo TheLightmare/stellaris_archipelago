@@ -49,6 +49,7 @@ def create_regions(world) -> Dict[str, Region]:
         dlc_apocalypse=bool(options.dlc_apocalypse),
         dlc_megacorp=bool(options.dlc_megacorp),
         dlc_overlord=bool(options.dlc_overlord),
+        randomized_techs=set(options.randomized_techs.value),
     )
 
     # Create regions

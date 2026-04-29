@@ -22,13 +22,54 @@ import time
 import threading
 import queue
 from pathlib import Path
-from typing import Dict, Set, Optional
+from typing import Dict, List, Optional, Set
+
+# Make sibling modules (tech_catalog, slot_generator) importable when the
+# bridge is launched from any cwd.
+sys.path.insert(0, str(Path(__file__).parent))
+from tech_catalog import (  # noqa: E402
+    TECH_CATALOG,
+    by_key as _tech_by_key,
+)
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
 )
 logger = logging.getLogger("APBridge")
+
+
+# Item-ID base for catalog Tech: items (BASE_ID + 20000 + offset).
+# Effect names follow ap_grant_tech_<key>; the matching scripted_effect
+# lives in mod-install/.../ap_item_effects.txt.
+_TECH_ITEM_BASE = 7_491_000  # = 7_471_000 + 20000
+_TECH_LOCATION_BASE = 7_481_000  # = 7_471_000 + 10000
+
+
+def _catalog_item_effects() -> Dict[int, str]:
+    """item_id → ap_grant_tech_<key> for every catalog tech (always populated;
+    selection-filtering happens via slot_data, not here — the map is a
+    superset and only selected items will ever actually be received)."""
+    return {
+        _TECH_ITEM_BASE + t.offset: f"ap_grant_tech_{t.key}"
+        for t in TECH_CATALOG
+    }
+
+
+def _catalog_location_ids_for(selected_keys: Set[str]) -> Set[int]:
+    """The Research-X location IDs the player chose to randomize."""
+    by_key = _tech_by_key()
+    return {
+        _TECH_LOCATION_BASE + by_key[k].offset
+        for k in selected_keys if k in by_key
+    }
+
+
+def _catalog_block_flags_for(selected_keys: Set[str]) -> List[str]:
+    """Country flags the bridge sets at connect to hide vanilla techs.
+    These are read by 00_aaa_ap_tech_blocks.txt's potential clauses."""
+    return [f"ap_tech_blocked_{k}" for k in sorted(selected_keys)]
+
 
 ITEM_EFFECT_MAP: Dict[int, str] = {
     7_471_000: "ap_grant_progressive_ship_class",
@@ -70,11 +111,15 @@ ITEM_EFFECT_MAP: Dict[int, str] = {
     7_471_304: "ap_trigger_space_amoeba",
     7_471_305: "ap_trigger_border_friction",
 }
+# Append catalog Tech: items (one per catalog entry, always populated).
+# Items the player didn't randomize will simply never be received.
+ITEM_EFFECT_MAP.update(_catalog_item_effects())
 
-# Location IDs that become researchable AP techs.
-# All other locations are milestones (auto-detected during gameplay).
-# This is embedded so the bridge doesn't depend on the server providing it.
-TECH_LOCATION_IDS = {
+# Static event-style tech locations (Find Anomalies, Form Federation, etc.)
+# These always appear, regardless of randomized_techs. Catalog-driven
+# Research-X locations are added per-slot via _catalog_location_ids_for()
+# at connect time and stored in self.tech_location_ids.
+_STATIC_TECH_LOCATION_IDS: Set[int] = {
     7_472_020,  # Find 3 Anomalies
     7_472_021,  # Find 6 Anomalies
     7_472_030,  # Enter a Wormhole
@@ -211,6 +256,14 @@ class StellarisAPBridge:
         # 2=Ascension, 3=Galactic Emperor, 4=All Checks. Defaults to 0 until Connected.
         self.goal: int = 0
 
+        # Set of location IDs that should be treated as researchable AP techs.
+        # Starts with the static event-style locations (Find Anomalies, etc.)
+        # and is extended at connect time with the player's catalog selection.
+        self.tech_location_ids: Set[int] = set(_STATIC_TECH_LOCATION_IDS)
+
+        # Catalog tech keys this slot randomized (filled from slot_data).
+        self.randomized_techs: List[str] = []
+
         self.stellaris_dir = find_stellaris_dir()
         self._state_file = self.stellaris_dir / "ap_bridge_state.json"
         self.mod_dir = self.stellaris_dir / "mod" / "archipelago_multiworld"
@@ -346,6 +399,13 @@ class StellarisAPBridge:
             self.energy_link_enabled = bool(slot_data.get("energy_link_enabled", False))
             self.energy_link_rate = int(slot_data.get("energy_link_rate", 100))
 
+            # Catalog tech selection — drives Research-X locations and
+            # the vanilla-tech blocking flags this slot needs.
+            self.randomized_techs = list(slot_data.get("randomized_techs", []))
+            selected = set(self.randomized_techs)
+            catalog_loc_ids = _catalog_location_ids_for(selected)
+            self.tech_location_ids = set(_STATIC_TECH_LOCATION_IDS) | catalog_loc_ids
+
             for p in packet.get("players", []):
                 self.player_names[p["slot"]] = p["alias"]
 
@@ -357,10 +417,17 @@ class StellarisAPBridge:
             logger.info(f"Players: {self.player_names}")
             logger.info(f"Locations: {len(self.all_locations)} ({len(checked)} already checked)")
             logger.info(f"Goal: {self.goal} | EnergyLink: {self.energy_link_enabled}")
+            logger.info(f"Randomized techs: {len(self.randomized_techs)} "
+                        f"({len(catalog_loc_ids)} catalog Research-X locations)")
 
             # Push the chosen goal into the mod as a country flag so the mod
             # can detect the right victory condition for this seed.
             self.item_queue.put(("raw_effect", f"set_country_flag = ap_goal_{self.goal}"))
+
+            # Push tech-blocking flags so 00_aaa_ap_tech_blocks.txt hides
+            # randomized vanilla techs from the player's research pool.
+            for flag in _catalog_block_flags_for(selected):
+                self.item_queue.put(("raw_effect", f"set_country_flag = {flag}"))
 
             # Re-send any checks we have locally that the server doesn't know about
             unsent = self.sent_checks - checked
@@ -472,7 +539,7 @@ class StellarisAPBridge:
             classification = flag_to_class.get(flags, "filler")
 
             # Determine location type from embedded set
-            loc_type = "tech" if loc_id in TECH_LOCATION_IDS else "milestone"
+            loc_type = "tech" if loc_id in self.tech_location_ids else "milestone"
 
             slot_data.append({
                 "location_id": loc_id,

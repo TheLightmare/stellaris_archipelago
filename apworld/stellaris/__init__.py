@@ -232,6 +232,7 @@ class StellarisWorld(World):
             dlc_apocalypse=bool(self.options.dlc_apocalypse),
             dlc_megacorp=bool(self.options.dlc_megacorp),
             dlc_overlord=bool(self.options.dlc_overlord),
+            randomized_techs=set(self.options.randomized_techs.value),
         )
 
         # Count locations
@@ -372,4 +373,9 @@ class StellarisWorld(World):
             "energy_link_enabled": self.energy_link_enabled,
             "energy_link_rate": self.options.energy_link_rate.value,
             "galaxy_size": self.options.galaxy_size.value,
+            # Catalog tech keys the player chose to randomize. The bridge
+            # uses this to (a) send tech-blocking flags at connect time,
+            # (b) build the dynamic ITEM_EFFECT_MAP for "Tech: <X>" items,
+            # (c) compute TECH_LOCATION_IDS for the slot.
+            "randomized_techs": sorted(self.options.randomized_techs.value),
         }

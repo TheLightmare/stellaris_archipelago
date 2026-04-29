@@ -4,10 +4,14 @@ from dataclasses import dataclass
 from Options import (
     Choice,
     DefaultOnToggle,
+    OptionSet,
     PerGameCommonOptions,
     Range,
     Toggle,
 )
+
+from .data.tech_catalog import all_keys as _all_tech_keys
+from .data.tech_catalog import default_selection as _default_tech_selection
 
 
 class Goal(Choice):
@@ -128,6 +132,24 @@ class DlcOverlord(Toggle):
     display_name = "DLC: Overlord"
 
 
+# --- Tech Randomization ---
+
+class RandomizedTechs(OptionSet):
+    """Stellaris technologies randomized through the multiworld.
+
+    Each tech in this set:
+      - Becomes a location 'Research <Tech>' in the player's pool.
+      - Is BLOCKED from the vanilla research pool (replaced by an AP-tech).
+      - Has a matching 'Tech: <Tech>' item placed in the multiworld; the
+        only way to get the vanilla effects is to receive that item.
+
+    Default is every base-game tech in the catalog. Edit (or use the
+    Tech Config dashboard tab) to customize."""
+    display_name = "Randomized Techs"
+    valid_keys = frozenset(_all_tech_keys())
+    default = frozenset(_default_tech_selection())
+
+
 @dataclass
 class StellarisOptions(PerGameCommonOptions):
     goal: Goal
@@ -147,3 +169,4 @@ class StellarisOptions(PerGameCommonOptions):
     dlc_apocalypse: DlcApocalypse
     dlc_megacorp: DlcMegaCorp
     dlc_overlord: DlcOverlord
+    randomized_techs: RandomizedTechs

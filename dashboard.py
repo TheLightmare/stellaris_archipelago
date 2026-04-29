@@ -80,6 +80,232 @@ def find_stellaris_game_dir():
     return None
 
 
+# =============================================================================
+# YAML Wizard — option introspection
+# =============================================================================
+# The wizard reads its option list directly from apworld/stellaris/options.py
+# at request time, so it stays in sync with the apworld. We mock the small
+# slice of Archipelago's `Options` module that options.py imports — just
+# enough to let the class definitions evaluate.
+
+_YAML_OPTION_GROUPS = [
+    ("Gameplay", ["goal", "galaxy_size"]),
+    ("Locations", ["include_exploration", "include_diplomacy",
+                   "include_warfare", "include_crisis"]),
+    ("Items", ["traps_enabled", "trap_percentage",
+               "energy_link_enabled", "energy_link_rate"]),
+    ("Tech Randomization", ["randomized_techs"]),
+    ("DLC", ["dlc_utopia", "dlc_federations", "dlc_nemesis", "dlc_leviathans",
+             "dlc_apocalypse", "dlc_megacorp", "dlc_overlord"]),
+]
+
+
+def _load_tech_catalog():
+    """Load apworld/stellaris/data/tech_catalog.py and return its TECH_CATALOG.
+
+    Returns a list of plain dicts (one per catalog entry) with keys:
+      key, display, tier, area, prereqs, dlc, offset
+
+    The catalog file has no Archipelago dependencies, so we can import it
+    directly without mocking anything.
+    """
+    import importlib.util
+
+    apworld_dir = SCRIPT_DIR / "apworld"
+    catalog_path = apworld_dir / "stellaris" / "data" / "tech_catalog.py"
+
+    spec = importlib.util.spec_from_file_location(
+        "stellaris_tech_catalog_introspect", catalog_path
+    )
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    return [
+        {
+            "key": t.key,
+            "display": t.display,
+            "tier": t.tier,
+            "area": t.area,
+            "prereqs": list(t.prereqs),
+            "dlc": t.dlc,
+            "offset": t.offset,
+        }
+        for t in mod.TECH_CATALOG
+    ]
+
+
+def _introspect_stellaris_options():
+    """Load apworld/stellaris/options.py and return the option metadata.
+
+    Returns a list of group dicts:
+      [{"label": "Gameplay",
+        "options": [
+          {"attr": "goal", "display_name": "Goal", "doc": "...",
+           "kind": "choice", "default": "victory",
+           "choices": [{"name": "victory", "value": 0}, ...]},
+          ...
+        ]},
+       ...]
+    """
+    import sys
+    import types
+    import textwrap
+    from dataclasses import fields as dc_fields
+
+    # Mock just enough of the Options module for the class bodies to evaluate.
+    class _Base:
+        default = 0
+        display_name = ""
+
+    class _Choice(_Base):
+        pass
+
+    class _Toggle(_Base):
+        default = 0
+
+    class _DefaultOnToggle(_Toggle):
+        default = 1
+
+    class _Range(_Base):
+        range_start = 0
+        range_end = 100
+
+    class _OptionSet(_Base):
+        valid_keys = frozenset()
+        default = frozenset()
+
+    class _PerGameCommonOptions:
+        pass
+
+    om = types.ModuleType("Options")
+    om.Choice = _Choice
+    om.Toggle = _Toggle
+    om.DefaultOnToggle = _DefaultOnToggle
+    om.Range = _Range
+    om.OptionSet = _OptionSet
+    om.PerGameCommonOptions = _PerGameCommonOptions
+    sys.modules["Options"] = om
+
+    # Make the apworld importable
+    apworld_dir = SCRIPT_DIR / "apworld"
+    if str(apworld_dir) not in sys.path:
+        sys.path.insert(0, str(apworld_dir))
+
+    # Load options.py directly (bypassing stellaris/__init__.py, which pulls
+    # in BaseClasses and the rest of Archipelago). options.py contains a
+    # relative import (`from .data.tech_catalog import ...`), so we need to
+    # stand up a minimal stellaris/stellaris.data package shell first.
+    import importlib.util
+
+    if "stellaris" not in sys.modules:
+        stellaris_pkg = types.ModuleType("stellaris")
+        stellaris_pkg.__path__ = [str(apworld_dir / "stellaris")]
+        sys.modules["stellaris"] = stellaris_pkg
+    if "stellaris.data" not in sys.modules:
+        data_pkg = types.ModuleType("stellaris.data")
+        data_pkg.__path__ = [str(apworld_dir / "stellaris" / "data")]
+        sys.modules["stellaris.data"] = data_pkg
+    if "stellaris.data.tech_catalog" not in sys.modules:
+        tc_path = apworld_dir / "stellaris" / "data" / "tech_catalog.py"
+        tc_spec = importlib.util.spec_from_file_location(
+            "stellaris.data.tech_catalog", tc_path
+        )
+        tc_mod = importlib.util.module_from_spec(tc_spec)
+        sys.modules["stellaris.data.tech_catalog"] = tc_mod
+        tc_spec.loader.exec_module(tc_mod)
+
+    options_path = apworld_dir / "stellaris" / "options.py"
+    spec = importlib.util.spec_from_file_location(
+        "stellaris.options_introspect", options_path,
+    )
+    opts_mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(opts_mod)
+
+    StellarisOptions = opts_mod.StellarisOptions
+
+    # Build a lookup from attribute name → option class.
+    # Annotations may be either real classes or strings (forward refs).
+    annotations = StellarisOptions.__annotations__
+    attr_to_cls = {}
+    for attr, cls_or_name in annotations.items():
+        cls = cls_or_name
+        if isinstance(cls, str):
+            cls = getattr(opts_mod, cls, None)
+        if cls is None:
+            continue
+        attr_to_cls[attr] = cls
+
+    def describe(attr, cls):
+        info = {
+            "attr": attr,
+            "display_name": getattr(cls, "display_name", attr) or attr,
+            "doc": textwrap.dedent(cls.__doc__ or "").strip(),
+        }
+        if issubclass(cls, _Choice):
+            choice_keys = sorted(
+                [k for k in dir(cls) if k.startswith("option_")],
+                key=lambda k: getattr(cls, k),
+            )
+            choices = [
+                {"name": k.replace("option_", ""), "value": getattr(cls, k)}
+                for k in choice_keys
+            ]
+            default_val = getattr(cls, "default", 0)
+            default_name = next(
+                (c["name"] for c in choices if c["value"] == default_val),
+                choices[0]["name"] if choices else "",
+            )
+            info.update({
+                "kind": "choice",
+                "choices": choices,
+                "default": default_name,
+            })
+        elif issubclass(cls, _Range):
+            info.update({
+                "kind": "range",
+                "range_start": getattr(cls, "range_start", 0),
+                "range_end": getattr(cls, "range_end", 100),
+                "default": int(getattr(cls, "default", 0) or 0),
+            })
+        elif issubclass(cls, _OptionSet):
+            valid = sorted(getattr(cls, "valid_keys", frozenset()))
+            default_set = sorted(getattr(cls, "default", frozenset()))
+            info.update({
+                "kind": "set",
+                "valid_keys": valid,
+                "default": default_set,
+            })
+        else:
+            # Toggle / DefaultOnToggle
+            info.update({
+                "kind": "toggle",
+                "default": bool(getattr(cls, "default", 0)),
+            })
+        return info
+
+    groups = []
+    seen = set()
+    for label, attrs in _YAML_OPTION_GROUPS:
+        opts = []
+        for attr in attrs:
+            if attr in attr_to_cls:
+                opts.append(describe(attr, attr_to_cls[attr]))
+                seen.add(attr)
+        if opts:
+            groups.append({"label": label, "options": opts})
+
+    # Catch-all for any options added to options.py that the dashboard
+    # doesn't have a group for yet — surfaces them rather than dropping them.
+    leftovers = [a for a in attr_to_cls if a not in seen]
+    if leftovers:
+        groups.append({
+            "label": "Other",
+            "options": [describe(a, attr_to_cls[a]) for a in leftovers],
+        })
+
+    return groups
+
+
 class DashboardHandler(http.server.BaseHTTPRequestHandler):
 
     def log_message(self, format, *args):
@@ -124,6 +350,10 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
             self._api_scan_milestones()
         elif path == "/api/milestone-config":
             self._api_get_milestone_config()
+        elif path == "/api/yaml-options":
+            self._api_yaml_options()
+        elif path == "/api/tech-catalog":
+            self._api_tech_catalog()
         else:
             self.send_error(404)
 
@@ -498,6 +728,37 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
             ),
         }, 410)
 
+    def _api_yaml_options(self):
+        """Return the apworld's option metadata, grouped, for the YAML wizard."""
+        try:
+            groups = _introspect_stellaris_options()
+            self._json_response({"groups": groups})
+        except Exception as e:
+            self._json_response({
+                "error": f"Could not load options.py: {e}",
+                "groups": [],
+            }, 500)
+
+    def _api_tech_catalog(self):
+        """Return the apworld's tech catalog for the Tech Config tab."""
+        try:
+            catalog = _load_tech_catalog()
+            # Also surface the default selection so the UI can render
+            # a "Reset to Defaults" button.
+            from importlib.util import spec_from_file_location, module_from_spec
+            cat_path = SCRIPT_DIR / "apworld" / "stellaris" / "data" / "tech_catalog.py"
+            spec = spec_from_file_location("stl_tc_defaults", cat_path)
+            mod = module_from_spec(spec); spec.loader.exec_module(mod)
+            self._json_response({
+                "catalog": catalog,
+                "default_selection": mod.default_selection(),
+            })
+        except Exception as e:
+            self._json_response({
+                "error": f"Could not load tech_catalog.py: {e}",
+                "catalog": [],
+            }, 500)
+
     def _api_bridge_status(self):
         result = {}
         for name in ["bridge", "mock"]:
@@ -634,9 +895,23 @@ function App() {
   const [bridgeServer, setBridgeServer] = useState("localhost:38281");
   const [bridgeSlot, setBridgeSlot] = useState("Stellaris");
   const [bridgePassword, setBridgePassword] = useState("");
-  const [milestones, setMilestones] = useState(null);
-  const [msSearch, setMsSearch] = useState("");
-  const [msCatFilter, setMsCatFilter] = useState("all");
+  const [yamlGroups, setYamlGroups] = useState(null);
+  const [yamlValues, setYamlValues] = useState({});
+  const [yamlName, setYamlName] = useState("Stellaris");
+  const [yamlDesc, setYamlDesc] = useState("");
+  // Tech Config / YAML Wizard share this state so a selection in one
+  // shows up in the other. `randomizedTechs` is a Set of catalog tech keys.
+  const [techCatalog, setTechCatalog] = useState(null);
+  const [techDefaults, setTechDefaults] = useState(null);
+  const [randomizedTechs, setRandomizedTechs] = useState(null);
+  const [techSearch, setTechSearch] = useState("");
+  const [techAreaFilter, setTechAreaFilter] = useState("all");
+  const [techTierFilter, setTechTierFilter] = useState("all");
+  const [techDlcFilter, setTechDlcFilter] = useState("all");
+  // techScannedKeys: when present, the Tech Config tab restricts the
+  // catalog view to keys present in the player's local install. Lets
+  // them hide DLC techs they don't own without manually unticking each.
+  const [techScannedKeys, setTechScannedKeys] = useState(null);
 
   const addLog = (msg, type="info") => setLog(prev => [...prev, {msg, type, t: Date.now()}]);
 
@@ -647,6 +922,28 @@ function App() {
       setStatus(d);
     } catch(e) { addLog("Failed to fetch status: "+e, "err"); }
   }, []);
+
+  // Lazy-load the tech catalog (from apworld/stellaris/data/tech_catalog.py)
+  // the first time either Tech Config or YAML Wizard needs it. Initial
+  // selection comes from the catalog's default_selection() (no DLC techs).
+  const loadTechCatalog = useCallback(async () => {
+    if (techCatalog) return; // already loaded
+    try {
+      const r = await fetch(API+"/api/tech-catalog");
+      const d = await r.json();
+      if (d.catalog && d.catalog.length) {
+        setTechCatalog(d.catalog);
+        setTechDefaults(d.default_selection || []);
+        if (randomizedTechs === null) {
+          setRandomizedTechs(new Set(d.default_selection || []));
+        }
+        addLog("Loaded "+d.catalog.length+" catalog techs ("
+               + (d.default_selection||[]).length + " default-selected)", "ok");
+      } else {
+        addLog("Could not load tech catalog: "+(d.error||"empty"), "err");
+      }
+    } catch(e) { addLog("Failed to load tech catalog: "+e, "err"); }
+  }, [techCatalog, randomizedTechs]);
 
   useEffect(() => { fetchStatus(); }, []);
   useEffect(() => {
@@ -742,9 +1039,9 @@ function App() {
       </div>
 
       <div className="tabs">
-        {["setup","bridge","techs","milestones","errors","log"].map(t => (
+        {["setup","bridge","techs","yaml","errors","log"].map(t => (
           <div key={t} className={"tab "+(tab===t?"active":"")} onClick={()=>setTab(t)}>
-            {t==="setup"?"Setup":t==="bridge"?"Bridge":t==="techs"?"Tech Config":t==="milestones"?"Milestones":t==="errors"?"Errors":"Log"}
+            {t==="setup"?"Setup":t==="bridge"?"Bridge":t==="techs"?"Tech Config":t==="yaml"?"YAML Wizard":t==="errors"?"Errors":"Log"}
           </div>
         ))}
       </div>
@@ -888,59 +1185,109 @@ function App() {
 
       {tab === "techs" && (
         <div className="panel">
-          {!techs ? (
+          {!techCatalog ? (
             <div className="card">
-              <h3>No tech data loaded</h3>
-              <p style={{color:"#6880a0",marginBottom:16}}>Click "Scan Techs" on the Setup tab first, or upload a config file.</p>
+              <h3>Tech Randomization</h3>
+              <p style={{color:"#6880a0",marginBottom:16}}>Pick which Stellaris technologies are randomized through the multiworld.<br/>Each selected tech becomes a <code style={{color:"#4da6ff"}}>Research &lt;X&gt;</code> location <em>and</em> a <code style={{color:"#4da6ff"}}>Tech: &lt;X&gt;</code> item — the vanilla effects are gated until someone in the multiworld sends you the matching item.</p>
               <div className="actions">
-                <button className="btn btn-primary" onClick={scanTechs}>Scan Techs</button>
-                <label className="btn btn-primary" style={{display:"inline-block"}}>
-                  Upload Config
-                  <input type="file" accept=".json" style={{display:"none"}} onChange={e => {
-                    const f = e.target.files[0]; if (!f) return;
-                    const r = new FileReader();
-                    r.onload = ev => {
-                      try { const d=JSON.parse(ev.target.result); setTechs(d.techs||d); addLog("Config loaded","ok"); }
-                      catch(err) { addLog("Invalid JSON: "+err,"err"); }
-                    };
-                    r.readAsText(f);
-                  }} />
-                </label>
+                <button className="btn btn-primary" onClick={loadTechCatalog}>Load Catalog</button>
               </div>
             </div>
-          ) : (
-            <div>
+          ) : (() => {
+            const sel = randomizedTechs || new Set();
+            // Distinct DLC flags surfaced by the catalog (for the dropdown)
+            const dlcFlags = Array.from(new Set(techCatalog.map(t=>t.dlc).filter(Boolean))).sort();
+            const filtered = techCatalog.filter(t => {
+              if (techAreaFilter !== "all" && t.area !== techAreaFilter) return false;
+              if (techTierFilter !== "all" && String(t.tier) !== techTierFilter) return false;
+              if (techDlcFilter === "base" && t.dlc) return false;
+              if (techDlcFilter !== "all" && techDlcFilter !== "base" && t.dlc !== techDlcFilter) return false;
+              if (techScannedKeys && !techScannedKeys.has(t.key)) return false;
+              if (techSearch) {
+                const q = techSearch.toLowerCase();
+                if (!t.display.toLowerCase().includes(q)
+                    && !t.key.toLowerCase().includes(q)) return false;
+              }
+              return true;
+            });
+            const toggleOne = (key) => {
+              const next = new Set(sel);
+              next.has(key) ? next.delete(key) : next.add(key);
+              setRandomizedTechs(next);
+            };
+            const setAllInFilter = (val) => {
+              const next = new Set(sel);
+              filtered.forEach(t => val ? next.add(t.key) : next.delete(t.key));
+              setRandomizedTechs(next);
+            };
+            const resetToDefaults = () => {
+              setRandomizedTechs(new Set(techDefaults || []));
+              addLog("Reset randomization to default selection","info");
+            };
+            const runLocalScan = async () => {
+              const d = await doAction("Scan Techs","/api/scan");
+              if (d && d.techs) {
+                const keys = new Set(Object.keys(d.techs));
+                setTechScannedKeys(keys);
+                addLog(`Scanned ${keys.size} techs from your install`,"ok");
+              }
+            };
+            return (<div>
+              <div className="card" style={{marginBottom:12}}>
+                <div style={{display:"flex",alignItems:"center",gap:16,flexWrap:"wrap"}}>
+                  <div>
+                    <div style={{fontFamily:"Orbitron",fontSize:24,color:"#4da6ff"}}>{sel.size}</div>
+                    <div style={{fontSize:11,color:"#6880a0"}}>/ {techCatalog.length} CATALOG TECHS</div>
+                  </div>
+                  <div style={{flex:1,fontSize:13,color:"#8090a8",lineHeight:1.5}}>
+                    Selected techs become randomized in the multiworld. Send the resulting <code style={{color:"#4da6ff"}}>.yaml</code> to your host — the YAML Wizard tab includes this selection automatically.
+                  </div>
+                  <button className="btn" onClick={resetToDefaults}>Reset to Defaults</button>
+                </div>
+              </div>
               <div className="filters">
-                <input placeholder="Search techs..." value={search} onChange={e=>setSearch(e.target.value)} />
-                <select value={areaFilter} onChange={e=>setAreaFilter(e.target.value)}>
+                <input placeholder="Search techs..." value={techSearch} onChange={e=>setTechSearch(e.target.value)}/>
+                <select value={techAreaFilter} onChange={e=>setTechAreaFilter(e.target.value)}>
                   <option value="all">All Areas</option>
                   <option value="physics">Physics</option>
                   <option value="society">Society</option>
                   <option value="engineering">Engineering</option>
                 </select>
-                <select value={tierFilter} onChange={e=>setTierFilter(e.target.value)}>
+                <select value={techTierFilter} onChange={e=>setTechTierFilter(e.target.value)}>
                   <option value="all">All Tiers</option>
-                  {[1,2,3,4,5].map(t=><option key={t} value={t}>Tier {t}</option>)}
+                  {[1,2,3,4,5].map(t=><option key={t} value={String(t)}>Tier {t}</option>)}
                 </select>
-                <button className="btn btn-success" onClick={()=>bulkSet(true)} style={{padding:"6px 14px",fontSize:12}}>Select All ({filtered.length})</button>
-                <button className="btn btn-warn" onClick={()=>bulkSet(false)} style={{padding:"6px 14px",fontSize:12}}>Deselect All</button>
-                <button className="btn btn-success" onClick={applyConfig} disabled={loading["Apply Config"]} style={{marginLeft:"auto"}}>
-                  {loading["Apply Config"] ? "Applying..." : "Apply & Save"}
+                <select value={techDlcFilter} onChange={e=>setTechDlcFilter(e.target.value)}>
+                  <option value="all">All Sources</option>
+                  <option value="base">Base game only</option>
+                  {dlcFlags.map(d=><option key={d} value={d}>{d.replace(/_/g," ").replace(/\b\w/g, c=>c.toUpperCase())}</option>)}
+                </select>
+                <button className="btn btn-primary" onClick={runLocalScan} disabled={loading["Scan Techs"]} style={{padding:"6px 14px",fontSize:12}}>
+                  {loading["Scan Techs"] ? "Scanning..." : (techScannedKeys ? "Re-scan Install" : "Scan My Install")}
                 </button>
+                {techScannedKeys && (
+                  <button className="btn" onClick={()=>setTechScannedKeys(null)} style={{padding:"6px 14px",fontSize:12}}>Clear scan filter</button>
+                )}
+                <span style={{fontSize:13,color:"#6880a0"}}>{filtered.length} shown</span>
+                <button className="btn btn-success" onClick={()=>setAllInFilter(true)} style={{padding:"6px 14px",fontSize:12}}>Select Visible</button>
+                <button className="btn btn-warn" onClick={()=>setAllInFilter(false)} style={{padding:"6px 14px",fontSize:12}}>Deselect Visible</button>
               </div>
-              <div style={{fontSize:12,color:"#4a5a70",padding:"4px 8px",marginBottom:8}}>
-                {filtered.length} of {stats.total} shown - {stats.rand} selected
-              </div>
+              {techScannedKeys && (
+                <div style={{fontSize:12,color:"#4dff99",padding:"4px 12px",marginBottom:8,background:"#0a1f10",border:"1px solid #1a4a25",borderRadius:4}}>
+                  Filtering to the {techScannedKeys.size} techs found in your local Stellaris install. Catalog items not present in your install are hidden.
+                </div>
+              )}
               <div style={{maxHeight:"60vh",overflowY:"auto"}}>
                 {filtered.map(t => {
                   const ac = {physics:"#4da6ff",society:"#b44dff",engineering:"#ffb44d"}[t.area]||"#4da6ff";
+                  const on = sel.has(t.key);
                   return (
-                    <div key={t.key} className={"tech-row "+(t.randomize?"on ":"")+t.area} onClick={()=>toggleTech(t.key)}>
-                      <div className="check">{t.randomize?"✓":""}</div>
+                    <div key={t.key} className={"tech-row "+(on?"on ":"")+t.area} onClick={()=>toggleOne(t.key)}>
+                      <div className="check">{on?"✓":""}</div>
                       <div style={{width:28,textAlign:"center",fontFamily:"Orbitron",fontSize:11,color:ac+"90"}}>T{t.tier}</div>
                       <div style={{flex:1}}>
-                        <div style={{fontSize:14,fontWeight:600,color:t.randomize?"#e0e8ff":"#5a6a80"}}>{t.name}</div>
-                        <div style={{fontSize:11,color:"#4a5a70"}}>{t.key}{t.prerequisites&&t.prerequisites.length>0?" - needs: "+t.prerequisites.join(", "):""}</div>
+                        <div style={{fontSize:14,fontWeight:600,color:on?"#e0e8ff":"#5a6a80"}}>{t.display}</div>
+                        <div style={{fontSize:11,color:"#4a5a70"}}>{t.key}{t.prereqs&&t.prereqs.length>0?" — needs: "+t.prereqs.join(", "):""}</div>
                       </div>
                       {t.dlc && <span className="badge" style={{background:"#2a2a1a",border:"1px solid #ffb44d20",color:"#b89040"}}>{t.dlc}</span>}
                       <span className="badge" style={{background:ac+"15",color:ac+"90"}}>{t.area}</span>
@@ -948,75 +1295,182 @@ function App() {
                   );
                 })}
               </div>
-            </div>
-          )}
+            </div>);
+          })()}
         </div>
       )}
 
-      {tab === "milestones" && (
+      {tab === "yaml" && (
         <div className="panel">
-          {!milestones ? (
+          {!yamlGroups ? (
             <div className="card">
-              <h3>Milestone Configuration</h3>
-              <p style={{color:"#6880a0",marginBottom:16}}>Configure which gameplay events count as AP checks and adjust thresholds (e.g. change "Survey 10 Systems" to "Survey 20").</p>
+              <h3>YAML Wizard</h3>
+              <p style={{color:"#6880a0",marginBottom:16}}>Build the player config you'll send to your multiworld host. The wizard reads option metadata directly from the apworld so it's always in sync with the latest options.</p>
               <div className="actions">
-                <button className="btn btn-primary" onClick={async()=>{const d=await doAction("Scan","/api/scan-milestones");if(d&&d.milestones){setMilestones(d.milestones);addLog("Loaded "+d.milestones.length+" milestones","ok");}}}>Load Defaults</button>
-                <button className="btn btn-primary" onClick={async()=>{const d=await doAction("Load","/api/milestone-config");if(d&&d.milestones){setMilestones(d.milestones);addLog("Loaded saved config","ok");}}}>Load Saved</button>
+                <button className="btn btn-primary" onClick={async()=>{
+                  try {
+                    const r = await fetch(API+"/api/yaml-options");
+                    const d = await r.json();
+                    if (d.groups && d.groups.length) {
+                      setYamlGroups(d.groups);
+                      const defaults = {};
+                      for (const g of d.groups) for (const o of g.options) defaults[o.attr] = o.default;
+                      setYamlValues(defaults);
+                      addLog("Loaded "+d.groups.reduce((n,g)=>n+g.options.length,0)+" options from apworld","ok");
+                    } else {
+                      addLog("Could not load options: "+(d.error||"empty response"),"err");
+                    }
+                  } catch(e) { addLog("Failed to load options: "+e,"err"); }
+                }}>Load Options</button>
               </div>
             </div>
-          ) : (()=>{
-            const cats=[...new Set(milestones.map(m=>m.category))].sort();
-            const en=milestones.filter(m=>m.enabled).length;
-            const catColors={exploration:"#4da6ff",tech:"#b44dff",expansion:"#4dff99",economy:"#ffb44d",military:"#ff4d4d",diplomacy:"#4dffff",traditions:"#ff4dff",victory:"#ffff4d"};
-            const filt=milestones.filter(m=>{
-              if(msCatFilter!=="all"&&m.category!==msCatFilter)return false;
-              if(msSearch&&!m.name.toLowerCase().includes(msSearch.toLowerCase()))return false;
-              return true;
-            });
-            return(<div>
-              <div className="filters">
-                <input placeholder="Search milestones..." value={msSearch} onChange={e=>setMsSearch(e.target.value)}/>
-                <select value={msCatFilter} onChange={e=>setMsCatFilter(e.target.value)}>
-                  <option value="all">All Categories</option>
-                  {cats.map(c=><option key={c} value={c}>{c[0].toUpperCase()+c.slice(1)}</option>)}
-                </select>
-                <span style={{fontSize:13,color:"#6880a0"}}>{en}/{milestones.length} enabled</span>
-                <button className="btn btn-success" onClick={async()=>{await doAction("Apply Milestones","/api/apply-milestones",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({milestones})});}} disabled={loading["Apply Milestones"]} style={{marginLeft:"auto"}}>
-                  {loading["Apply Milestones"]?"Applying...":"Apply & Save"}
-                </button>
+          ) : (() => {
+            const setVal = (attr, v) => setYamlValues(prev => ({...prev, [attr]: v}));
+            // Build the YAML text live
+            const yamlLines = [];
+            const safeName = (yamlName || "Stellaris").trim() || "Stellaris";
+            yamlLines.push("name: "+safeName);
+            if (yamlDesc.trim()) yamlLines.push("description: "+yamlDesc.trim());
+            yamlLines.push("game: Stellaris");
+            yamlLines.push("");
+            yamlLines.push("Stellaris:");
+            for (const g of yamlGroups) {
+              for (const o of g.options) {
+                if (o.kind === "set") {
+                  // OptionSet: serialize as block-style YAML list. Source the
+                  // selection from the shared randomizedTechs state if loaded,
+                  // else fall back to the option's default.
+                  const items = randomizedTechs
+                    ? Array.from(randomizedTechs).sort()
+                    : (o.default || []);
+                  if (items.length === 0) {
+                    yamlLines.push("  "+o.attr+": []");
+                  } else {
+                    yamlLines.push("  "+o.attr+":");
+                    for (const k of items) yamlLines.push("    - "+k);
+                  }
+                  continue;
+                }
+                const v = yamlValues[o.attr];
+                let formatted;
+                if (o.kind === "toggle") formatted = v ? "true" : "false";
+                else if (o.kind === "range") formatted = String(parseInt(v) || 0);
+                else formatted = String(v);
+                yamlLines.push("  "+o.attr+": "+formatted);
+              }
+            }
+            const yaml = yamlLines.join("\n");
+
+            const inputStyle = {padding:"6px 10px",background:"#0a0e1a",border:"1px solid #1a2a40",borderRadius:4,color:"#c0ccdd",fontSize:13,fontFamily:"Rajdhani",outline:"none"};
+            const labelStyle = {fontSize:14,fontWeight:600,color:"#c0d0e0",display:"block",marginBottom:4};
+            const docStyle = {fontSize:11,color:"#5a6a80",marginTop:4,lineHeight:1.5,whiteSpace:"pre-wrap"};
+
+            return (<div>
+              <div className="card">
+                <h3>Player Identity</h3>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 2fr",gap:12,alignItems:"start"}}>
+                  <div>
+                    <label style={labelStyle}>Slot Name *</label>
+                    <input style={{...inputStyle,width:"100%"}} value={yamlName} onChange={e=>setYamlName(e.target.value)} placeholder="e.g. Alice" />
+                    <div style={docStyle}>How you'll appear in the multiworld. Required by Archipelago.</div>
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Description (optional)</label>
+                    <input style={{...inputStyle,width:"100%"}} value={yamlDesc} onChange={e=>setYamlDesc(e.target.value)} placeholder="e.g. My first Stellaris seed" />
+                    <div style={docStyle}>Free-text note shown to the multiworld host.</div>
+                  </div>
+                </div>
               </div>
-              <div style={{maxHeight:"65vh",overflowY:"auto"}}>
-                {filt.map(m=>{
-                  const ac=catColors[m.category]||"#888";
-                  const ri=milestones.indexOf(m);
-                  return(<div key={m.id} style={{display:"flex",alignItems:"center",gap:12,padding:"8px 12px",marginBottom:2,borderRadius:6,background:m.enabled?ac+"10":"#ffffff04",border:"1px solid "+(m.enabled?ac+"25":"#ffffff08")}}>
-                    <div onClick={()=>{const n=[...milestones];n[ri]={...m,enabled:!m.enabled};setMilestones(n);}} style={{width:20,height:20,borderRadius:4,border:"2px solid "+(m.enabled?ac:"#3a4a60"),cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                      {m.enabled&&<span style={{color:ac,fontSize:13,fontWeight:900}}>&#10003;</span>}
-                    </div>
-                    <div style={{flex:1}}>
-                      <div style={{fontSize:14,fontWeight:600,color:m.enabled?"#e0e8ff":"#5a6a80"}}>{m.name}</div>
-                      <div style={{fontSize:11,color:"#4a5a70"}}>
-                        {m.on_action&&<span style={{marginRight:8}}>Hook: {m.on_action}</span>}
-                        {m.tracked_by==="monthly_trigger"&&<span>Monthly scan</span>}
-                        {m.tracked_by==="on_action_counter"&&<span>Event counter</span>}
-                        {m.tracked_by==="finisher_count"&&<span>Finisher check</span>}
+
+              {yamlGroups.map(g => (
+                <div className="card" key={g.label}>
+                  <h3>{g.label}</h3>
+                  <div style={{display:"grid",gap:14}}>
+                    {g.options.map(o => (
+                      <div key={o.attr}>
+                        {o.kind === "toggle" && (
+                          <label style={{display:"flex",alignItems:"flex-start",gap:10,cursor:"pointer"}}>
+                            <input type="checkbox" checked={!!yamlValues[o.attr]} onChange={e=>setVal(o.attr, e.target.checked)} style={{marginTop:3,width:16,height:16,accentColor:"#4da6ff"}} />
+                            <div style={{flex:1}}>
+                              <div style={{fontSize:14,fontWeight:600,color:"#c0d0e0"}}>{o.display_name} <span style={{fontSize:11,color:"#4a5a70",fontWeight:400,marginLeft:6}}>({o.attr})</span></div>
+                              <div style={docStyle}>{o.doc}</div>
+                            </div>
+                          </label>
+                        )}
+                        {o.kind === "choice" && (
+                          <div>
+                            <label style={labelStyle}>{o.display_name} <span style={{fontSize:11,color:"#4a5a70",fontWeight:400,marginLeft:6}}>({o.attr})</span></label>
+                            <select style={{...inputStyle,minWidth:240}} value={yamlValues[o.attr]} onChange={e=>setVal(o.attr, e.target.value)}>
+                              {o.choices.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
+                            </select>
+                            <div style={docStyle}>{o.doc}</div>
+                          </div>
+                        )}
+                        {o.kind === "range" && (
+                          <div>
+                            <label style={labelStyle}>{o.display_name}: <span style={{color:"#4da6ff",fontWeight:700}}>{yamlValues[o.attr]}</span> <span style={{fontSize:11,color:"#4a5a70",fontWeight:400,marginLeft:6}}>({o.attr}, {o.range_start}–{o.range_end})</span></label>
+                            <input type="range" min={o.range_start} max={o.range_end} value={yamlValues[o.attr]||0} onChange={e=>setVal(o.attr, parseInt(e.target.value))} style={{width:"100%",accentColor:"#4da6ff"}} />
+                            <div style={docStyle}>{o.doc}</div>
+                          </div>
+                        )}
+                        {o.kind === "set" && (() => {
+                          const sel = randomizedTechs;
+                          const total = (o.valid_keys || []).length;
+                          const count = sel ? sel.size : (o.default || []).length;
+                          const ready = sel !== null;
+                          return (
+                            <div>
+                              <label style={labelStyle}>{o.display_name} <span style={{fontSize:11,color:"#4a5a70",fontWeight:400,marginLeft:6}}>({o.attr})</span></label>
+                              <div style={{display:"flex",alignItems:"center",gap:14,padding:"10px 14px",background:"#0a0e1a",border:"1px solid #1a2a40",borderRadius:6}}>
+                                <div>
+                                  <div style={{fontFamily:"Orbitron",fontSize:22,color:"#4da6ff",lineHeight:1}}>{count}</div>
+                                  <div style={{fontSize:10,color:"#6880a0"}}>/ {total} TECHS</div>
+                                </div>
+                                <div style={{flex:1,fontSize:12,color:"#8090a8"}}>
+                                  {ready
+                                    ? "Selection synced with the Tech Config tab. Edits there update the YAML below in real time."
+                                    : "Open the Tech Config tab to load the catalog and customize this selection. Until then, the YAML uses the apworld's default."}
+                                </div>
+                                <button className="btn btn-primary" onClick={()=>setTab("techs")} style={{padding:"6px 14px",fontSize:12}}>Open Tech Config</button>
+                              </div>
+                              <div style={docStyle}>{o.doc}</div>
+                            </div>
+                          );
+                        })()}
                       </div>
-                    </div>
-                    <div style={{display:"flex",alignItems:"center",gap:8}}>
-                      <span style={{fontSize:12,color:"#6880a0"}}>Threshold:</span>
-                      <input type="number" value={m.threshold} min={1} onChange={e=>{
-                        const v=parseInt(e.target.value)||1;
-                        const n=[...milestones];
-                        let nm=m.name;
-                        const mt=nm.match(/^(.+?)\s*(\d+)(.*)$/);
-                        if(mt)nm=mt[1]+" "+v+mt[3];
-                        n[ri]={...m,threshold:v,name:nm,flag:"ap_sent_"+nm.toLowerCase().replace(/ /g,"_").replace(/[^a-z0-9_]/g,"")};
-                        setMilestones(n);
-                      }} style={{width:70,padding:"4px 8px",background:"#0a0e1a",border:"1px solid #1a2a40",borderRadius:4,color:"#c0ccdd",fontSize:13,fontFamily:"Rajdhani",textAlign:"center"}}/>
-                      <span style={{padding:"2px 8px",borderRadius:4,fontSize:11,background:ac+"15",color:ac+"90"}}>{m.category}</span>
-                    </div>
-                  </div>);
-                })}
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              <div className="card">
+                <h3>Generated YAML</h3>
+                <pre style={{padding:14,background:"#050810",border:"1px solid #1a2a40",borderRadius:6,fontSize:13,fontFamily:"monospace",color:"#a0c0e0",whiteSpace:"pre-wrap",maxHeight:400,overflowY:"auto",margin:0}}>{yaml}</pre>
+                <div className="actions">
+                  <button className="btn btn-primary" onClick={()=>{
+                    navigator.clipboard.writeText(yaml).then(
+                      ()=>addLog("YAML copied to clipboard","ok"),
+                      ()=>addLog("Clipboard copy failed (browser blocked it)","err")
+                    );
+                  }}>Copy to Clipboard</button>
+                  <button className="btn btn-success" onClick={()=>{
+                    const blob = new Blob([yaml],{type:"text/yaml"});
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = safeName.replace(/[^a-zA-Z0-9_-]/g,"_")+".yaml";
+                    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    addLog("Downloaded "+a.download,"ok");
+                  }}>Download .yaml</button>
+                  <button className="btn" style={{marginLeft:"auto"}} onClick={()=>{
+                    const defaults = {};
+                    for (const g of yamlGroups) for (const o of g.options) defaults[o.attr] = o.default;
+                    setYamlValues(defaults);
+                    addLog("Reset to defaults","info");
+                  }}>Reset to Defaults</button>
+                </div>
+                <div style={{...docStyle,marginTop:8}}>Send this <code style={{color:"#4da6ff"}}>.yaml</code> to your multiworld host along with the <code style={{color:"#4da6ff"}}>stellaris.apworld</code> file.</div>
               </div>
             </div>);
           })()}

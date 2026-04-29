@@ -60,99 +60,22 @@ CLASSIFICATION_TIER = {
 # Vanilla tech metadata - used to give AP techs proper tier/area/prerequisites
 # so they appear at the right time in the tech tree instead of all at once.
 # AP techs that replace a vanilla tech inherit its position in the tree.
+#
+# Sourced from the bundled tech catalog (mirror of the apworld's catalog).
+# The two dicts below are the same shape they used to have when hardcoded,
+# so the rest of slot_generator works unchanged.
+from tech_catalog import TECH_CATALOG, location_name as _tech_location_name
+
 VANILLA_TECH_DATA = {
-    "tech_planetary_unification": {"tier": 1, "area": "society", "prereqs": ["tech_planetary_government"]},
-    "tech_eco_simulation": {"tier": 1, "area": "society", "prereqs": ["tech_industrial_farming"]},
-    "tech_powered_exoskeletons": {"tier": 1, "area": "engineering", "prereqs": ["tech_basic_industry"]},
-    "tech_alloys_1": {"tier": 1, "area": "engineering", "prereqs": ["tech_basic_industry"]},
-    "tech_luxuries_1": {"tier": 1, "area": "engineering", "prereqs": ["tech_basic_industry"]},
-    "tech_mineral_purification_1": {"tier": 1, "area": "engineering", "prereqs": ["tech_mining_1"]},
-    "tech_alloys_2": {"tier": 3, "area": "engineering", "prereqs": ["tech_alloys_1"]},
-    "tech_gene_crops": {"tier": 2, "area": "society", "prereqs": ["tech_eco_simulation"]},
-    "tech_colonial_centralization": {"tier": 2, "area": "society", "prereqs": ["tech_planetary_unification"]},
-    "tech_interstellar_economics": {"tier": 3, "area": "society", "prereqs": ["tech_space_trading"]},
-    "tech_galactic_markets": {"tier": 4, "area": "society", "prereqs": ["tech_interstellar_economics"]},
-    "tech_administrative_ai": {"tier": 1, "area": "physics", "prereqs": ["tech_basic_science_lab_1"]},
-    "tech_global_research_initiative": {"tier": 3, "area": "physics", "prereqs": ["tech_basic_science_lab_2"]},
-    "tech_robotic_workers": {"tier": 1, "area": "engineering", "prereqs": ["tech_powered_exoskeletons"]},
-    "tech_droid_workers": {"tier": 2, "area": "engineering", "prereqs": ["tech_robotic_workers"]},
-    "tech_synthetic_workers": {"tier": 4, "area": "engineering", "prereqs": ["tech_droid_workers"]},
-    "tech_gene_tailoring": {"tier": 3, "area": "society", "prereqs": ["tech_genome_mapping"]},
-    "tech_cloning": {"tier": 2, "area": "society", "prereqs": ["tech_genome_mapping"]},
-    "tech_glandular_acclimation": {"tier": 3, "area": "society", "prereqs": ["tech_gene_tailoring"]},
-    "tech_psionic_theory": {"tier": 3, "area": "society", "prereqs": []},
-    "tech_telepathy": {"tier": 3, "area": "society", "prereqs": ["tech_psionic_theory"]},
-    "tech_sensors_2": {"tier": 2, "area": "physics", "prereqs": ["tech_sensors_1"]},
-    "tech_sensors_3": {"tier": 3, "area": "physics", "prereqs": ["tech_sensors_2"]},
-    "tech_doctrine_fleet_size_1": {"tier": 1, "area": "society", "prereqs": []},
-    "tech_doctrine_fleet_size_3": {"tier": 3, "area": "society", "prereqs": ["tech_doctrine_fleet_size_2"]},
-    "tech_doctrine_fleet_size_5": {"tier": 5, "area": "society", "prereqs": ["tech_doctrine_fleet_size_4"]},
-    "tech_doctrine_navy_size_1": {"tier": 1, "area": "society", "prereqs": []},
-    "tech_doctrine_navy_size_3": {"tier": 3, "area": "society", "prereqs": ["tech_doctrine_navy_size_2"]},
-    "tech_centralized_command": {"tier": 3, "area": "society", "prereqs": ["tech_interstellar_fleet_traditions"]},
-    "tech_habitat_1": {"tier": 3, "area": "engineering", "prereqs": ["tech_starbase_3"]},
-    "tech_habitat_2": {"tier": 4, "area": "engineering", "prereqs": ["tech_habitat_1"]},
-    "tech_climate_restoration": {"tier": 4, "area": "society", "prereqs": ["tech_terrestrial_sculpting"]},
-    "tech_mine_exotic_gases": {"tier": 2, "area": "engineering", "prereqs": []},
-    "tech_mine_volatile_motes": {"tier": 2, "area": "physics", "prereqs": []},
-    "tech_mine_rare_crystals": {"tier": 2, "area": "engineering", "prereqs": []},
-    "tech_capital_productivity_1": {"tier": 2, "area": "society", "prereqs": ["tech_planetary_unification"]},
-    "tech_capital_productivity_3": {"tier": 4, "area": "society", "prereqs": ["tech_capital_productivity_2"]},
-    "tech_global_defense_grid": {"tier": 2, "area": "society", "prereqs": ["tech_ground_defense_planning"]},
-    "tech_planetary_shield_generator": {"tier": 3, "area": "physics", "prereqs": ["tech_shields_3"]},
-    "tech_galactic_administration": {"tier": 3, "area": "society", "prereqs": ["tech_colonial_centralization"]},
+    t.key: {"tier": t.tier, "area": t.area, "prereqs": list(t.prereqs)}
+    for t in TECH_CATALOG
 }
 
-# Map location names to vanilla tech keys for tier/area inheritance.
-#
-# Only locations with location_type="tech" in the apworld actually hit this
-# map (slot_generator filters to tech_slots before lookup). The entries
-# below for "Research X" milestone locations are intentionally kept as
-# documentation: if they're ever promoted to tech-type locations (so they
-# replace the vanilla tech in the research pool), the bridge already knows
-# which vanilla tech each one shadows and can block it via the
-# ap_tech_blocked_<tech_key> flag.
+# Map location names ("Research <Display>") to vanilla tech keys for tier/area
+# inheritance. Used at runtime for catalog-driven Research-X tech-type
+# locations whose vanilla counterpart needs blocking + replacement.
 LOCATION_TO_VANILLA_TECH = {
-    "Research Planetary Unification": "tech_planetary_unification",
-    "Research Eco Simulation": "tech_eco_simulation",
-    "Research Powered Exoskeletons": "tech_powered_exoskeletons",
-    "Research Alloy Foundries": "tech_alloys_1",
-    "Research Luxury Goods": "tech_luxuries_1",
-    "Research Mineral Purification": "tech_mineral_purification_1",
-    "Research Advanced Alloys": "tech_alloys_2",
-    "Research Gene Crops": "tech_gene_crops",
-    "Research Colonial Centralization": "tech_colonial_centralization",
-    "Research Interstellar Economics": "tech_interstellar_economics",
-    "Research Galactic Markets": "tech_galactic_markets",
-    "Research Administrative AI": "tech_administrative_ai",
-    "Research Global Research Initiative": "tech_global_research_initiative",
-    "Research Robotic Workers": "tech_robotic_workers",
-    "Research Droids": "tech_droid_workers",
-    "Research Synthetics": "tech_synthetic_workers",
-    "Research Gene Tailoring": "tech_gene_tailoring",
-    "Research Cloning": "tech_cloning",
-    "Research Glandular Acclimation": "tech_glandular_acclimation",
-    "Research Psionic Theory": "tech_psionic_theory",
-    "Research Telepathy": "tech_telepathy",
-    "Research Sensors II": "tech_sensors_2",
-    "Research Sensors III": "tech_sensors_3",
-    "Research Fleet Size I": "tech_doctrine_fleet_size_1",
-    "Research Fleet Size III": "tech_doctrine_fleet_size_3",
-    "Research Fleet Size V": "tech_doctrine_fleet_size_5",
-    "Research Navy Size I": "tech_doctrine_navy_size_1",
-    "Research Navy Size III": "tech_doctrine_navy_size_3",
-    "Research Centralized Command": "tech_centralized_command",
-    "Research Habitats I": "tech_habitat_1",
-    "Research Habitats II": "tech_habitat_2",
-    "Research Climate Restoration": "tech_climate_restoration",
-    "Research Exotic Gas Extraction": "tech_mine_exotic_gases",
-    "Research Volatile Motes Extraction": "tech_mine_volatile_motes",
-    "Research Rare Crystal Mining": "tech_mine_rare_crystals",
-    "Research Capital Productivity I": "tech_capital_productivity_1",
-    "Research Capital Productivity III": "tech_capital_productivity_3",
-    "Research Global Defense Grid": "tech_global_defense_grid",
-    "Research Planetary Shield Generator": "tech_planetary_shield_generator",
-    "Research Galactic Administration": "tech_galactic_administration",
+    _tech_location_name(t): t.key for t in TECH_CATALOG
 }
 
 # Timing → fallback tier for non-vanilla-tech locations

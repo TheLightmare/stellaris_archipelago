@@ -5,6 +5,8 @@ from typing import Dict, List, NamedTuple, Optional, Set
 
 from BaseClasses import Item, ItemClassification
 
+from .data.tech_catalog import TECH_CATALOG, item_name as _tech_item_name
+
 
 class StellarisItem(Item):
     game = "Stellaris"
@@ -244,6 +246,23 @@ ALL_ITEMS: Dict[str, ItemData] = {
     **UNIQUE_ITEMS,
     **FILLER_ITEMS,
     **TRAP_ITEMS,
+
+    # Catalog-driven Tech items (item IDs BASE_ID + 20000 + offset).
+    # See data/tech_catalog.py — each entry here pairs with the matching
+    # location in locations.py (BASE_ID + 10000 + offset). When the player
+    # randomizes a tech, both location and item exist; receiving the item
+    # is the only way to actually get the vanilla tech's effects.
+    **{
+        _tech_item_name(_t): ItemData(
+            code=BASE_ID + 20000 + _t.offset,
+            category=ItemCategory.PROGRESSIVE,
+            classification=ItemClassification.useful,
+            count=1,
+            dlc=_t.dlc,
+            group="randomized_techs",
+        )
+        for _t in TECH_CATALOG
+    },
 }
 
 
@@ -259,8 +278,14 @@ def get_items_for_options(
     dlc_apocalypse: bool = False,
     dlc_megacorp: bool = False,
     dlc_overlord: bool = False,
+    randomized_techs=None,
 ) -> Dict[str, ItemData]:
-    """Return the item pool filtered by the player's YAML options."""
+    """Return the item pool filtered by the player's YAML options.
+
+    ``randomized_techs`` is the set of Stellaris tech keys the player chose
+    to randomize. Catalog Tech: items are kept only for those techs; the
+    rest are dropped. ``None`` keeps all catalog tech items (used by tests
+    / introspection)."""
     enabled_dlcs: Set[Optional[str]] = {None}  # base game always on
     if dlc_utopia:
         enabled_dlcs.add("utopia")
@@ -277,6 +302,14 @@ def get_items_for_options(
     if dlc_overlord:
         enabled_dlcs.add("overlord")
 
+    if randomized_techs is None:
+        selected_tech_items: Optional[Set[str]] = None
+    else:
+        wanted = set(randomized_techs)
+        selected_tech_items = {
+            _tech_item_name(t) for t in TECH_CATALOG if t.key in wanted
+        }
+
     items: Dict[str, ItemData] = {}
     for name, data in ALL_ITEMS.items():
         # Filter by DLC
@@ -291,6 +324,11 @@ def get_items_for_options(
             continue
         # Traps
         if data.category == ItemCategory.TRAP and not traps_enabled:
+            continue
+        # Catalog tech items: only keep player's selection
+        if (selected_tech_items is not None
+                and data.group == "randomized_techs"
+                and name not in selected_tech_items):
             continue
         items[name] = data
 

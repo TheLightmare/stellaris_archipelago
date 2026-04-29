@@ -1,9 +1,11 @@
 """Location definitions for the Stellaris Archipelago world."""
 
 from enum import IntEnum
-from typing import Dict, List, NamedTuple, Optional, Set
+from typing import Dict, FrozenSet, Iterable, List, NamedTuple, Optional, Set
 
 from BaseClasses import Location
+
+from .data.tech_catalog import TECH_CATALOG, location_name as _tech_location_name
 
 
 class StellarisLocation(Location):
@@ -90,10 +92,10 @@ TECH_LOCATIONS: Dict[str, LocationData] = {
     "Research a Rare Tech": LocationData(
         BASE_ID + 1110, LocationTiming.MID, "tech", "tech",
     ),
-    "Research Mega-Engineering": LocationData(
-        BASE_ID + 1120, LocationTiming.LATE, "tech", "tech",
-        dlc="utopia", group="megastructures",
-    ),
+    # NOTE: "Research Mega-Engineering" used to live here; it's now provided
+    # by the comprehensive tech catalog (data/tech_catalog.py), which scans
+    # in tech_mega_engineering directly. Don't re-add this static entry —
+    # it would name-collide with the catalog's Research-X for that tech.
     "Research a Repeatable Tech": LocationData(
         BASE_ID + 1130, LocationTiming.LATE, "tech", "tech",
     ),
@@ -322,128 +324,25 @@ ALL_LOCATIONS: Dict[str, LocationData] = {
     # ==========================================================
 
     # ==========================================================
-    # Vanilla Tech Research Milestones (auto-detected)
+    # Vanilla Tech Research (catalog-driven, IDs BASE_ID + 10000+)
+    # See data/tech_catalog.py — these are tech-type locations whose
+    # vanilla counterparts get blocked when the player selects them
+    # via the randomized_techs YAML option. The +10000 offset keeps
+    # them well clear of the +3000-3999 milestone range above.
     # ==========================================================
-    "Research Planetary Unification": LocationData(
-        BASE_ID + 3000, LocationTiming.EARLY, "tech",
-    ),
-    "Research Eco Simulation": LocationData(
-        BASE_ID + 3001, LocationTiming.EARLY, "tech",
-    ),
-    "Research Powered Exoskeletons": LocationData(
-        BASE_ID + 3002, LocationTiming.EARLY, "tech",
-    ),
-    "Research Alloy Foundries": LocationData(
-        BASE_ID + 3003, LocationTiming.EARLY, "tech",
-    ),
-    "Research Luxury Goods": LocationData(
-        BASE_ID + 3004, LocationTiming.EARLY, "tech",
-    ),
-    "Research Mineral Purification": LocationData(
-        BASE_ID + 3005, LocationTiming.EARLY, "tech",
-    ),
-    "Research Administrative AI": LocationData(
-        BASE_ID + 3006, LocationTiming.EARLY, "tech",
-    ),
-    "Research Robotic Workers": LocationData(
-        BASE_ID + 3007, LocationTiming.EARLY, "tech",
-    ),
-    "Research Fleet Size I": LocationData(
-        BASE_ID + 3008, LocationTiming.EARLY, "tech",
-    ),
-    "Research Navy Size I": LocationData(
-        BASE_ID + 3009, LocationTiming.EARLY, "tech",
-    ),
-    "Research Galactic Markets": LocationData(
-        BASE_ID + 3010, LocationTiming.LATE, "tech",
-    ),
-    "Research Synthetics": LocationData(
-        BASE_ID + 3011, LocationTiming.LATE, "tech",
-    ),
-    "Research Fleet Size V": LocationData(
-        BASE_ID + 3012, LocationTiming.LATE, "tech",
-    ),
-    "Research Habitats II": LocationData(
-        BASE_ID + 3013, LocationTiming.LATE, "tech",
-    ),
-    "Research Climate Restoration": LocationData(
-        BASE_ID + 3014, LocationTiming.LATE, "tech",
-    ),
-    "Research Capital Productivity III": LocationData(
-        BASE_ID + 3015, LocationTiming.LATE, "tech",
-    ),
-    "Research Advanced Alloys": LocationData(
-        BASE_ID + 3016, LocationTiming.MID, "tech",
-    ),
-    "Research Gene Crops": LocationData(
-        BASE_ID + 3017, LocationTiming.MID, "tech",
-    ),
-    "Research Colonial Centralization": LocationData(
-        BASE_ID + 3018, LocationTiming.MID, "tech",
-    ),
-    "Research Interstellar Economics": LocationData(
-        BASE_ID + 3019, LocationTiming.MID, "tech",
-    ),
-    "Research Global Research Initiative": LocationData(
-        BASE_ID + 3020, LocationTiming.MID, "tech",
-    ),
-    "Research Droids": LocationData(
-        BASE_ID + 3021, LocationTiming.MID, "tech",
-    ),
-    "Research Gene Tailoring": LocationData(
-        BASE_ID + 3022, LocationTiming.MID, "tech",
-    ),
-    "Research Cloning": LocationData(
-        BASE_ID + 3023, LocationTiming.MID, "tech",
-    ),
-    "Research Glandular Acclimation": LocationData(
-        BASE_ID + 3024, LocationTiming.MID, "tech",
-    ),
-    "Research Psionic Theory": LocationData(
-        BASE_ID + 3025, LocationTiming.MID, "tech",
-    ),
-    "Research Telepathy": LocationData(
-        BASE_ID + 3026, LocationTiming.MID, "tech",
-    ),
-    "Research Sensors II": LocationData(
-        BASE_ID + 3027, LocationTiming.MID, "tech",
-    ),
-    "Research Sensors III": LocationData(
-        BASE_ID + 3028, LocationTiming.MID, "tech",
-    ),
-    "Research Fleet Size III": LocationData(
-        BASE_ID + 3029, LocationTiming.MID, "tech",
-    ),
-    "Research Navy Size III": LocationData(
-        BASE_ID + 3030, LocationTiming.MID, "tech",
-    ),
-    "Research Centralized Command": LocationData(
-        BASE_ID + 3031, LocationTiming.MID, "tech",
-    ),
-    "Research Habitats I": LocationData(
-        BASE_ID + 3032, LocationTiming.MID, "tech",
-    ),
-    "Research Exotic Gas Extraction": LocationData(
-        BASE_ID + 3033, LocationTiming.MID, "tech",
-    ),
-    "Research Volatile Motes Extraction": LocationData(
-        BASE_ID + 3034, LocationTiming.MID, "tech",
-    ),
-    "Research Rare Crystal Mining": LocationData(
-        BASE_ID + 3035, LocationTiming.MID, "tech",
-    ),
-    "Research Capital Productivity I": LocationData(
-        BASE_ID + 3036, LocationTiming.MID, "tech",
-    ),
-    "Research Global Defense Grid": LocationData(
-        BASE_ID + 3037, LocationTiming.MID, "tech",
-    ),
-    "Research Planetary Shield Generator": LocationData(
-        BASE_ID + 3038, LocationTiming.MID, "tech",
-    ),
-    "Research Galactic Administration": LocationData(
-        BASE_ID + 3039, LocationTiming.MID, "tech",
-    ),
+    **{
+        _tech_location_name(_t): LocationData(
+            BASE_ID + 10000 + _t.offset,
+            LocationTiming.EARLY if _t.tier <= 1
+            else LocationTiming.MID if _t.tier <= 3
+            else LocationTiming.LATE,
+            "tech",
+            location_type="tech",
+            dlc=_t.dlc,
+        )
+        for _t in TECH_CATALOG
+    },
+
 
     # ==========================================================
     # Gameplay Milestones (monthly scanner)
@@ -502,8 +401,14 @@ def get_locations_for_options(
     dlc_apocalypse: bool = False,
     dlc_megacorp: bool = False,
     dlc_overlord: bool = False,
+    randomized_techs: Optional[Iterable[str]] = None,
 ) -> Dict[str, LocationData]:
-    """Return the location pool filtered by the player's YAML options."""
+    """Return the location pool filtered by the player's YAML options.
+
+    ``randomized_techs`` is the set of Stellaris tech keys the player chose
+    to randomize. Catalog-driven Research-X locations are kept only for
+    those techs; the rest are dropped from the slot. ``None`` keeps all
+    catalog techs (used by tests / introspection)."""
     enabled_dlcs: Set[Optional[str]] = {None}  # base game always on
     if dlc_utopia:
         enabled_dlcs.add("utopia")
@@ -520,6 +425,15 @@ def get_locations_for_options(
     if dlc_overlord:
         enabled_dlcs.add("overlord")
 
+    # Build the set of catalog Research-X names the player picked.
+    if randomized_techs is None:
+        selected_tech_locations: Optional[FrozenSet[str]] = None
+    else:
+        wanted = set(randomized_techs)
+        selected_tech_locations = frozenset(
+            _tech_location_name(t) for t in TECH_CATALOG if t.key in wanted
+        )
+
     locations: Dict[str, LocationData] = {}
     for name, data in ALL_LOCATIONS.items():
         # Filter by DLC
@@ -533,6 +447,13 @@ def get_locations_for_options(
         if data.category == "warfare" and not include_warfare:
             continue
         if data.category == "crisis" and not include_crisis:
+            continue
+        # Filter catalog Research-X locations by player's selection.
+        if (selected_tech_locations is not None
+                and name.startswith("Research ")
+                and BASE_ID + 10000 <= data.code <= BASE_ID + 19999
+                and data.location_type == "tech"
+                and name not in selected_tech_locations):
             continue
         locations[name] = data
 
