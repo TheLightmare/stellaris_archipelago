@@ -12,19 +12,44 @@ Trade discoveries with players in other games. Your milestones and tech research
 
 **Receiving items** from other players grants you progressive unlocks (ship classes, weapons, defenses), resource caches, or traps - delivered via in-game event popups.
 
+## Goals
+
+Pick how you want to "win" the seed. The bridge reads your choice from `slot_data` and pushes it to the mod as a country flag at connection time, and the mod fires `AP_GOAL_COMPLETE` when the matching condition is met:
+
+| Option | Completion Condition | Notes |
+|---|---|---|
+| `victory` (default) | Survive past in-game year 2400 | Always available |
+| `crisis_averted` | Defeat the endgame crisis | Requires Progressive Ship Class ×4, Progressive Weapons ×4, Progressive Defenses ×3 |
+| `ascension` | Complete any ascension path (Bio / Synth / Psi) | Requires Utopia DLC |
+| `galactic_emperor` | Form the Galactic Imperium | Requires Federations DLC |
+| `all_checks` | Send every location in the pool | Detected client-side by the bridge |
+
+## Options
+
+The apworld exposes the following player options (all configurable per-slot in your YAML):
+
+**Gameplay**
+- `goal` — Win condition (see Goals above)
+- `galaxy_size` — Small / Medium / Large / Huge (affects pacing only — milestone thresholds aren't auto-scaled)
+
+**Location categories** (toggle which checks appear)
+- `include_exploration` — Surveys, anomalies, contacts, the L-Cluster
+- `include_diplomacy` — Pacts, federations, the Galactic Community
+- `include_warfare` — Wars, fleet power, leviathans
+- `include_crisis` — Endgame crisis events, Become the Crisis
+
+**Items**
+- `traps_enabled` — Whether trap items appear in the pool
+- `trap_percentage` — Share of filler slots filled with traps (0–100)
+- `energy_link_enabled` — Shared energy pool with other connected games
+- `energy_link_rate` — Stellaris-EC ↔ EnergyLink-unit conversion rate
+
+**DLC** (each toggles whether DLC-specific content appears)
+- `dlc_utopia` (on by default — base game content as of 4.0)
+- `dlc_federations`, `dlc_nemesis`, `dlc_leviathans`
+- `dlc_apocalypse`, `dlc_megacorp`, `dlc_overlord`
+
 ## Quick Start
-
-The mod has a graphical UI to set up everything, but you can do it manually as well :
-
-```powershell
-# 1. Install Python dependencies
-pip install websocket-client
-
-# 2. Run the Dashboard
-python dashboard.py
-```
-
-Manual set up:
 
 ```powershell
 # 1. Install Python dependencies
@@ -42,6 +67,22 @@ python setup.py status
 ```
 
 Then launch Stellaris with `-logall` in Steam launch options, enable the mod, and start a new non-ironman game.
+
+## Dashboard
+
+If you'd rather not run `setup.py` commands by hand, the project ships with a self-contained web dashboard:
+
+```powershell
+python dashboard.py
+```
+
+This opens a browser tab on `localhost:19472` with controls for:
+
+- **Setup** — install/uninstall the mod, build and install the DLL, scan vanilla tech files
+- **Status** — check what's installed, inspect Stellaris error logs, test the pipe end-to-end
+- **Run** — start and stop the bridge or the mock AP server, tail their logs live in the browser
+
+It uses Python's stdlib `http.server` so there's no extra dependency. Useful when you're iterating on a session and don't want to keep two or three terminals open.
 
 ## Testing Locally
 
@@ -121,9 +162,12 @@ Stellaris Game <-> DLL (version.dll proxy) <-> Named Pipe <-> ap_bridge.py <-> A
      +-- game.log (AP_CHECK lines) -------------------------------->+
 ```
 
-**Inbound (server -> game):** AP server sends items via WebSocket. Bridge writes console commands to a file. DLL types `run ap_bridge_commands.txt` into the Stellaris console via a hook into the game executable.
+**Inbound (server → game):** AP server sends items via WebSocket. The bridge forwards each item as a console command over a named pipe to the DLL. The DLL has two delivery modes:
 
-**Outbound (game -> server):** Mod writes `AP_CHECK|id|name` to game.log. Bridge tails the log and sends LocationChecks to the AP server.
+- **Phase 2 (primary) — direct engine call.** At injection time, the DLL AOB-scans `stellaris.exe` to locate three internal engine functions: `StringConstruct` (builds the engine's internal string object), `ExecuteCommand` (parses and runs a console command), and `StringDestruct`. It then invokes them in sequence — the same path the game's own TweakerGUI debug panel uses. No console window flicker, no input contention with the player, no file I/O on the hot path.
+- **Phase 1 (fallback) — SendInput.** If pattern scanning fails (e.g. after a Stellaris update shifts the byte signatures), the DLL automatically falls back to writing commands into `ap_bridge_commands.txt` and triggering Stellaris's built-in `run` console command via `SendInput`. Slower and more visible, but resilient to engine updates.
+
+**Outbound (game → server):** Mod writes `AP_CHECK|id|name` lines to game.log via Paradox-script `log` effects. The bridge tails the log and forwards each as a `LocationChecks` packet to the AP server. Goal completion fires an `AP_GOAL_COMPLETE` line that becomes a `StatusUpdate(30)` packet.
 
 ## 120 Locations
 
