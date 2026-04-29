@@ -32,14 +32,20 @@ class PipeClient:
     def __init__(self):
         self.handle = None
         self.connected = False
+        # Human-readable reason for the most recent connect() failure.
+        # None when connected or when no attempt has been made.
+        self.last_error: Optional[str] = None
         self._last_attempt = 0.0
         self._retry_interval = 2.0  # seconds between connection attempts
 
     def connect(self) -> bool:
-        """Try to connect to the DLL bridge pipe. Returns True on success."""
+        """Try to connect to the DLL bridge pipe. Returns True on success.
+
+        On failure, self.last_error is set to a human-readable reason.
+        """
         if not HAS_WIN32:
-            logger.warning("pywin32 not installed — pipe client disabled.")
-            logger.warning("Install it with: pip install pywin32")
+            self.last_error = "pywin32 is not installed. Run: pip install pywin32"
+            logger.warning(self.last_error)
             return False
 
         if self.connected:
@@ -47,6 +53,8 @@ class PipeClient:
 
         now = time.time()
         if now - self._last_attempt < self._retry_interval:
+            # Throttled retry: keep whatever last_error was already set so
+            # the caller still sees the most recent meaningful reason.
             return False
         self._last_attempt = now
 
@@ -59,16 +67,41 @@ class PipeClient:
                 0, None,
             )
             self.connected = True
+            self.last_error = None
             logger.info("🔌 Connected to DLL bridge pipe!")
             return True
         except pywintypes.error as e:
-            # Pipe doesn't exist yet — DLL not loaded
             if e.winerror == 2:  # ERROR_FILE_NOT_FOUND
-                pass  # silent, will retry
+                # Most common case: pipe doesn't exist. Either the game
+                # isn't running, the DLL didn't load, or the bridge
+                # hasn't finished its 3-second deferred init yet.
+                self.last_error = (
+                    "Pipe does not exist. Stellaris isn't running, the "
+                    "Archipelago Multiworld mod isn't enabled in the "
+                    "launcher, version.dll is missing from the game "
+                    "folder, or the bridge is still initializing "
+                    "(wait ~5 seconds after the game window appears)."
+                )
+                # Keep silent at warning level — connect() is called on a
+                # retry loop and the dashboard surfaces last_error directly.
             elif e.winerror == 231:  # ERROR_PIPE_BUSY
-                logger.debug("Pipe busy, will retry...")
+                self.last_error = (
+                    "Pipe is busy — another client (probably another "
+                    "instance of the bridge or dashboard) is already "
+                    "connected."
+                )
+                logger.debug(self.last_error)
+            elif e.winerror == 5:  # ERROR_ACCESS_DENIED
+                self.last_error = (
+                    "Access denied to pipe. Stellaris may be running "
+                    "with elevated privileges (admin) while the "
+                    "dashboard is not, or vice versa. Run both as the "
+                    "same user."
+                )
+                logger.warning(self.last_error)
             else:
-                logger.warning(f"Pipe connection failed: {e}")
+                self.last_error = f"Pipe connection failed: {e}"
+                logger.warning(self.last_error)
             return False
 
     def disconnect(self):
@@ -154,6 +187,10 @@ class FallbackPipeClient:
 
     def __init__(self):
         self.connected = False
+        self.last_error: Optional[str] = (
+            "pywin32 is not installed (or not on Windows). "
+            "Run: pip install pywin32"
+        )
         self._warned = False
 
     def connect(self) -> bool:
