@@ -1,0 +1,547 @@
+# ============================================================================
+# Archipelago Check Detection (Rewritten)
+# ============================================================================
+# Uses the log-based bridge from ap_bridge_log.txt for outbound communication.
+# Each milestone check: test threshold → set sent flag → call log sender.
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# Survey milestones
+# --------------------------------------------------------------------------
+ap_check_survey_milestones = {
+    # Count systems with surveyed planets owned by us (proxy for surveys)
+    # In practice, use a counter incremented by on_survey_complete hook
+    if = {
+        limit = {
+            check_variable = { which = ap_surveys_completed value >= 5 }
+            NOT = { has_country_flag = ap_sent_survey_5 }
+        }
+        set_country_flag = ap_sent_survey_5
+        ap_send_check_survey_5 = yes
+    }
+    if = {
+        limit = {
+            check_variable = { which = ap_surveys_completed value >= 10 }
+            NOT = { has_country_flag = ap_sent_survey_10 }
+        }
+        set_country_flag = ap_sent_survey_10
+        ap_send_check_survey_10 = yes
+    }
+    if = {
+        limit = {
+            check_variable = { which = ap_surveys_completed value >= 20 }
+            NOT = { has_country_flag = ap_sent_survey_20 }
+        }
+        set_country_flag = ap_sent_survey_20
+        ap_send_check_survey_20 = yes
+    }
+    if = {
+        limit = {
+            check_variable = { which = ap_surveys_completed value >= 30 }
+            NOT = { has_country_flag = ap_sent_survey_30 }
+        }
+        set_country_flag = ap_sent_survey_30
+        ap_send_check_survey_30 = yes
+    }
+}
+
+# --------------------------------------------------------------------------
+# (removed) ap_check_anomaly_milestones — anomaly locations are AP techs,
+# detected when the player researches them in-game, not via a counter.
+# --------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------
+# First contact milestones
+# --------------------------------------------------------------------------
+ap_check_first_contact_milestones = {
+    if = {
+        limit = {
+            check_variable = { which = ap_first_contacts value >= 1 }
+            NOT = { has_country_flag = ap_sent_first_contact_1 }
+        }
+        set_country_flag = ap_sent_first_contact_1
+        ap_send_check_first_contact = yes
+    }
+    if = {
+        limit = {
+            check_variable = { which = ap_first_contacts value >= 2 }
+            NOT = { has_country_flag = ap_sent_first_contact_2 }
+        }
+        set_country_flag = ap_sent_first_contact_2
+        ap_send_check_second_contact = yes
+    }
+}
+
+# --------------------------------------------------------------------------
+# Tech milestones
+# --------------------------------------------------------------------------
+ap_check_tech_milestones = {
+    if = {
+        limit = {
+            check_variable = { which = ap_techs_researched value >= 5 }
+            NOT = { has_country_flag = ap_sent_tech_5 }
+        }
+        set_country_flag = ap_sent_tech_5
+        ap_send_check_tech_5 = yes
+    }
+    if = {
+        limit = {
+            check_variable = { which = ap_techs_researched value >= 15 }
+            NOT = { has_country_flag = ap_sent_tech_15 }
+        }
+        set_country_flag = ap_sent_tech_15
+        ap_send_check_tech_15 = yes
+    }
+    if = {
+        limit = {
+            check_variable = { which = ap_techs_researched value >= 30 }
+            NOT = { has_country_flag = ap_sent_tech_30 }
+        }
+        set_country_flag = ap_sent_tech_30
+        ap_send_check_tech_30 = yes
+    }
+    if = {
+        limit = {
+            check_variable = { which = ap_techs_researched value >= 50 }
+            NOT = { has_country_flag = ap_sent_tech_50 }
+        }
+        set_country_flag = ap_sent_tech_50
+        ap_send_check_tech_50 = yes
+    }
+}
+
+# --------------------------------------------------------------------------
+# Colony milestones
+# --------------------------------------------------------------------------
+ap_check_colony_milestones = {
+    if = {
+        limit = {
+            num_owned_planets >= 1
+            NOT = { has_country_flag = ap_sent_colony_1 }
+        }
+        set_country_flag = ap_sent_colony_1
+        ap_send_check_colony_1 = yes
+    }
+    if = {
+        limit = {
+            num_owned_planets >= 3
+            NOT = { has_country_flag = ap_sent_colony_3 }
+        }
+        set_country_flag = ap_sent_colony_3
+        ap_send_check_colony_3 = yes
+    }
+    if = {
+        limit = {
+            num_owned_planets >= 5
+            NOT = { has_country_flag = ap_sent_colony_5 }
+        }
+        set_country_flag = ap_sent_colony_5
+        ap_send_check_colony_5 = yes
+    }
+    if = {
+        limit = {
+            num_owned_planets >= 10
+            NOT = { has_country_flag = ap_sent_colony_10 }
+        }
+        set_country_flag = ap_sent_colony_10
+        ap_send_check_colony_10 = yes
+    }
+}
+
+# --------------------------------------------------------------------------
+# Pop milestones
+# --------------------------------------------------------------------------
+ap_check_pop_milestones = {
+    if = {
+        limit = {
+            pop_amount >= 50
+            NOT = { has_country_flag = ap_sent_pop_50 }
+        }
+        set_country_flag = ap_sent_pop_50
+        ap_send_check_pop_50 = yes
+    }
+    if = {
+        limit = {
+            pop_amount >= 100
+            NOT = { has_country_flag = ap_sent_pop_100 }
+        }
+        set_country_flag = ap_sent_pop_100
+        ap_send_check_pop_100 = yes
+    }
+    if = {
+        limit = {
+            pop_amount >= 200
+            NOT = { has_country_flag = ap_sent_pop_200 }
+        }
+        set_country_flag = ap_sent_pop_200
+        ap_send_check_pop_200 = yes
+    }
+}
+
+# --------------------------------------------------------------------------
+# Starbase milestones
+# --------------------------------------------------------------------------
+ap_check_starbase_milestones = {
+    # Use num_starbases trigger — counts all starbases (outposts+)
+    if = {
+        limit = {
+            num_starbases >= 5
+            NOT = { has_country_flag = ap_sent_starbases_5 }
+        }
+        set_country_flag = ap_sent_starbases_5
+        ap_send_check_starbases_5 = yes
+    }
+    if = {
+        limit = {
+            num_starbases >= 10
+            NOT = { has_country_flag = ap_sent_starbases_10 }
+        }
+        set_country_flag = ap_sent_starbases_10
+        ap_send_check_starbases_10 = yes
+    }
+}
+
+# --------------------------------------------------------------------------
+# Income milestones
+# --------------------------------------------------------------------------
+ap_check_income_milestones = {
+    if = {
+        limit = {
+            has_monthly_income = { resource = energy value >= 1000 }
+            NOT = { has_country_flag = ap_sent_energy_1k }
+        }
+        set_country_flag = ap_sent_energy_1k
+        ap_send_check_energy_1k = yes
+    }
+    if = {
+        limit = {
+            has_monthly_income = { resource = alloys value >= 1000 }
+            NOT = { has_country_flag = ap_sent_alloys_1k }
+        }
+        set_country_flag = ap_sent_alloys_1k
+        ap_send_check_alloys_1k = yes
+    }
+}
+
+# --------------------------------------------------------------------------
+# Warfare milestones
+# fleet_power works at both fleet and country scope.
+# For country scope, we use export_trigger_value_to_variable to compute
+# total military power, or use the monthly check to sum fleet powers.
+# As a fallback, we track fleet power via a variable updated each month.
+# --------------------------------------------------------------------------
+ap_check_warfare_milestones = {
+    # Fleet power — fleet_power is valid at country scope (confirmed in vanilla achievements)
+    if = {
+        limit = {
+            fleet_power >= 50000
+            NOT = { has_country_flag = ap_sent_fleet_50k }
+        }
+        set_country_flag = ap_sent_fleet_50k
+        ap_send_check_fleet_50k = yes
+    }
+    if = {
+        limit = {
+            fleet_power >= 100000
+            NOT = { has_country_flag = ap_sent_fleet_100k }
+        }
+        set_country_flag = ap_sent_fleet_100k
+        ap_send_check_fleet_100k = yes
+    }
+    if = {
+        limit = {
+            fleet_power >= 200000
+            NOT = { has_country_flag = ap_sent_fleet_200k }
+        }
+        set_country_flag = ap_sent_fleet_200k
+        ap_send_check_fleet_200k = yes
+    }
+    # War wins — tracked via on_war_won hook
+    if = {
+        limit = {
+            check_variable = { which = ap_wars_won value >= 1 }
+            NOT = { has_country_flag = ap_sent_war_1 }
+        }
+        set_country_flag = ap_sent_war_1
+        ap_send_check_war_1 = yes
+    }
+    if = {
+        limit = {
+            check_variable = { which = ap_wars_won value >= 3 }
+            NOT = { has_country_flag = ap_sent_war_3 }
+        }
+        set_country_flag = ap_sent_war_3
+        ap_send_check_war_3 = yes
+    }
+}
+
+# --------------------------------------------------------------------------
+# Tradition milestones
+# Now tracked via on_tradition_picked and on_ascension_perk_picked hooks.
+# --------------------------------------------------------------------------
+ap_check_tradition_milestones = {
+    # Ascension perks — tracked by on_ascension_perk_picked hook
+    # Also cross-check with num_ascension_perks trigger for robustness
+    if = {
+        limit = {
+            OR = {
+                check_variable = { which = ap_ascension_perks_picked value >= 1 }
+                num_ascension_perks >= 1
+            }
+            NOT = { has_country_flag = ap_sent_perk_1 }
+        }
+        set_country_flag = ap_sent_perk_1
+        ap_send_check_perk_1 = yes
+    }
+    if = {
+        limit = {
+            OR = {
+                check_variable = { which = ap_ascension_perks_picked value >= 3 }
+                num_ascension_perks >= 3
+            }
+            NOT = { has_country_flag = ap_sent_perk_3 }
+        }
+        set_country_flag = ap_sent_perk_3
+        ap_send_check_perk_3 = yes
+    }
+    if = {
+        limit = {
+            OR = {
+                check_variable = { which = ap_ascension_perks_picked value >= 5 }
+                num_ascension_perks >= 5
+            }
+            NOT = { has_country_flag = ap_sent_perk_5 }
+        }
+        set_country_flag = ap_sent_perk_5
+        ap_send_check_perk_5 = yes
+    }
+
+    # Tradition trees — use traditions_picked counter
+    # In Stellaris, each tradition tree has ~5 picks + 1 finisher = ~6 picks
+    # So 6 picks ≈ 1 tree, 18 picks ≈ 3 trees, 30 picks ≈ 5 trees
+    if = {
+        limit = {
+            check_variable = { which = ap_traditions_picked value >= 6 }
+            NOT = { has_country_flag = ap_sent_tradition_1 }
+        }
+        set_country_flag = ap_sent_tradition_1
+        ap_send_check_tradition_1 = yes
+    }
+    if = {
+        limit = {
+            check_variable = { which = ap_traditions_picked value >= 18 }
+            NOT = { has_country_flag = ap_sent_tradition_3 }
+        }
+        set_country_flag = ap_sent_tradition_3
+        ap_send_check_tradition_3 = yes
+    }
+    if = {
+        limit = {
+            check_variable = { which = ap_traditions_picked value >= 30 }
+            NOT = { has_country_flag = ap_sent_tradition_5 }
+        }
+        set_country_flag = ap_sent_tradition_5
+        ap_send_check_tradition_5 = yes
+    }
+}
+
+# --------------------------------------------------------------------------
+# Diplomacy milestones (base game)
+# --------------------------------------------------------------------------
+ap_check_diplomacy_milestones = {
+    if = {
+        limit = {
+            any_country = {
+                has_non_aggression_pact = root
+            }
+            NOT = { has_country_flag = ap_sent_nap }
+        }
+        set_country_flag = ap_sent_nap
+        ap_send_check_nap = yes
+    }
+    if = {
+        limit = {
+            any_country = {
+                has_defensive_pact = root
+            }
+            NOT = { has_country_flag = ap_sent_defensive_pact }
+        }
+        set_country_flag = ap_sent_defensive_pact
+        ap_send_check_defensive_pact = yes
+    }
+}
+
+# --------------------------------------------------------------------------
+# Victory condition check
+#
+# The bridge sets one of ap_goal_0..ap_goal_4 when connecting (read from
+# the player's apworld slot_data). Each goal has a different in-game
+# completion condition; only the matching branch fires AP_GOAL_COMPLETE.
+#
+#   ap_goal_0 → Victory:           survive past year 2400
+#   ap_goal_1 → Crisis Averted:    crisis defeat check already sent
+#   ap_goal_2 → Ascension:         any ascension perk that triggers
+#                                  ap_sent_check_ascension_* flag
+#   ap_goal_3 → Galactic Emperor:  is_galactic_emperor = yes
+#   ap_goal_4 → All Checks:        client-side completion
+#                                  (mod cannot easily know all locations
+#                                  were checked; bridge handles this)
+# --------------------------------------------------------------------------
+ap_check_victory_condition = {
+    # Goal 0: Victory (year 2400)
+    if = {
+        limit = {
+            has_country_flag = ap_goal_0
+            NOT = { has_country_flag = ap_sent_victory }
+            years_passed >= 200
+        }
+        set_country_flag = ap_sent_victory
+        ap_send_check_victory = yes
+        log = "AP_GOAL_COMPLETE"
+    }
+    # Goal 1: Crisis Averted (endgame crisis defeated)
+    if = {
+        limit = {
+            has_country_flag = ap_goal_1
+            NOT = { has_country_flag = ap_sent_victory }
+            has_country_flag = ap_sent_crisis_defeat
+        }
+        set_country_flag = ap_sent_victory
+        log = "AP_GOAL_COMPLETE"
+    }
+    # Goal 2: Ascension (any ascension path completed)
+    if = {
+        limit = {
+            has_country_flag = ap_goal_2
+            NOT = { has_country_flag = ap_sent_victory }
+            OR = {
+                has_country_flag = ap_sent_ascension_bio
+                has_country_flag = ap_sent_ascension_synth
+                has_country_flag = ap_sent_ascension_psi
+            }
+        }
+        set_country_flag = ap_sent_victory
+        log = "AP_GOAL_COMPLETE"
+    }
+    # Goal 3: Galactic Emperor (formed the imperium)
+    if = {
+        limit = {
+            has_country_flag = ap_goal_3
+            NOT = { has_country_flag = ap_sent_victory }
+            is_galactic_emperor = yes
+        }
+        set_country_flag = ap_sent_victory
+        log = "AP_GOAL_COMPLETE"
+    }
+    # Goal 4: All Checks — handled by the bridge (it knows the location pool)
+}
+
+# ==========================================================
+# Extended Gameplay Milestone Detection (auto-generated)
+# ==========================================================
+ap_check_extended_milestones = {
+    if = {
+        limit = {
+            resource_stockpile_compare = { resource = energy value >= 10000 }
+            NOT = { has_country_flag = ap_sent_stockpile_10k_energy }
+        }
+        set_country_flag = ap_sent_stockpile_10k_energy
+        ap_send_check_stockpile_10k_energy = yes
+    }
+    if = {
+        limit = {
+            resource_stockpile_compare = { resource = minerals value >= 10000 }
+            NOT = { has_country_flag = ap_sent_stockpile_10k_minerals }
+        }
+        set_country_flag = ap_sent_stockpile_10k_minerals
+        ap_send_check_stockpile_10k_minerals = yes
+    }
+    if = {
+        limit = {
+            resource_stockpile_compare = { resource = alloys value >= 5000 }
+            NOT = { has_country_flag = ap_sent_stockpile_5k_alloys }
+        }
+        set_country_flag = ap_sent_stockpile_5k_alloys
+        ap_send_check_stockpile_5k_alloys = yes
+    }
+    if = {
+        limit = {
+            resource_stockpile_compare = { resource = alloys value >= 10000 }
+            NOT = { has_country_flag = ap_sent_stockpile_10k_alloys }
+        }
+        set_country_flag = ap_sent_stockpile_10k_alloys
+        ap_send_check_stockpile_10k_alloys = yes
+    }
+    if = {
+        limit = {
+            has_monthly_income = { resource = physics_research value >= 100 }
+            NOT = { has_country_flag = ap_sent_research_100 }
+        }
+        set_country_flag = ap_sent_research_100
+        ap_send_check_reach_100_monthly_research = yes
+    }
+    if = {
+        limit = {
+            has_monthly_income = { resource = physics_research value >= 500 }
+            NOT = { has_country_flag = ap_sent_research_500 }
+        }
+        set_country_flag = ap_sent_research_500
+        ap_send_check_reach_500_monthly_research = yes
+    }
+    if = {
+        limit = {
+            has_monthly_income = { resource = physics_research value >= 1000 }
+            NOT = { has_country_flag = ap_sent_research_1k }
+        }
+        set_country_flag = ap_sent_research_1k
+        ap_send_check_reach_1k_monthly_research = yes
+    }
+    if = {
+        limit = {
+            num_starbases >= 20
+            NOT = { has_country_flag = ap_sent_systems_20 }
+        }
+        set_country_flag = ap_sent_systems_20
+        ap_send_check_own_20_systems = yes
+    }
+    if = {
+        limit = {
+            num_starbases >= 50
+            NOT = { has_country_flag = ap_sent_systems_50 }
+        }
+        set_country_flag = ap_sent_systems_50
+        ap_send_check_own_50_systems = yes
+    }
+    if = {
+        limit = {
+            num_starbases >= 100
+            NOT = { has_country_flag = ap_sent_systems_100 }
+        }
+        set_country_flag = ap_sent_systems_100
+        ap_send_check_own_100_systems = yes
+    }
+    if = {
+        limit = {
+            pop_amount >= 500
+            NOT = { has_country_flag = ap_sent_pops_500 }
+        }
+        set_country_flag = ap_sent_pops_500
+        ap_send_check_reach_500_pops = yes
+    }
+    if = {
+        limit = {
+            fleet_power >= 10000
+            NOT = { has_country_flag = ap_sent_fleet_power_10k }
+        }
+        set_country_flag = ap_sent_fleet_power_10k
+        ap_send_check_reach_10k_fleet_power = yes
+    }
+    if = {
+        limit = {
+            fleet_power >= 25000
+            NOT = { has_country_flag = ap_sent_fleet_power_25k }
+        }
+        set_country_flag = ap_sent_fleet_power_25k
+        ap_send_check_reach_25k_fleet_power = yes
+    }
+}

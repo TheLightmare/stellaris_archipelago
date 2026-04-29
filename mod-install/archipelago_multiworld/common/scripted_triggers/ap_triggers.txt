@@ -1,0 +1,129 @@
+# ============================================================================
+# Archipelago Scripted Triggers
+# ============================================================================
+# These triggers check whether the player has received specific AP items
+# or reached specific milestones. Used by tech/ship gating and check detection.
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# Progressive item tier checks
+# --------------------------------------------------------------------------
+
+ap_has_ship_class = {
+    # Check by tier parameter — usage: ap_has_ship_class = { TIER = 2 }
+    # For now, simplified version checking individual tiers
+}
+
+ap_has_destroyers = {
+    has_country_flag = ap_ship_class_1
+}
+
+ap_has_cruisers = {
+    has_country_flag = ap_ship_class_2
+}
+
+ap_has_battleships = {
+    has_country_flag = ap_ship_class_3
+}
+
+ap_has_titans = {
+    has_country_flag = ap_ship_class_4
+}
+
+ap_has_juggernaut = {
+    has_country_flag = ap_ship_class_5
+}
+
+# Weapon tiers
+ap_has_weapons_tier_1 = { has_country_flag = ap_weapons_1 }
+ap_has_weapons_tier_2 = { has_country_flag = ap_weapons_2 }
+ap_has_weapons_tier_3 = { has_country_flag = ap_weapons_3 }
+ap_has_weapons_tier_4 = { has_country_flag = ap_weapons_4 }
+ap_has_weapons_tier_5 = { has_country_flag = ap_weapons_5 }
+
+# Defense tiers
+ap_has_defenses_tier_1 = { has_country_flag = ap_defenses_1 }
+ap_has_defenses_tier_2 = { has_country_flag = ap_defenses_2 }
+ap_has_defenses_tier_3 = { has_country_flag = ap_defenses_3 }
+ap_has_defenses_tier_4 = { has_country_flag = ap_defenses_4 }
+
+# Starbase tiers (3 progressive tiers — Starport is free at game start)
+# ap_starbase_1 → tech_starbase_3 (Starhold)
+# ap_starbase_2 → tech_starbase_4 (Star Fortress)
+# ap_starbase_3 → tech_starbase_5 (Citadel)
+ap_has_starhold = { has_country_flag = ap_starbase_1 }
+ap_has_star_fortress = { has_country_flag = ap_starbase_2 }
+ap_has_citadel = { has_country_flag = ap_starbase_3 }
+
+# Colony ship tiers
+ap_has_colony_tier_1 = { has_country_flag = ap_colony_1 }
+ap_has_colony_tier_2 = { has_country_flag = ap_colony_2 }
+ap_has_colony_tier_3 = { has_country_flag = ap_colony_3 }
+
+# Diplomacy tiers
+ap_has_diplomacy_tier_1 = { has_country_flag = ap_diplomacy_1 }
+ap_has_diplomacy_tier_2 = { has_country_flag = ap_diplomacy_2 }
+ap_has_diplomacy_tier_3 = { has_country_flag = ap_diplomacy_3 }
+
+# FTL tiers
+ap_has_ftl_tier_1 = { has_country_flag = ap_ftl_1 }
+ap_has_ftl_tier_2 = { has_country_flag = ap_ftl_2 }
+ap_has_ftl_tier_3 = { has_country_flag = ap_ftl_3 }
+
+# Unique items
+ap_has_mega_engineering_license = { has_country_flag = ap_mega_engineering_license }
+ap_has_ascension_bio = { has_country_flag = ap_ascension_bio }
+ap_has_ascension_synth = { has_country_flag = ap_ascension_synth }
+ap_has_ascension_psi = { has_country_flag = ap_ascension_psi }
+ap_has_crisis_beacon = { has_country_flag = ap_crisis_beacon }
+
+# L-Gate insights (need all 7)
+ap_has_all_lgate_insights = {
+    has_country_flag = ap_lgate_insight_1
+    has_country_flag = ap_lgate_insight_2
+    has_country_flag = ap_lgate_insight_3
+    has_country_flag = ap_lgate_insight_4
+    has_country_flag = ap_lgate_insight_5
+    has_country_flag = ap_lgate_insight_6
+    has_country_flag = ap_lgate_insight_7
+}
+
+# --------------------------------------------------------------------------
+# Check already-sent detection (prevent duplicate sends)
+# --------------------------------------------------------------------------
+
+ap_check_not_sent = {
+    # Usage: ap_check_not_sent = { CHECK = survey_5 }
+    # Simplified: individual triggers per check
+}
+
+ap_survey_5_not_sent = { NOT = { has_country_flag = ap_sent_survey_5 } }
+ap_survey_10_not_sent = { NOT = { has_country_flag = ap_sent_survey_10 } }
+ap_survey_20_not_sent = { NOT = { has_country_flag = ap_sent_survey_20 } }
+ap_survey_30_not_sent = { NOT = { has_country_flag = ap_sent_survey_30 } }
+
+ap_tech_5_not_sent = { NOT = { has_country_flag = ap_sent_tech_5 } }
+ap_tech_15_not_sent = { NOT = { has_country_flag = ap_sent_tech_15 } }
+ap_tech_30_not_sent = { NOT = { has_country_flag = ap_sent_tech_30 } }
+ap_tech_50_not_sent = { NOT = { has_country_flag = ap_sent_tech_50 } }
+
+ap_colony_1_not_sent = { NOT = { has_country_flag = ap_sent_colony_1 } }
+ap_colony_3_not_sent = { NOT = { has_country_flag = ap_sent_colony_3 } }
+ap_colony_5_not_sent = { NOT = { has_country_flag = ap_sent_colony_5 } }
+ap_colony_10_not_sent = { NOT = { has_country_flag = ap_sent_colony_10 } }
+
+ap_pop_50_not_sent = { NOT = { has_country_flag = ap_sent_pop_50 } }
+ap_pop_100_not_sent = { NOT = { has_country_flag = ap_sent_pop_100 } }
+ap_pop_200_not_sent = { NOT = { has_country_flag = ap_sent_pop_200 } }
+
+ap_fleet_50k_not_sent = { NOT = { has_country_flag = ap_sent_fleet_50k } }
+ap_fleet_100k_not_sent = { NOT = { has_country_flag = ap_sent_fleet_100k } }
+ap_fleet_200k_not_sent = { NOT = { has_country_flag = ap_sent_fleet_200k } }
+
+# --------------------------------------------------------------------------
+# Composite: is the AP mod active for this country?
+# --------------------------------------------------------------------------
+is_ap_player = {
+    is_ai = no
+    has_country_flag = ap_connected
+}

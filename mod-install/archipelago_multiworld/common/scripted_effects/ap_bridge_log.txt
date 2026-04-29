@@ -1,0 +1,709 @@
+# ============================================================================
+# Archipelago Bridge — Log-Based Outbound
+# ============================================================================
+# The mod communicates completed checks to the Python client by writing
+# structured log lines to game.log. The client tails this file in real
+# time and parses lines prefixed with "AP_".
+#
+# Log format:
+#   AP_CHECK|<location_id>|<location_name>
+#   AP_ENERGY_DEPOSIT|<amount>
+#   AP_ENERGY_WITHDRAW|<amount>
+#   AP_GOAL_COMPLETE
+#   AP_HEARTBEAT|<year>
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# Heartbeat — confirms the mod is active (fires every month)
+# --------------------------------------------------------------------------
+ap_send_heartbeat = {
+    log = "AP_HEARTBEAT"
+}
+
+# --------------------------------------------------------------------------
+# Generic check sender — call with CHECK_ID and CHECK_NAME set
+# --------------------------------------------------------------------------
+# Usage in scripted effects:
+#   ap_send_check_survey_5 = yes
+# Each check has its own tiny effect because Stellaris log can't interpolate
+# variables into strings. This is verbose but unavoidable.
+
+# --- Exploration ---
+ap_send_check_survey_5 = {
+    log = "AP_CHECK|7472000|Survey 5 Systems"
+    set_country_flag = ap_check_cat_survey
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_survey_10 = {
+    log = "AP_CHECK|7472001|Survey 10 Systems"
+    set_country_flag = ap_check_cat_survey
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_survey_20 = {
+    log = "AP_CHECK|7472002|Survey 20 Systems"
+    set_country_flag = ap_check_cat_survey
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_survey_30 = {
+    log = "AP_CHECK|7472003|Survey 30 Systems"
+    set_country_flag = ap_check_cat_survey
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_first_contact = {
+    log = "AP_CHECK|7472010|First Contact"
+    set_country_flag = ap_check_cat_exploration
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_second_contact = {
+    log = "AP_CHECK|7472011|Second Contact"
+    set_country_flag = ap_check_cat_exploration
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_wormhole = {
+    log = "AP_CHECK|7472030|Enter a Wormhole"
+    set_country_flag = ap_check_cat_exploration
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_precursor = {
+    log = "AP_CHECK|7472040|Complete a Precursor Chain"
+    set_country_flag = ap_check_cat_exploration
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_lcluster = {
+    log = "AP_CHECK|7472050|Explore the L-Cluster"
+    set_country_flag = ap_check_cat_exploration
+    country_event = { id = ap_check.100 }
+}
+
+# --- Technology ---
+ap_send_check_tech_5 = {
+    log = "AP_CHECK|7472100|Research 5 Technologies"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_tech_15 = {
+    log = "AP_CHECK|7472101|Research 15 Technologies"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_tech_30 = {
+    log = "AP_CHECK|7472102|Research 30 Technologies"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_tech_50 = {
+    log = "AP_CHECK|7472103|Research 50 Technologies"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_rare_tech = {
+    log = "AP_CHECK|7472110|Research a Rare Tech"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_mega_engineering = {
+    log = "AP_CHECK|7472120|Research Mega-Engineering"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_repeatable = {
+    log = "AP_CHECK|7472130|Research a Repeatable Tech"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+# --- Expansion ---
+ap_send_check_colony_1 = {
+    log = "AP_CHECK|7472200|Colonize 1 Planet"
+    set_country_flag = ap_check_cat_expansion
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_colony_3 = {
+    log = "AP_CHECK|7472201|Colonize 3 Planets"
+    set_country_flag = ap_check_cat_expansion
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_colony_5 = {
+    log = "AP_CHECK|7472202|Colonize 5 Planets"
+    set_country_flag = ap_check_cat_expansion
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_colony_10 = {
+    log = "AP_CHECK|7472203|Colonize 10 Planets"
+    set_country_flag = ap_check_cat_expansion
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_pop_50 = {
+    log = "AP_CHECK|7472210|Reach 50 Pops"
+    set_country_flag = ap_check_cat_expansion
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_pop_100 = {
+    log = "AP_CHECK|7472211|Reach 100 Pops"
+    set_country_flag = ap_check_cat_expansion
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_pop_200 = {
+    log = "AP_CHECK|7472212|Reach 200 Pops"
+    set_country_flag = ap_check_cat_expansion
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_starbases_5 = {
+    log = "AP_CHECK|7472220|Own 5 Starbases"
+    set_country_flag = ap_check_cat_military
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_starbases_10 = {
+    log = "AP_CHECK|7472221|Own 10 Starbases"
+    set_country_flag = ap_check_cat_military
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_energy_1k = {
+    log = "AP_CHECK|7472230|Reach 1k Monthly Energy"
+    set_country_flag = ap_check_cat_economy
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_alloys_1k = {
+    log = "AP_CHECK|7472231|Reach 1k Monthly Alloys"
+    set_country_flag = ap_check_cat_economy
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_build_mega = {
+    log = "AP_CHECK|7472240|Build a Megastructure"
+    set_country_flag = ap_check_cat_expansion
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_complete_mega = {
+    log = "AP_CHECK|7472241|Complete a Megastructure"
+    set_country_flag = ap_check_cat_expansion
+    country_event = { id = ap_check.100 }
+}
+
+# --- Diplomacy ---
+ap_send_check_nap = {
+    log = "AP_CHECK|7472340|Sign a Non-Aggression Pact"
+    set_country_flag = ap_check_cat_diplomacy
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_defensive_pact = {
+    log = "AP_CHECK|7472341|Sign a Defensive Pact"
+    set_country_flag = ap_check_cat_diplomacy
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_federation = {
+    log = "AP_CHECK|7472300|Form or Join a Federation"
+    set_country_flag = ap_check_cat_diplomacy
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_fed_3 = {
+    log = "AP_CHECK|7472301|Federation Level 3"
+    set_country_flag = ap_check_cat_diplomacy
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_fed_5 = {
+    log = "AP_CHECK|7472302|Federation Level 5"
+    set_country_flag = ap_check_cat_diplomacy
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_galcom = {
+    log = "AP_CHECK|7472310|Join Galactic Community"
+    set_country_flag = ap_check_cat_diplomacy
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_resolution = {
+    log = "AP_CHECK|7472311|Pass a Galactic Resolution"
+    set_country_flag = ap_check_cat_diplomacy
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_custodian = {
+    log = "AP_CHECK|7472320|Become Custodian"
+    set_country_flag = ap_check_cat_diplomacy
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_imperium = {
+    log = "AP_CHECK|7472321|Form the Galactic Imperium"
+    set_country_flag = ap_check_cat_diplomacy
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_integrate = {
+    log = "AP_CHECK|7472330|Integrate a Subject"
+    set_country_flag = ap_check_cat_diplomacy
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_envoys_3 = {
+    log = "AP_CHECK|7472350|Have 3 Envoys Active"
+    set_country_flag = ap_check_cat_diplomacy
+    country_event = { id = ap_check.100 }
+}
+
+# --- Warfare ---
+ap_send_check_war_1 = {
+    log = "AP_CHECK|7472400|Win First War"
+    set_country_flag = ap_check_cat_military
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_war_3 = {
+    log = "AP_CHECK|7472401|Win 3 Wars"
+    set_country_flag = ap_check_cat_military
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_destroy_starbase = {
+    log = "AP_CHECK|7472410|Destroy a Starbase"
+    set_country_flag = ap_check_cat_military
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_conquer_capital = {
+    log = "AP_CHECK|7472420|Conquer a Capital"
+    set_country_flag = ap_check_cat_military
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_fleet_50k = {
+    log = "AP_CHECK|7472430|Achieve 50k Fleet Power"
+    set_country_flag = ap_check_cat_military
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_fleet_100k = {
+    log = "AP_CHECK|7472431|Achieve 100k Fleet Power"
+    set_country_flag = ap_check_cat_military
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_fleet_200k = {
+    log = "AP_CHECK|7472432|Achieve 200k Fleet Power"
+    set_country_flag = ap_check_cat_military
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_leviathan = {
+    log = "AP_CHECK|7472440|Defeat a Leviathan"
+    set_country_flag = ap_check_cat_military
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_fallen_empire = {
+    log = "AP_CHECK|7472450|Destroy a Fallen Empire"
+    set_country_flag = ap_check_cat_military
+    country_event = { id = ap_check.100 }
+}
+
+# --- Traditions ---
+ap_send_check_tradition_1 = {
+    log = "AP_CHECK|7472500|Complete 1 Tradition Tree"
+    set_country_flag = ap_check_cat_traditions
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_tradition_3 = {
+    log = "AP_CHECK|7472501|Complete 3 Tradition Trees"
+    set_country_flag = ap_check_cat_traditions
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_tradition_5 = {
+    log = "AP_CHECK|7472502|Complete 5 Tradition Trees"
+    set_country_flag = ap_check_cat_traditions
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_perk_1 = {
+    log = "AP_CHECK|7472510|Adopt 1 Ascension Perk"
+    set_country_flag = ap_check_cat_traditions
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_perk_3 = {
+    log = "AP_CHECK|7472511|Adopt 3 Ascension Perks"
+    set_country_flag = ap_check_cat_traditions
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_perk_5 = {
+    log = "AP_CHECK|7472512|Adopt 5 Ascension Perks"
+    set_country_flag = ap_check_cat_traditions
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_ascension_bio = {
+    log = "AP_CHECK|7472520|Complete Biological Ascension"
+    set_country_flag = ap_check_cat_traditions
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_ascension_synth = {
+    log = "AP_CHECK|7472521|Complete Synthetic Ascension"
+    set_country_flag = ap_check_cat_traditions
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_ascension_psi = {
+    log = "AP_CHECK|7472522|Complete Psionic Ascension"
+    set_country_flag = ap_check_cat_traditions
+    country_event = { id = ap_check.100 }
+}
+
+# --- Crisis ---
+ap_send_check_crisis_survive = {
+    log = "AP_CHECK|7472600|Survive the Crisis 10 Years"
+    set_country_flag = ap_check_cat_crisis
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_crisis_defeat = {
+    log = "AP_CHECK|7472601|Defeat the Endgame Crisis"
+    set_country_flag = ap_check_cat_crisis
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_become_crisis_1 = {
+    log = "AP_CHECK|7472610|Become the Crisis Tier 1"
+    set_country_flag = ap_check_cat_crisis
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_become_crisis_5 = {
+    log = "AP_CHECK|7472611|Become the Crisis Tier 5"
+    set_country_flag = ap_check_cat_crisis
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_control_40 = {
+    log = "AP_CHECK|7472620|Control 40% of Galaxy"
+    set_country_flag = ap_check_cat_crisis
+    country_event = { id = ap_check.100 }
+}
+ap_send_check_control_60 = {
+    log = "AP_CHECK|7472621|Control 60% of Galaxy"
+    set_country_flag = ap_check_cat_crisis
+    country_event = { id = ap_check.100 }
+}
+
+# --- Archipelago Research Techs ---
+# These are real technologies the player researches — each is an AP location.
+# Senders for vanilla tech research milestones are defined further below
+# under the auto-generated "Vanilla Tech Research Senders" section.
+
+# --- Victory ---
+ap_send_check_victory = {
+    log = "AP_CHECK|7472900|Victory"
+    log = "AP_GOAL_COMPLETE"
+    set_country_flag = ap_check_cat_victory
+    country_event = { id = ap_check.100 }
+}
+
+# --- EnergyLink ---
+ap_send_energy_deposit = {
+    # Called with ap_energy_deposit_amount variable set
+    log = "AP_ENERGY_DEPOSIT"
+}
+ap_send_energy_withdraw = {
+    log = "AP_ENERGY_WITHDRAW"
+}
+
+# ==========================================================
+# Vanilla Tech Research Senders (auto-generated)
+# ==========================================================
+ap_send_check_tech_planetary_unification = {
+    log = "AP_CHECK|7474000|Research Planetary Unification"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_eco_simulation = {
+    log = "AP_CHECK|7474001|Research Eco Simulation"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_powered_exoskeletons = {
+    log = "AP_CHECK|7474002|Research Powered Exoskeletons"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_alloys_1 = {
+    log = "AP_CHECK|7474003|Research Alloy Foundries"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_luxuries_1 = {
+    log = "AP_CHECK|7474004|Research Luxury Goods"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_mineral_purification_1 = {
+    log = "AP_CHECK|7474005|Research Mineral Purification"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_administrative_ai = {
+    log = "AP_CHECK|7474006|Research Administrative AI"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_robotic_workers = {
+    log = "AP_CHECK|7474007|Research Robotic Workers"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_doctrine_fleet_size_1 = {
+    log = "AP_CHECK|7474008|Research Fleet Size I"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_doctrine_navy_size_1 = {
+    log = "AP_CHECK|7474009|Research Navy Size I"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_galactic_markets = {
+    log = "AP_CHECK|7474010|Research Galactic Markets"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_synthetic_workers = {
+    log = "AP_CHECK|7474011|Research Synthetics"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_doctrine_fleet_size_5 = {
+    log = "AP_CHECK|7474012|Research Fleet Size V"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_habitat_2 = {
+    log = "AP_CHECK|7474013|Research Habitats II"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_climate_restoration = {
+    log = "AP_CHECK|7474014|Research Climate Restoration"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_capital_productivity_3 = {
+    log = "AP_CHECK|7474015|Research Capital Productivity III"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_alloys_2 = {
+    log = "AP_CHECK|7474016|Research Advanced Alloys"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_gene_crops = {
+    log = "AP_CHECK|7474017|Research Gene Crops"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_colonial_centralization = {
+    log = "AP_CHECK|7474018|Research Colonial Centralization"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_interstellar_economics = {
+    log = "AP_CHECK|7474019|Research Interstellar Economics"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_global_research_initiative = {
+    log = "AP_CHECK|7474020|Research Global Research Initiative"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_droid_workers = {
+    log = "AP_CHECK|7474021|Research Droids"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_gene_tailoring = {
+    log = "AP_CHECK|7474022|Research Gene Tailoring"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_cloning = {
+    log = "AP_CHECK|7474023|Research Cloning"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_glandular_acclimation = {
+    log = "AP_CHECK|7474024|Research Glandular Acclimation"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_psionic_theory = {
+    log = "AP_CHECK|7474025|Research Psionic Theory"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_telepathy = {
+    log = "AP_CHECK|7474026|Research Telepathy"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_sensors_2 = {
+    log = "AP_CHECK|7474027|Research Sensors II"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_sensors_3 = {
+    log = "AP_CHECK|7474028|Research Sensors III"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_doctrine_fleet_size_3 = {
+    log = "AP_CHECK|7474029|Research Fleet Size III"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_doctrine_navy_size_3 = {
+    log = "AP_CHECK|7474030|Research Navy Size III"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_centralized_command = {
+    log = "AP_CHECK|7474031|Research Centralized Command"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_habitat_1 = {
+    log = "AP_CHECK|7474032|Research Habitats I"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_mine_exotic_gases = {
+    log = "AP_CHECK|7474033|Research Exotic Gas Extraction"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_mine_volatile_motes = {
+    log = "AP_CHECK|7474034|Research Volatile Motes Extraction"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_mine_rare_crystals = {
+    log = "AP_CHECK|7474035|Research Rare Crystal Mining"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_capital_productivity_1 = {
+    log = "AP_CHECK|7474036|Research Capital Productivity I"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_global_defense_grid = {
+    log = "AP_CHECK|7474037|Research Global Defense Grid"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_planetary_shield_generator = {
+    log = "AP_CHECK|7474038|Research Planetary Shield Generator"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_tech_galactic_administration = {
+    log = "AP_CHECK|7474039|Research Galactic Administration"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+# ==========================================================
+# Gameplay Milestone Senders (auto-generated)
+# ==========================================================
+ap_send_check_reach_10k_fleet_power = {
+    log = "AP_CHECK|7474040|Reach 10k Fleet Power"
+    set_country_flag = ap_check_cat_military
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_own_100_systems = {
+    log = "AP_CHECK|7474041|Own 100 Systems"
+    set_country_flag = ap_check_cat_expansion
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_own_20_systems = {
+    log = "AP_CHECK|7474042|Own 20 Systems"
+    set_country_flag = ap_check_cat_expansion
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_reach_25k_fleet_power = {
+    log = "AP_CHECK|7474043|Reach 25k Fleet Power"
+    set_country_flag = ap_check_cat_military
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_own_50_systems = {
+    log = "AP_CHECK|7474044|Own 50 Systems"
+    set_country_flag = ap_check_cat_expansion
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_reach_100_monthly_research = {
+    log = "AP_CHECK|7474045|Reach 100 Monthly Research"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_reach_1k_monthly_research = {
+    log = "AP_CHECK|7474046|Reach 1k Monthly Research"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_reach_500_monthly_research = {
+    log = "AP_CHECK|7474047|Reach 500 Monthly Research"
+    set_country_flag = ap_check_cat_tech
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_reach_500_pops = {
+    log = "AP_CHECK|7474048|Reach 500 Pops"
+    set_country_flag = ap_check_cat_exploration
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_stockpile_10k_alloys = {
+    log = "AP_CHECK|7474049|Stockpile 10k Alloys"
+    set_country_flag = ap_check_cat_economy
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_stockpile_10k_energy = {
+    log = "AP_CHECK|7474050|Stockpile 10k Energy"
+    set_country_flag = ap_check_cat_economy
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_stockpile_10k_minerals = {
+    log = "AP_CHECK|7474051|Stockpile 10k Minerals"
+    set_country_flag = ap_check_cat_economy
+    country_event = { id = ap_check.100 }
+}
+
+ap_send_check_stockpile_5k_alloys = {
+    log = "AP_CHECK|7474052|Stockpile 5k Alloys"
+    set_country_flag = ap_check_cat_economy
+    country_event = { id = ap_check.100 }
+}

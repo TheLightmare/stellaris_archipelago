@@ -1,0 +1,31 @@
+# ============================================================================
+# Archipelago Static Modifiers
+# ============================================================================
+# Country-scope modifiers applied by AP filler item grants.
+# Format verified against Stellaris 4.x Clausewitz syntax.
+# ============================================================================
+
+ap_fleet_cap_10 = {
+    country_naval_cap_add = 10
+}
+
+ap_fleet_cap_20 = {
+    country_naval_cap_add = 20
+}
+
+ap_starbase_cap_1 = {
+    country_starbase_capacity_add = 1
+}
+
+ap_pop_growth_stimulus = {
+    bonus_pop_growth_mult = 0.25
+}
+
+# Timer modifier — no gameplay effect, just prevents EnergyLink spam
+ap_energy_cooldown = {
+}
+
+# Trap modifier
+ap_market_crash = {
+    country_naval_cap_mult = -0.10
+}

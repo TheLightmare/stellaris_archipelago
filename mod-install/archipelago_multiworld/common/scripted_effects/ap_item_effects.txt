@@ -1,0 +1,553 @@
+# Clear all notification flags (called when player closes the event popup)
+ap_clear_notify_flags = {
+    remove_country_flag = ap_notify_ship_class
+    remove_country_flag = ap_notify_weapons
+    remove_country_flag = ap_notify_defenses
+    remove_country_flag = ap_notify_ftl
+    remove_country_flag = ap_notify_starbase
+    remove_country_flag = ap_notify_colony
+    remove_country_flag = ap_notify_megastructure
+    remove_country_flag = ap_notify_lgate
+    remove_country_flag = ap_notify_resource_small
+    remove_country_flag = ap_notify_resource_medium
+    remove_country_flag = ap_notify_resource_large
+    remove_country_flag = ap_notify_alloy_small
+    remove_country_flag = ap_notify_alloy_medium
+    remove_country_flag = ap_notify_alloy_large
+    remove_country_flag = ap_notify_research
+    remove_country_flag = ap_notify_influence
+    remove_country_flag = ap_notify_unity
+    remove_country_flag = ap_notify_fleet_cap
+    remove_country_flag = ap_notify_starbase_cap
+    remove_country_flag = ap_notify_mega_engineering
+    remove_country_flag = ap_notify_ascension_bio
+    remove_country_flag = ap_notify_ascension_synth
+    remove_country_flag = ap_notify_ascension_psi
+    remove_country_flag = ap_notify_precursor
+    remove_country_flag = ap_notify_galactic_market
+    remove_country_flag = ap_notify_pop_growth
+    remove_country_flag = ap_notify_pirate
+    remove_country_flag = ap_notify_diplo_incident
+    remove_country_flag = ap_notify_research_setback
+    remove_country_flag = ap_notify_market_crash
+    remove_country_flag = ap_notify_space_amoeba
+    remove_country_flag = ap_notify_border_friction
+}
+
+# ============================================================================
+# Archipelago Item Effects
+# ============================================================================
+# Called by the Python client via DLL pipe → console.
+# Each progressive item grants techs directly via give_technology.
+# No vanilla tech file overrides are needed — the tech tree is untouched.
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# Progressive Ship Class (5 tiers)
+# Corvettes are free. Each receipt unlocks the next ship class tech.
+# --------------------------------------------------------------------------
+ap_grant_progressive_ship_class = {
+    if = {
+        limit = { NOT = { has_country_flag = ap_ship_class_1 } }
+        set_country_flag = ap_ship_class_1
+        give_technology = { tech = tech_destroyers message = no }
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_ship_class_2 } }
+        set_country_flag = ap_ship_class_2
+        give_technology = { tech = tech_cruisers message = no }
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_ship_class_3 } }
+        set_country_flag = ap_ship_class_3
+        give_technology = { tech = tech_battleships message = no }
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_ship_class_4 } }
+        set_country_flag = ap_ship_class_4
+        if = {
+            limit = { host_has_dlc = "Apocalypse" }
+            give_technology = { tech = tech_titans message = no }
+        }
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_ship_class_5 } }
+        set_country_flag = ap_ship_class_5
+        if = {
+            limit = { host_has_dlc = "Federations" }
+            give_technology = { tech = tech_juggernaut message = no }
+        }
+    }
+    set_country_flag = ap_notify_ship_class
+    country_event = { id = ap_bridge.201 }
+}
+
+# --------------------------------------------------------------------------
+# Progressive Weapons (5 tiers)
+# Grants all weapon families at each tier simultaneously.
+# --------------------------------------------------------------------------
+ap_grant_progressive_weapons = {
+    if = {
+        limit = { NOT = { has_country_flag = ap_weapons_1 } }
+        set_country_flag = ap_weapons_1
+        give_technology = { tech = tech_lasers_2 message = no }
+        give_technology = { tech = tech_mass_drivers_2 message = no }
+        give_technology = { tech = tech_missiles_2 message = no }
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_weapons_2 } }
+        set_country_flag = ap_weapons_2
+        give_technology = { tech = tech_lasers_3 message = no }
+        give_technology = { tech = tech_mass_drivers_3 message = no }
+        give_technology = { tech = tech_missiles_3 message = no }
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_weapons_3 } }
+        set_country_flag = ap_weapons_3
+        give_technology = { tech = tech_lasers_4 message = no }
+        give_technology = { tech = tech_mass_drivers_4 message = no }
+        give_technology = { tech = tech_missiles_4 message = no }
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_weapons_4 } }
+        set_country_flag = ap_weapons_4
+        give_technology = { tech = tech_lasers_5 message = no }
+        give_technology = { tech = tech_mass_drivers_5 message = no }
+        give_technology = { tech = tech_missiles_5 message = no }
+    }
+    set_country_flag = ap_notify_weapons
+    country_event = { id = ap_bridge.201 }
+}
+
+# --------------------------------------------------------------------------
+# Progressive Defenses (4 tiers)
+# Grants shields and armor at each tier.
+# --------------------------------------------------------------------------
+ap_grant_progressive_defenses = {
+    if = {
+        limit = { NOT = { has_country_flag = ap_defenses_1 } }
+        set_country_flag = ap_defenses_1
+        give_technology = { tech = tech_shields_2 message = no }
+        give_technology = { tech = tech_ship_armor_2 message = no }
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_defenses_2 } }
+        set_country_flag = ap_defenses_2
+        give_technology = { tech = tech_shields_3 message = no }
+        give_technology = { tech = tech_ship_armor_3 message = no }
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_defenses_3 } }
+        set_country_flag = ap_defenses_3
+        give_technology = { tech = tech_shields_4 message = no }
+        give_technology = { tech = tech_ship_armor_4 message = no }
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_defenses_4 } }
+        set_country_flag = ap_defenses_4
+        give_technology = { tech = tech_shields_5 message = no }
+        give_technology = { tech = tech_ship_armor_5 message = no }
+    }
+    set_country_flag = ap_notify_defenses
+    country_event = { id = ap_bridge.201 }
+}
+
+# --------------------------------------------------------------------------
+# Progressive Starbase (4 tiers)
+# Starport (tech_starbase_2) is a start tech, so tier 1 = Starhold.
+# --------------------------------------------------------------------------
+ap_grant_progressive_starbase = {
+    if = {
+        limit = { NOT = { has_country_flag = ap_starbase_1 } }
+        set_country_flag = ap_starbase_1
+        give_technology = { tech = tech_starbase_3 message = no }
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_starbase_2 } }
+        set_country_flag = ap_starbase_2
+        give_technology = { tech = tech_starbase_4 message = no }
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_starbase_3 } }
+        set_country_flag = ap_starbase_3
+        give_technology = { tech = tech_starbase_5 message = no }
+    }
+    set_country_flag = ap_notify_starbase
+    country_event = { id = ap_bridge.201 }
+}
+
+# --------------------------------------------------------------------------
+# Progressive FTL (3 tiers)
+# --------------------------------------------------------------------------
+ap_grant_progressive_ftl = {
+    if = {
+        limit = { NOT = { has_country_flag = ap_ftl_1 } }
+        set_country_flag = ap_ftl_1
+        give_technology = { tech = tech_hyper_drive_2 message = no }
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_ftl_2 } }
+        set_country_flag = ap_ftl_2
+        give_technology = { tech = tech_hyper_drive_3 message = no }
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_ftl_3 } }
+        set_country_flag = ap_ftl_3
+        give_technology = { tech = tech_jump_drive_1 message = no }
+    }
+    set_country_flag = ap_notify_ftl
+    country_event = { id = ap_bridge.201 }
+}
+
+# --------------------------------------------------------------------------
+# Progressive Colony Ship (3 tiers)
+# --------------------------------------------------------------------------
+ap_grant_progressive_colony_ship = {
+    if = {
+        limit = { NOT = { has_country_flag = ap_colony_1 } }
+        set_country_flag = ap_colony_1
+        give_technology = { tech = tech_colonization_1 message = no }
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_colony_2 } }
+        set_country_flag = ap_colony_2
+        give_technology = { tech = tech_colonization_2 message = no }
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_colony_3 } }
+        set_country_flag = ap_colony_3
+        give_technology = { tech = tech_colonization_3 message = no }
+    }
+    set_country_flag = ap_notify_colony
+    country_event = { id = ap_bridge.201 }
+}
+
+# --------------------------------------------------------------------------
+# Progressive Administration (3 tiers)
+# --------------------------------------------------------------------------
+ap_grant_progressive_administration = {
+    if = {
+        limit = { NOT = { has_country_flag = ap_admin_1 } }
+        set_country_flag = ap_admin_1
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_admin_2 } }
+        set_country_flag = ap_admin_2
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_admin_3 } }
+        set_country_flag = ap_admin_3
+    }
+    country_event = { id = ap_bridge.201 }
+}
+
+# --------------------------------------------------------------------------
+# Progressive Diplomacy (3 tiers)
+# --------------------------------------------------------------------------
+ap_grant_progressive_diplomacy = {
+    if = {
+        limit = { NOT = { has_country_flag = ap_diplomacy_1 } }
+        set_country_flag = ap_diplomacy_1
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_diplomacy_2 } }
+        set_country_flag = ap_diplomacy_2
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_diplomacy_3 } }
+        set_country_flag = ap_diplomacy_3
+    }
+    country_event = { id = ap_bridge.201 }
+}
+
+# --------------------------------------------------------------------------
+# Unique item grants
+# --------------------------------------------------------------------------
+ap_grant_mega_engineering_license = {
+    set_country_flag = ap_mega_engineering_license
+    set_country_flag = ap_notify_mega_engineering
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_progressive_megastructure = {
+    if = {
+        limit = { NOT = { has_country_flag = ap_megastructure_1 } }
+        set_country_flag = ap_megastructure_1
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_megastructure_2 } }
+        set_country_flag = ap_megastructure_2
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_megastructure_3 } }
+        set_country_flag = ap_megastructure_3
+    }
+    set_country_flag = ap_notify_megastructure
+    country_event = { id = ap_bridge.201 }
+}
+
+ap_grant_ascension_bio = {
+    set_country_flag = ap_ascension_bio
+    set_country_flag = ap_notify_ascension_bio
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_ascension_synth = {
+    set_country_flag = ap_ascension_synth
+    set_country_flag = ap_notify_ascension_synth
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_ascension_psi = {
+    set_country_flag = ap_ascension_psi
+    set_country_flag = ap_notify_ascension_psi
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_lgate_insight = {
+    if = {
+        limit = { NOT = { has_country_flag = ap_lgate_insight_1 } }
+        set_country_flag = ap_lgate_insight_1
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_lgate_insight_2 } }
+        set_country_flag = ap_lgate_insight_2
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_lgate_insight_3 } }
+        set_country_flag = ap_lgate_insight_3
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_lgate_insight_4 } }
+        set_country_flag = ap_lgate_insight_4
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_lgate_insight_5 } }
+        set_country_flag = ap_lgate_insight_5
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_lgate_insight_6 } }
+        set_country_flag = ap_lgate_insight_6
+    }
+    else_if = {
+        limit = { NOT = { has_country_flag = ap_lgate_insight_7 } }
+        set_country_flag = ap_lgate_insight_7
+    }
+    set_country_flag = ap_notify_lgate
+    country_event = { id = ap_bridge.201 }
+}
+
+ap_grant_precursor_unlock = {
+    set_country_flag = ap_precursor_unlock
+    set_country_flag = ap_notify_precursor
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_galactic_market = {
+    set_country_flag = ap_galactic_market
+    set_country_flag = ap_notify_galactic_market
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_crisis_beacon = {
+    set_country_flag = ap_crisis_beacon
+    country_event = { id = ap_bridge.200 }
+}
+
+# --------------------------------------------------------------------------
+# Filler: Resource grants
+# --------------------------------------------------------------------------
+ap_grant_resource_cache_small = {
+    add_resource = { energy = 500 minerals = 500 food = 200 consumer_goods = 100 }
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_resource_cache_medium = {
+    add_resource = { energy = 2000 minerals = 2000 food = 500 consumer_goods = 300 }
+    set_country_flag = ap_notify_resource_medium
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_resource_cache_large = {
+    add_resource = { energy = 5000 minerals = 5000 food = 1000 consumer_goods = 500 }
+    set_country_flag = ap_notify_resource_large
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_alloy_shipment_small = {
+    add_resource = { alloys = 300 }
+    set_country_flag = ap_notify_alloy_small
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_alloy_shipment_medium = {
+    add_resource = { alloys = 1000 }
+    set_country_flag = ap_notify_alloy_medium
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_alloy_shipment_large = {
+    add_resource = { alloys = 3000 }
+    set_country_flag = ap_notify_alloy_large
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_research_boost = {
+    add_resource = { physics_research = 1000 society_research = 1000 engineering_research = 1000 }
+    set_country_flag = ap_notify_research
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_influence_burst = {
+    add_resource = { influence = 200 }
+    set_country_flag = ap_notify_influence
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_unity_windfall = {
+    add_resource = { unity = 2000 }
+    set_country_flag = ap_notify_unity
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_fleet_cap_10 = {
+    add_modifier = { modifier = ap_fleet_cap_10 days = -1 }
+    set_country_flag = ap_notify_fleet_cap
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_fleet_cap_20 = {
+    add_modifier = { modifier = ap_fleet_cap_20 days = -1 }
+    set_country_flag = ap_notify_fleet_cap
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_starbase_cap_1 = {
+    add_modifier = { modifier = ap_starbase_cap_1 days = -1 }
+    set_country_flag = ap_notify_starbase_cap
+    country_event = { id = ap_bridge.200 }
+}
+
+ap_grant_pop_growth_stimulus = {
+    add_modifier = { modifier = ap_pop_growth_stimulus days = 3600 }
+    set_country_flag = ap_notify_pop_growth
+    country_event = { id = ap_bridge.200 }
+}
+
+# --------------------------------------------------------------------------
+# Traps
+# --------------------------------------------------------------------------
+ap_trigger_pirate_surge = {
+    # Spawn a hostile pirate fleet in a random owned system
+    random_owned_planet = {
+        limit = { is_capital = no }
+        solar_system = {
+            create_fleet = {
+                name = "Archipelago Raiders"
+                settings = {
+                    spawn_debris = no
+                }
+                effect = {
+                    set_owner = root
+                    while = {
+                        count = 5
+                        create_ship = {
+                            name = "Raider"
+                            random_existing_design = corvette
+                        }
+                    }
+                    set_fleet_stance = aggressive
+                    set_aggro_range_measure_from = self
+                    set_aggro_range = 500
+                }
+            }
+        }
+    }
+    add_resource = { energy = -500 minerals = -500 }
+    set_country_flag = ap_notify_pirate
+    country_event = { id = ap_bridge.202 }
+}
+
+ap_trigger_diplomatic_incident = {
+    random_relation = {
+        limit = {
+            is_ai = yes
+            has_communications = root
+        }
+        add_opinion_modifier = {
+            who = root
+            modifier = opinion_ap_diplomatic_incident
+        }
+    }
+    set_country_flag = ap_notify_diplo_incident
+    country_event = { id = ap_bridge.202 }
+}
+
+ap_trigger_research_setback = {
+    add_resource = {
+        physics_research = -500
+        society_research = -500
+        engineering_research = -500
+    }
+    set_country_flag = ap_notify_research_setback
+    country_event = { id = ap_bridge.202 }
+}
+
+ap_trigger_market_crash = {
+    add_modifier = { modifier = ap_market_crash days = 1800 }
+    set_country_flag = ap_notify_market_crash
+    country_event = { id = ap_bridge.202 }
+}
+
+ap_trigger_space_amoeba = {
+    # Resource drain from amoeba incursion
+    add_resource = { energy = -1000 minerals = -500 }
+    # Reduce a random planet's stability
+    random_owned_planet = {
+        add_modifier = {
+            modifier = ap_market_crash
+            days = 360
+        }
+    }
+    set_country_flag = ap_notify_space_amoeba
+    country_event = { id = ap_bridge.202 }
+}
+
+ap_trigger_border_friction = {
+    random_neighbor_country = {
+        limit = { is_ai = yes }
+        add_opinion_modifier = {
+            who = root
+            modifier = opinion_ap_diplomatic_incident
+        }
+    }
+    set_country_flag = ap_notify_border_friction
+    country_event = { id = ap_bridge.202 }
+}
+
+ap_grant_edict_fund = {
+    add_resource = { influence = 100 unity = 500 }
+    set_country_flag = ap_notify_influence
+    country_event = { id = ap_bridge.200 }
+}
+
+# Clear milestone check category flags
+ap_clear_check_flags = {
+    remove_country_flag = ap_check_cat_survey
+    remove_country_flag = ap_check_cat_exploration
+    remove_country_flag = ap_check_cat_tech
+    remove_country_flag = ap_check_cat_economy
+    remove_country_flag = ap_check_cat_expansion
+    remove_country_flag = ap_check_cat_military
+    remove_country_flag = ap_check_cat_diplomacy
+    remove_country_flag = ap_check_cat_traditions
+    remove_country_flag = ap_check_cat_crisis
+    remove_country_flag = ap_check_cat_victory
+}
+
+ap_grant_minor_relic = {
+    add_resource = { minor_artifacts = 5 }
+    set_country_flag = ap_notify_resource_small
+    country_event = { id = ap_bridge.200 }
+}

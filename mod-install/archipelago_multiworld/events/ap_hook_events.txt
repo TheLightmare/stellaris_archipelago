@@ -1,0 +1,487 @@
+# ============================================================================
+# Archipelago Hook Events
+# ============================================================================
+# Lightweight events triggered by on_actions that increment tracking
+# variables and write debug log lines for the client.
+# ============================================================================
+
+namespace = ap_hooks
+
+# --------------------------------------------------------------------------
+# Tech researched (on_tech_increased)
+# Scope: country
+# Uses last_increased_tech to detect which tech was just researched.
+# --------------------------------------------------------------------------
+country_event = {
+    id = ap_hooks.1
+    is_triggered_only = yes
+    hide_window = yes
+
+    trigger = {
+        is_ai = no
+        has_country_flag = ap_connected
+    }
+
+    immediate = {
+        change_variable = {
+            which = ap_techs_researched
+            value = 1
+        }
+        log = "AP_DEBUG|tech_researched"
+
+        # AP slot tech checks are handled by ap_dynamic_events.txt
+    }
+}
+
+# --------------------------------------------------------------------------
+# First contact established (on_first_contact)
+# Scope: country (This = empire 1, From = empire 2)
+# --------------------------------------------------------------------------
+country_event = {
+    id = ap_hooks.4
+    is_triggered_only = yes
+    hide_window = yes
+
+    trigger = {
+        is_ai = no
+        has_country_flag = ap_connected
+    }
+
+    immediate = {
+        change_variable = {
+            which = ap_first_contacts
+            value = 1
+        }
+        log = "AP_DEBUG|first_contact"
+    }
+}
+
+# --------------------------------------------------------------------------
+# System survey completed (on_system_survey)
+# Scope: country (This = country, From = system)
+# --------------------------------------------------------------------------
+country_event = {
+    id = ap_hooks.6
+    is_triggered_only = yes
+    hide_window = yes
+
+    trigger = {
+        is_ai = no
+        has_country_flag = ap_connected
+    }
+
+    immediate = {
+        change_variable = {
+            which = ap_surveys_completed
+            value = 1
+        }
+        log = "AP_DEBUG|system_surveyed"
+    }
+}
+
+# --------------------------------------------------------------------------
+# War won (on_war_won)
+# Root = Winner Warleader, From = Loser Warleader
+# --------------------------------------------------------------------------
+country_event = {
+    id = ap_hooks.10
+    is_triggered_only = yes
+    hide_window = yes
+
+    trigger = {
+        is_ai = no
+        has_country_flag = ap_connected
+    }
+
+    immediate = {
+        change_variable = {
+            which = ap_wars_won
+            value = 1
+        }
+        log = "AP_DEBUG|war_won"
+    }
+}
+
+# --------------------------------------------------------------------------
+# Tradition picked (on_tradition_picked)
+# THIS = country
+# --------------------------------------------------------------------------
+country_event = {
+    id = ap_hooks.11
+    is_triggered_only = yes
+    hide_window = yes
+
+    trigger = {
+        is_ai = no
+        has_country_flag = ap_connected
+    }
+
+    immediate = {
+        change_variable = {
+            which = ap_traditions_picked
+            value = 1
+        }
+        log = "AP_DEBUG|tradition_picked"
+    }
+}
+
+# --------------------------------------------------------------------------
+# Ascension perk picked (on_ascension_perk_picked)
+# THIS = country
+# --------------------------------------------------------------------------
+country_event = {
+    id = ap_hooks.12
+    is_triggered_only = yes
+    hide_window = yes
+
+    trigger = {
+        is_ai = no
+        has_country_flag = ap_connected
+    }
+
+    immediate = {
+        change_variable = {
+            which = ap_ascension_perks_picked
+            value = 1
+        }
+        log = "AP_DEBUG|ascension_perk_picked"
+    }
+}
+
+# --------------------------------------------------------------------------
+# Vanilla tech research detection (on_tech_increased)
+# Generated — DO NOT EDIT MANUALLY
+# --------------------------------------------------------------------------
+country_event = {
+    id = ap_hooks.20
+    is_triggered_only = yes
+    hide_window = yes
+
+    trigger = {
+        is_ai = no
+        has_country_flag = ap_connected
+    }
+
+    immediate = {
+        if = {
+            limit = {
+                last_increased_tech = tech_planetary_unification
+                NOT = { has_country_flag = ap_sent_tech_planetary_unification }
+            }
+            set_country_flag = ap_sent_tech_planetary_unification
+            ap_send_check_tech_planetary_unification = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_eco_simulation
+                NOT = { has_country_flag = ap_sent_tech_eco_simulation }
+            }
+            set_country_flag = ap_sent_tech_eco_simulation
+            ap_send_check_tech_eco_simulation = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_powered_exoskeletons
+                NOT = { has_country_flag = ap_sent_tech_powered_exoskeletons }
+            }
+            set_country_flag = ap_sent_tech_powered_exoskeletons
+            ap_send_check_tech_powered_exoskeletons = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_alloys_1
+                NOT = { has_country_flag = ap_sent_tech_alloys_1 }
+            }
+            set_country_flag = ap_sent_tech_alloys_1
+            ap_send_check_tech_alloys_1 = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_luxuries_1
+                NOT = { has_country_flag = ap_sent_tech_luxuries_1 }
+            }
+            set_country_flag = ap_sent_tech_luxuries_1
+            ap_send_check_tech_luxuries_1 = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_mineral_purification_1
+                NOT = { has_country_flag = ap_sent_tech_mineral_purification_1 }
+            }
+            set_country_flag = ap_sent_tech_mineral_purification_1
+            ap_send_check_tech_mineral_purification_1 = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_alloys_2
+                NOT = { has_country_flag = ap_sent_tech_alloys_2 }
+            }
+            set_country_flag = ap_sent_tech_alloys_2
+            ap_send_check_tech_alloys_2 = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_gene_crops
+                NOT = { has_country_flag = ap_sent_tech_gene_crops }
+            }
+            set_country_flag = ap_sent_tech_gene_crops
+            ap_send_check_tech_gene_crops = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_colonial_centralization
+                NOT = { has_country_flag = ap_sent_tech_colonial_centralization }
+            }
+            set_country_flag = ap_sent_tech_colonial_centralization
+            ap_send_check_tech_colonial_centralization = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_interstellar_economics
+                NOT = { has_country_flag = ap_sent_tech_interstellar_economics }
+            }
+            set_country_flag = ap_sent_tech_interstellar_economics
+            ap_send_check_tech_interstellar_economics = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_galactic_markets
+                NOT = { has_country_flag = ap_sent_tech_galactic_markets }
+            }
+            set_country_flag = ap_sent_tech_galactic_markets
+            ap_send_check_tech_galactic_markets = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_administrative_ai
+                NOT = { has_country_flag = ap_sent_tech_administrative_ai }
+            }
+            set_country_flag = ap_sent_tech_administrative_ai
+            ap_send_check_tech_administrative_ai = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_global_research_initiative
+                NOT = { has_country_flag = ap_sent_tech_global_research_initiative }
+            }
+            set_country_flag = ap_sent_tech_global_research_initiative
+            ap_send_check_tech_global_research_initiative = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_robotic_workers
+                NOT = { has_country_flag = ap_sent_tech_robotic_workers }
+            }
+            set_country_flag = ap_sent_tech_robotic_workers
+            ap_send_check_tech_robotic_workers = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_droid_workers
+                NOT = { has_country_flag = ap_sent_tech_droid_workers }
+            }
+            set_country_flag = ap_sent_tech_droid_workers
+            ap_send_check_tech_droid_workers = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_synthetic_workers
+                NOT = { has_country_flag = ap_sent_tech_synthetic_workers }
+            }
+            set_country_flag = ap_sent_tech_synthetic_workers
+            ap_send_check_tech_synthetic_workers = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_gene_tailoring
+                NOT = { has_country_flag = ap_sent_tech_gene_tailoring }
+            }
+            set_country_flag = ap_sent_tech_gene_tailoring
+            ap_send_check_tech_gene_tailoring = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_cloning
+                NOT = { has_country_flag = ap_sent_tech_cloning }
+            }
+            set_country_flag = ap_sent_tech_cloning
+            ap_send_check_tech_cloning = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_glandular_acclimation
+                NOT = { has_country_flag = ap_sent_tech_glandular_acclimation }
+            }
+            set_country_flag = ap_sent_tech_glandular_acclimation
+            ap_send_check_tech_glandular_acclimation = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_psionic_theory
+                NOT = { has_country_flag = ap_sent_tech_psionic_theory }
+            }
+            set_country_flag = ap_sent_tech_psionic_theory
+            ap_send_check_tech_psionic_theory = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_telepathy
+                NOT = { has_country_flag = ap_sent_tech_telepathy }
+            }
+            set_country_flag = ap_sent_tech_telepathy
+            ap_send_check_tech_telepathy = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_sensors_2
+                NOT = { has_country_flag = ap_sent_tech_sensors_2 }
+            }
+            set_country_flag = ap_sent_tech_sensors_2
+            ap_send_check_tech_sensors_2 = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_sensors_3
+                NOT = { has_country_flag = ap_sent_tech_sensors_3 }
+            }
+            set_country_flag = ap_sent_tech_sensors_3
+            ap_send_check_tech_sensors_3 = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_doctrine_fleet_size_1
+                NOT = { has_country_flag = ap_sent_tech_doctrine_fleet_size_1 }
+            }
+            set_country_flag = ap_sent_tech_doctrine_fleet_size_1
+            ap_send_check_tech_doctrine_fleet_size_1 = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_doctrine_fleet_size_3
+                NOT = { has_country_flag = ap_sent_tech_doctrine_fleet_size_3 }
+            }
+            set_country_flag = ap_sent_tech_doctrine_fleet_size_3
+            ap_send_check_tech_doctrine_fleet_size_3 = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_doctrine_fleet_size_5
+                NOT = { has_country_flag = ap_sent_tech_doctrine_fleet_size_5 }
+            }
+            set_country_flag = ap_sent_tech_doctrine_fleet_size_5
+            ap_send_check_tech_doctrine_fleet_size_5 = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_doctrine_navy_size_1
+                NOT = { has_country_flag = ap_sent_tech_doctrine_navy_size_1 }
+            }
+            set_country_flag = ap_sent_tech_doctrine_navy_size_1
+            ap_send_check_tech_doctrine_navy_size_1 = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_doctrine_navy_size_3
+                NOT = { has_country_flag = ap_sent_tech_doctrine_navy_size_3 }
+            }
+            set_country_flag = ap_sent_tech_doctrine_navy_size_3
+            ap_send_check_tech_doctrine_navy_size_3 = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_centralized_command
+                NOT = { has_country_flag = ap_sent_tech_centralized_command }
+            }
+            set_country_flag = ap_sent_tech_centralized_command
+            ap_send_check_tech_centralized_command = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_habitat_1
+                NOT = { has_country_flag = ap_sent_tech_habitat_1 }
+            }
+            set_country_flag = ap_sent_tech_habitat_1
+            ap_send_check_tech_habitat_1 = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_habitat_2
+                NOT = { has_country_flag = ap_sent_tech_habitat_2 }
+            }
+            set_country_flag = ap_sent_tech_habitat_2
+            ap_send_check_tech_habitat_2 = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_climate_restoration
+                NOT = { has_country_flag = ap_sent_tech_climate_restoration }
+            }
+            set_country_flag = ap_sent_tech_climate_restoration
+            ap_send_check_tech_climate_restoration = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_mine_exotic_gases
+                NOT = { has_country_flag = ap_sent_tech_mine_exotic_gases }
+            }
+            set_country_flag = ap_sent_tech_mine_exotic_gases
+            ap_send_check_tech_mine_exotic_gases = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_mine_volatile_motes
+                NOT = { has_country_flag = ap_sent_tech_mine_volatile_motes }
+            }
+            set_country_flag = ap_sent_tech_mine_volatile_motes
+            ap_send_check_tech_mine_volatile_motes = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_mine_rare_crystals
+                NOT = { has_country_flag = ap_sent_tech_mine_rare_crystals }
+            }
+            set_country_flag = ap_sent_tech_mine_rare_crystals
+            ap_send_check_tech_mine_rare_crystals = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_capital_productivity_1
+                NOT = { has_country_flag = ap_sent_tech_capital_productivity_1 }
+            }
+            set_country_flag = ap_sent_tech_capital_productivity_1
+            ap_send_check_tech_capital_productivity_1 = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_capital_productivity_3
+                NOT = { has_country_flag = ap_sent_tech_capital_productivity_3 }
+            }
+            set_country_flag = ap_sent_tech_capital_productivity_3
+            ap_send_check_tech_capital_productivity_3 = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_global_defense_grid
+                NOT = { has_country_flag = ap_sent_tech_global_defense_grid }
+            }
+            set_country_flag = ap_sent_tech_global_defense_grid
+            ap_send_check_tech_global_defense_grid = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_planetary_shield_generator
+                NOT = { has_country_flag = ap_sent_tech_planetary_shield_generator }
+            }
+            set_country_flag = ap_sent_tech_planetary_shield_generator
+            ap_send_check_tech_planetary_shield_generator = yes
+        }
+        if = {
+            limit = {
+                last_increased_tech = tech_galactic_administration
+                NOT = { has_country_flag = ap_sent_tech_galactic_administration }
+            }
+            set_country_flag = ap_sent_tech_galactic_administration
+            ap_send_check_tech_galactic_administration = yes
+        }
+    }
+}

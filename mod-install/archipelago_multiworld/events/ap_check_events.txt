@@ -1,0 +1,95 @@
+# ============================================================================
+# Archipelago Check Events
+# ============================================================================
+# These events detect when the player crosses a milestone threshold
+# and register the check for the bridge to send to the AP server.
+# ============================================================================
+
+namespace = ap_check
+
+# --------------------------------------------------------------------------
+# Periodic milestone scanner — fires every 30 days to check thresholds
+# --------------------------------------------------------------------------
+country_event = {
+    id = ap_check.1
+    is_triggered_only = yes
+    hide_window = yes
+
+    trigger = {
+        is_ai = no
+        has_country_flag = ap_connected
+    }
+
+    immediate = {
+        # --- Exploration checks ---
+        ap_check_survey_milestones = yes
+        ap_check_first_contact_milestones = yes
+        # (anomaly locations are AP techs — detected via on_tech_increased)
+
+        # --- Tech checks ---
+        ap_check_tech_milestones = yes
+
+        # --- Expansion checks ---
+        ap_check_colony_milestones = yes
+        ap_check_pop_milestones = yes
+        ap_check_starbase_milestones = yes
+        ap_check_income_milestones = yes
+
+        # --- Diplomacy checks ---
+        ap_check_diplomacy_milestones = yes
+
+        # --- Warfare checks ---
+        ap_check_warfare_milestones = yes
+
+        # --- Traditions ---
+        ap_check_tradition_milestones = yes
+
+        # --- Victory ---
+        ap_check_victory_condition = yes
+        ap_check_extended_milestones = yes
+    }
+}
+
+# --------------------------------------------------------------------------
+# Check completed notification — category-specific descriptions
+# --------------------------------------------------------------------------
+country_event = {
+    id = ap_check.100
+    is_triggered_only = yes
+    title = "ap_check.100.name"
+
+    desc = { trigger = { has_country_flag = ap_check_cat_survey } text = "ap_check.100.desc.survey" }
+    desc = { trigger = { has_country_flag = ap_check_cat_exploration } text = "ap_check.100.desc.exploration" }
+    desc = { trigger = { has_country_flag = ap_check_cat_tech } text = "ap_check.100.desc.tech" }
+    desc = { trigger = { has_country_flag = ap_check_cat_economy } text = "ap_check.100.desc.economy" }
+    desc = { trigger = { has_country_flag = ap_check_cat_expansion } text = "ap_check.100.desc.expansion" }
+    desc = { trigger = { has_country_flag = ap_check_cat_military } text = "ap_check.100.desc.military" }
+    desc = { trigger = { has_country_flag = ap_check_cat_diplomacy } text = "ap_check.100.desc.diplomacy" }
+    desc = { trigger = { has_country_flag = ap_check_cat_traditions } text = "ap_check.100.desc.traditions" }
+    desc = { trigger = { has_country_flag = ap_check_cat_crisis } text = "ap_check.100.desc.crisis" }
+    desc = { trigger = { has_country_flag = ap_check_cat_victory } text = "ap_check.100.desc.victory" }
+    desc = "ap_check.100.desc"  # fallback
+
+    picture = GFX_evt_satellite_in_orbit
+
+    option = {
+        name = "ap_check.100.a"
+        hidden_effect = { ap_clear_check_flags = yes }
+    }
+}
+
+# --------------------------------------------------------------------------
+# Check completed — found your own item
+# --------------------------------------------------------------------------
+country_event = {
+    id = ap_check.101
+    is_triggered_only = yes
+    title = "ap_check.101.name"
+    desc = "ap_check.101.desc"
+
+    picture = GFX_evt_satellite_in_orbit
+
+    option = {
+        name = "ap_check.101.a"
+    }
+}

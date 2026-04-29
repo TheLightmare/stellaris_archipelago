@@ -1,0 +1,136 @@
+﻿l_english:
+ # =========================================================================
+ # Connection Events
+ # =========================================================================
+ ap_bridge.100.name:0 "Archipelago Connection"
+ ap_bridge.100.desc:0 "Our scientists have detected unusual signals from beyond the known multiverse. A connection to the §YArchipelago Network§! has been established.\n\nThrough this link, our discoveries will benefit civilizations in other realities - and their breakthroughs will empower us in return.\n\n§GThe bridge is active. Good luck, Commander.§!"
+ ap_bridge.100.a:0 "Connect to the Multiworld"
+
+ # =========================================================================
+ # Inbound: Item received for US from another player
+ # =========================================================================
+ ap_bridge.200.name:0 "Multiverse Transmission Received"
+ ap_bridge.200.desc:0 "The §YArchipelago Network§! hums with activity. A fellow explorer in another reality has uncovered something destined for us - their discovery has been transmitted across the dimensional barrier and integrated into our civilization.\n\n§GAnother world's progress is our gain.§!"
+ ap_bridge.200.a:0 "The multiverse provides"
+
+ # =========================================================================
+ # Inbound: Progressive tech tier-up
+ # =========================================================================
+ ap_bridge.201.name:0 "Multiverse Technology Breakthrough"
+ ap_bridge.201.desc:0 "A §Ymajor technological breakthrough§! has been transmitted through the Archipelago Network. Our engineers are already adapting the designs - entirely new capabilities are now at our disposal.\n\n§GCheck the ship designer and research screen for new options.§!"
+ ap_bridge.201.a:0 "Our capabilities grow!"
+
+ # =========================================================================
+ # Inbound: Trap received
+ # =========================================================================
+ ap_bridge.202.name:0 "Dimensional Interference"
+ ap_bridge.202.desc:0 "An unstable transmission has arrived through the §YArchipelago Network§!. Rather than a gift, this signal has caused §Rdisruption§! to our systems. Someone out there is either unlucky... or devious.\n\n§RCheck your empire for the effects.§!"
+ ap_bridge.202.a:0 "We'll recover"
+
+ # =========================================================================
+ # Outbound: Check completed - YOUR item sent to someone else
+ # =========================================================================
+ ap_check.100.name:0 "Discovery Transmitted!"
+ ap_check.100.desc:0 "§GExcellent work.§! Our latest milestone has been §Ytransmitted§! through the Archipelago Network. Somewhere across the multiverse, another civilization just received the fruits of our labor.\n\nEvery discovery we make empowers our allies in other realities. §HKeep exploring, researching, and expanding - the multiverse depends on us.§!"
+ ap_check.100.a:0 "For the multiverse!"
+
+ # =========================================================================
+ # Outbound: Check completed - found OUR OWN item
+ # =========================================================================
+ ap_check.101.name:0 "Self-Discovery"
+ ap_check.101.desc:0 "Our latest achievement has resonated through the §YArchipelago Network§! and... looped back to us. The multiverse works in mysterious ways - this discovery empowers §Gour own civilization§!."
+ ap_check.101.a:0 "We help ourselves"
+
+ # =========================================================================
+ # Decisions
+ # =========================================================================
+ ap_decision_energy_deposit_small:0 "EnergyLink: Deposit 500 EC"
+ ap_decision_energy_deposit_medium:0 "EnergyLink: Deposit 2,000 EC"
+ ap_decision_energy_deposit_large:0 "EnergyLink: Deposit 10,000 EC"
+ ap_decision_energy_withdraw_small:0 "EnergyLink: Withdraw 500 EC"
+ ap_decision_energy_withdraw_medium:0 "EnergyLink: Withdraw 2,000 EC"
+ ap_decision_energy_withdraw_large:0 "EnergyLink: Withdraw 10,000 EC"
+ ap_decision_energy_deposit_desc:0 "Transfer energy credits to the shared §YEnergyLink§! pool, accessible by any connected civilization in the multiverse."
+ ap_decision_energy_withdraw_desc:0 "Withdraw energy credits from the shared §YEnergyLink§! pool."
+
+ # =========================================================================
+ # Modifiers
+ # =========================================================================
+ ap_fleet_cap_10:0 "Multiverse Fleet Expansion I"
+ ap_fleet_cap_20:0 "Multiverse Fleet Expansion II"
+ ap_starbase_cap_1:0 "Multiverse Starbase License"
+ ap_starbase_cap_2:0 "Multiverse Starbase License II"
+ ap_pop_growth_stimulus:0 "Multiverse Growth Stimulus"
+ ap_market_crash:0 "Interdimensional Market Crash"
+ ap_energy_cooldown:0 "EnergyLink Cooldown"
+ ap_connected_tooltip:0 "Connected to the §YArchipelago Multiworld§! network."
+
+ opinion_ap_diplomatic_incident:0 "Archipelago Diplomatic Incident"
+
+ # =========================================================================
+ # Dynamic item descriptions (conditional per item type)
+ # =========================================================================
+
+ # Progressive (event 201)
+ ap_bridge.201.desc.ship_class:0 "A new §Yship class§! has been unlocked through the Archipelago Network. Our shipyards can now construct larger and more powerful vessels.\n\n§GCheck the ship designer for new hull types.§!"
+ ap_bridge.201.desc.weapons:0 "Advanced §Yweapon systems§! have been transmitted through the Archipelago Network. Our military engineers are already installing the new designs.\n\n§GNew weapon components are now available.§!"
+ ap_bridge.201.desc.defenses:0 "New §Ydefensive technologies§! - improved shields and armor plating - have arrived through the Archipelago Network.\n\n§GUpgraded defense components are now available.§!"
+ ap_bridge.201.desc.ftl:0 "A breakthrough in §YFTL propulsion§! has been transmitted through the Archipelago Network. Our ships can now travel faster and further than ever before.\n\n§GNew drive components unlocked.§!"
+ ap_bridge.201.desc.starbase:0 "§YStarbase engineering§! data has arrived through the Archipelago Network. Our starbases can now be upgraded to a higher tier.\n\n§GUpgrade available in the starbase view.§!"
+ ap_bridge.201.desc.colony:0 "New §Ycolonization technologies§! have been unlocked through the Archipelago Network. We can now settle on more hostile worlds.\n\n§GNew colony ship options available.§!"
+ ap_bridge.201.desc.megastructure:0 "§YMegastructure blueprints§! have been transmitted through the Archipelago Network. The engineering challenges of building on a cosmic scale are now within our grasp."
+ ap_bridge.201.desc.lgate:0 "A fragment of §YL-Gate insight§! has arrived through the Archipelago Network. We are one step closer to understanding these ancient gateways."
+
+ # Filler (event 200)
+ ap_bridge.200.desc.resource_small:0 "A small §Yresource cache§! has been transmitted through the Archipelago Network.\n\n§G+500 Energy, +500 Minerals, +200 Food, +100 Consumer Goods§!"
+ ap_bridge.200.desc.resource_medium:0 "A medium §Yresource cache§! has been transmitted through the Archipelago Network.\n\n§G+2,000 Energy, +2,000 Minerals, +500 Food, +300 Consumer Goods§!"
+ ap_bridge.200.desc.resource_large:0 "A large §Yresource cache§! has been transmitted through the Archipelago Network.\n\n§G+5,000 Energy, +5,000 Minerals, +1,000 Food, +500 Consumer Goods§!"
+ ap_bridge.200.desc.alloy_small:0 "An §Yalloy shipment§! has arrived through the Archipelago Network.\n\n§G+300 Alloys§!"
+ ap_bridge.200.desc.alloy_medium:0 "A sizeable §Yalloy shipment§! has arrived through the Archipelago Network.\n\n§G+1,000 Alloys§!"
+ ap_bridge.200.desc.alloy_large:0 "A massive §Yalloy shipment§! has arrived through the Archipelago Network.\n\n§G+3,000 Alloys§!"
+ ap_bridge.200.desc.research:0 "A §Yresearch data package§! has been transmitted through the Archipelago Network.\n\n§G+1,000 Physics, Society, and Engineering research§!"
+ ap_bridge.200.desc.influence:0 "A surge of §Ypolitical influence§! has arrived through the Archipelago Network.\n\n§G+200 Influence§!"
+ ap_bridge.200.desc.unity:0 "A wave of §Ycultural unity§! has been transmitted through the Archipelago Network.\n\n§G+2,000 Unity§!"
+ ap_bridge.200.desc.fleet_cap:0 "§YFleet logistics data§! from the Archipelago Network has expanded our naval capacity.\n\n§GPermanent fleet capacity increase.§!"
+ ap_bridge.200.desc.starbase_cap:0 "§YStarbase administration protocols§! from the Archipelago Network allow us to maintain an additional starbase.\n\n§G+1 Starbase Capacity (permanent).§!"
+ ap_bridge.200.desc.mega_engineering:0 "The §YMega-Engineering License§! has been transmitted through the Archipelago Network. We now have clearance to research the most ambitious engineering projects in the galaxy."
+ ap_bridge.200.desc.ascension_bio:0 "§YBiological Ascension§! pathways have been unlocked through the Archipelago Network. Our species can now pursue genetic perfection."
+ ap_bridge.200.desc.ascension_synth:0 "§YSynthetic Ascension§! pathways have been unlocked through the Archipelago Network. The boundary between organic and synthetic life blurs."
+ ap_bridge.200.desc.ascension_psi:0 "§YPsionic Ascension§! pathways have been unlocked through the Archipelago Network. Our people awaken to the whispers of the Shroud."
+ ap_bridge.200.desc.precursor:0 "A §YPrecursor artifact§! has been transmitted through the Archipelago Network. Ancient secrets are now within our reach."
+ ap_bridge.200.desc.galactic_market:0 "§YGalactic Market access§! has been granted through the Archipelago Network. New trade opportunities await."
+ ap_bridge.200.desc.pop_growth:0 "A §Ypop growth stimulus§! has been transmitted through the Archipelago Network.\n\n§G+25% pop growth for 10 years.§!"
+
+ # Traps (event 202)
+ ap_bridge.202.desc.pirate:0 "A §RPirate Surge§! has been triggered through the Archipelago Network! Hostile raiders are striking at our resource stockpiles.\n\n§R-500 Energy, -500 Minerals§!"
+ ap_bridge.202.desc.diplo:0 "A §RDiplomatic Incident§! has been triggered through the Archipelago Network! A neighboring empire is outraged by our actions.\n\n§ROpinion penalty with a neighbor.§!"
+ ap_bridge.202.desc.research_setback:0 "A §RResearch Setback§! has been triggered through the Archipelago Network! Corrupted data has contaminated our research databases.\n\n§R-500 Physics, Society, and Engineering research§!"
+ ap_bridge.202.desc.market_crash:0 "An §RInterdimensional Market Crash§! has been triggered through the Archipelago Network! Economic shockwaves ripple through our empire.\n\n§RNaval capacity penalty for 5 years.§!"
+ ap_bridge.202.desc.space_amoeba:0 "§RSpace Amoeba§! have been attracted by unstable signals from the Archipelago Network! They've consumed some of our stored resources.\n\n§R-1,000 Energy, -500 Minerals§!"
+ ap_bridge.202.desc.border_friction:0 "§RBorder Friction§! has been instigated through the Archipelago Network! A neighboring empire now views us with suspicion.\n\n§ROpinion penalty with a neighbor.§!"
+
+ # =========================================================================
+ # EnergyLink Edicts
+ # =========================================================================
+ ap_energy_deposit_500:0 "EnergyLink: Deposit 500 EC"
+ ap_energy_deposit_500_desc:0 "Transfer 500 energy credits to the shared Archipelago EnergyLink pool."
+ ap_energy_deposit_2000:0 "EnergyLink: Deposit 2,000 EC"
+ ap_energy_deposit_2000_desc:0 "Transfer 2,000 energy credits to the shared Archipelago EnergyLink pool."
+ ap_energy_withdraw_500:0 "EnergyLink: Withdraw 500 EC"
+ ap_energy_withdraw_500_desc:0 "Request 500 energy credits from the shared Archipelago EnergyLink pool."
+ ap_energy_withdraw_2000:0 "EnergyLink: Withdraw 2,000 EC"
+ ap_energy_withdraw_2000_desc:0 "Request 2,000 energy credits from the shared Archipelago EnergyLink pool."
+
+ # =========================================================================
+ # Check category descriptions (milestone notifications)
+ # =========================================================================
+ ap_check.100.desc.survey:0 "Our survey fleets have mapped enough of the galaxy to transmit valuable §Ystellar cartography data§! through the Archipelago Network.\n\n§GSomewhere across the multiverse, another civilization just received the fruits of our exploration.§!"
+ ap_check.100.desc.exploration:0 "A significant §Yexploration milestone§! has been transmitted through the Archipelago Network. Our discoveries at the frontier of known space benefit civilizations in other realities.\n\n§GThe multiverse grows richer with each discovery.§!"
+ ap_check.100.desc.tech:0 "Our §Yscientific progress§! has been transmitted through the Archipelago Network. Another civilization in a distant reality benefits from our research breakthroughs.\n\n§GKnowledge shared is knowledge multiplied.§!"
+ ap_check.100.desc.economy:0 "Our §Yeconomic achievements§! have been transmitted through the Archipelago Network. The prosperity of our empire resonates across dimensional boundaries.\n\n§GOur economic engine powers the multiverse.§!"
+ ap_check.100.desc.expansion:0 "Our §Ycolonial expansion§! has been transmitted through the Archipelago Network. Each new world we settle sends ripples through the multiverse.\n\n§GThe empire grows, and so does our contribution.§!"
+ ap_check.100.desc.military:0 "Our §Ymilitary prowess§! has been transmitted through the Archipelago Network. Our victories on the battlefield empower allies in other realities.\n\n§GStrength through the multiverse.§!"
+ ap_check.100.desc.diplomacy:0 "A §Ydiplomatic achievement§! has been transmitted through the Archipelago Network. Our progress in galactic politics benefits civilizations beyond our reality.\n\n§GDiplomacy transcends dimensions.§!"
+ ap_check.100.desc.traditions:0 "Our §Ycultural traditions§! have been transmitted through the Archipelago Network. The depth of our civilization's heritage inspires others across the multiverse.\n\n§GOur traditions echo through the cosmos.§!"
+ ap_check.100.desc.crisis:0 "Our experience with the §Yendgame crisis§! has been transmitted through the Archipelago Network. Survival data from our reality may prove invaluable to others.\n\n§GWe endure - and so shall the multiverse.§!"
+ ap_check.100.desc.victory:0 "§GVICTORY!§! Our civilization has achieved its ultimate goal. This triumph has been transmitted through the Archipelago Network.\n\n§YThe multiverse celebrates our success!§!"

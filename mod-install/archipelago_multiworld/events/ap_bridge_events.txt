@@ -1,0 +1,179 @@
+# ============================================================================
+# Archipelago Bridge Events
+# ============================================================================
+# Communication between the Stellaris mod and the AP Python client
+# happens via log lines written to game.log (outbound) and country
+# flags injected into save files (inbound).
+#
+# The client tails game.log for lines prefixed with "AP_".
+# ============================================================================
+
+namespace = ap_bridge
+
+# --------------------------------------------------------------------------
+# Monthly polling event — heartbeat + check scanner trigger
+# --------------------------------------------------------------------------
+country_event = {
+    id = ap_bridge.1
+    is_triggered_only = yes
+    hide_window = yes
+
+    trigger = {
+        is_ai = no
+        has_country_flag = ap_connected
+    }
+
+    immediate = {
+        # Send heartbeat so the client knows the mod is active
+        ap_send_heartbeat = yes
+    }
+}
+
+# --------------------------------------------------------------------------
+# Connection setup — fires on game start
+# --------------------------------------------------------------------------
+country_event = {
+    id = ap_bridge.100
+    is_triggered_only = yes
+    title = ap_bridge.100.name
+    desc = ap_bridge.100.desc
+
+    picture = GFX_evt_satellite_in_orbit
+
+    trigger = {
+        is_ai = no
+    }
+
+    option = {
+        name = ap_bridge.100.a
+        set_country_flag = ap_connected
+
+        # Initialize tracking variables
+        set_variable = {
+            which = ap_checks_sent
+            value = 0
+        }
+        set_variable = {
+            which = ap_items_received
+            value = 0
+        }
+        set_variable = {
+            which = ap_surveys_completed
+            value = 0
+        }
+        set_variable = {
+            which = ap_techs_researched
+            value = 0
+        }
+        set_variable = {
+            which = ap_wars_won
+            value = 0
+        }
+        set_variable = {
+            which = ap_anomalies_completed
+            value = 0
+        }
+        set_variable = {
+            which = ap_first_contacts
+            value = 0
+        }
+        set_variable = {
+            which = ap_traditions_picked
+            value = 0
+        }
+        set_variable = {
+            which = ap_ascension_perks_picked
+            value = 0
+        }
+
+        # Log connection for the client to pick up immediately
+        log = "AP_CONNECTED"
+    }
+}
+
+# --------------------------------------------------------------------------
+# Item received notification (filler/unique items)
+# --------------------------------------------------------------------------
+country_event = {
+    id = ap_bridge.200
+    is_triggered_only = yes
+    title = ap_bridge.200.name
+
+    # Dynamic description based on which item was received
+    desc = { trigger = { has_country_flag = ap_notify_resource_small } text = "ap_bridge.200.desc.resource_small" }
+    desc = { trigger = { has_country_flag = ap_notify_resource_medium } text = "ap_bridge.200.desc.resource_medium" }
+    desc = { trigger = { has_country_flag = ap_notify_resource_large } text = "ap_bridge.200.desc.resource_large" }
+    desc = { trigger = { has_country_flag = ap_notify_alloy_small } text = "ap_bridge.200.desc.alloy_small" }
+    desc = { trigger = { has_country_flag = ap_notify_alloy_medium } text = "ap_bridge.200.desc.alloy_medium" }
+    desc = { trigger = { has_country_flag = ap_notify_alloy_large } text = "ap_bridge.200.desc.alloy_large" }
+    desc = { trigger = { has_country_flag = ap_notify_research } text = "ap_bridge.200.desc.research" }
+    desc = { trigger = { has_country_flag = ap_notify_influence } text = "ap_bridge.200.desc.influence" }
+    desc = { trigger = { has_country_flag = ap_notify_unity } text = "ap_bridge.200.desc.unity" }
+    desc = { trigger = { has_country_flag = ap_notify_fleet_cap } text = "ap_bridge.200.desc.fleet_cap" }
+    desc = { trigger = { has_country_flag = ap_notify_starbase_cap } text = "ap_bridge.200.desc.starbase_cap" }
+    desc = { trigger = { has_country_flag = ap_notify_mega_engineering } text = "ap_bridge.200.desc.mega_engineering" }
+    desc = { trigger = { has_country_flag = ap_notify_ascension_bio } text = "ap_bridge.200.desc.ascension_bio" }
+    desc = { trigger = { has_country_flag = ap_notify_ascension_synth } text = "ap_bridge.200.desc.ascension_synth" }
+    desc = { trigger = { has_country_flag = ap_notify_ascension_psi } text = "ap_bridge.200.desc.ascension_psi" }
+    desc = { trigger = { has_country_flag = ap_notify_precursor } text = "ap_bridge.200.desc.precursor" }
+    desc = { trigger = { has_country_flag = ap_notify_galactic_market } text = "ap_bridge.200.desc.galactic_market" }
+    desc = { trigger = { has_country_flag = ap_notify_pop_growth } text = "ap_bridge.200.desc.pop_growth" }
+    desc = "ap_bridge.200.desc"  # fallback
+
+    picture = GFX_evt_ship_in_orbit
+
+    option = {
+        name = ap_bridge.200.a
+        hidden_effect = { ap_clear_notify_flags = yes }
+    }
+}
+
+# --------------------------------------------------------------------------
+# Progressive item tier-up notification
+# --------------------------------------------------------------------------
+country_event = {
+    id = ap_bridge.201
+    is_triggered_only = yes
+    title = ap_bridge.201.name
+
+    desc = { trigger = { has_country_flag = ap_notify_ship_class } text = "ap_bridge.201.desc.ship_class" }
+    desc = { trigger = { has_country_flag = ap_notify_weapons } text = "ap_bridge.201.desc.weapons" }
+    desc = { trigger = { has_country_flag = ap_notify_defenses } text = "ap_bridge.201.desc.defenses" }
+    desc = { trigger = { has_country_flag = ap_notify_ftl } text = "ap_bridge.201.desc.ftl" }
+    desc = { trigger = { has_country_flag = ap_notify_starbase } text = "ap_bridge.201.desc.starbase" }
+    desc = { trigger = { has_country_flag = ap_notify_colony } text = "ap_bridge.201.desc.colony" }
+    desc = { trigger = { has_country_flag = ap_notify_megastructure } text = "ap_bridge.201.desc.megastructure" }
+    desc = { trigger = { has_country_flag = ap_notify_lgate } text = "ap_bridge.201.desc.lgate" }
+    desc = "ap_bridge.201.desc"  # fallback
+
+    picture = GFX_evt_space_station
+
+    option = {
+        name = ap_bridge.201.a
+        hidden_effect = { ap_clear_notify_flags = yes }
+    }
+}
+
+# --------------------------------------------------------------------------
+# Trap received notification
+# --------------------------------------------------------------------------
+country_event = {
+    id = ap_bridge.202
+    is_triggered_only = yes
+    title = ap_bridge.202.name
+
+    desc = { trigger = { has_country_flag = ap_notify_pirate } text = "ap_bridge.202.desc.pirate" }
+    desc = { trigger = { has_country_flag = ap_notify_diplo_incident } text = "ap_bridge.202.desc.diplo" }
+    desc = { trigger = { has_country_flag = ap_notify_research_setback } text = "ap_bridge.202.desc.research_setback" }
+    desc = { trigger = { has_country_flag = ap_notify_market_crash } text = "ap_bridge.202.desc.market_crash" }
+    desc = { trigger = { has_country_flag = ap_notify_space_amoeba } text = "ap_bridge.202.desc.space_amoeba" }
+    desc = { trigger = { has_country_flag = ap_notify_border_friction } text = "ap_bridge.202.desc.border_friction" }
+    desc = "ap_bridge.202.desc"  # fallback
+
+    picture = GFX_evt_atmospheric_entry
+
+    option = {
+        name = ap_bridge.202.a
+        hidden_effect = { ap_clear_notify_flags = yes }
+    }
+}

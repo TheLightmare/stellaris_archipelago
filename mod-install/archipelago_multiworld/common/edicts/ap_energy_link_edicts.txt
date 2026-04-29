@@ -1,0 +1,70 @@
+# ============================================================================
+# EnergyLink — Deposit/withdraw energy to the shared AP pool via edicts
+# Edicts are country-scope (unlike decisions which are planet-scope in 4.x)
+# ============================================================================
+
+ap_energy_deposit_500 = {
+    length = 0
+    icon = "GFX_edict_type_policy"
+    resources = {
+        category = edicts
+        cost = { energy = 500 }
+    }
+    potential = {
+        is_ai = no
+        has_country_flag = ap_connected
+    }
+    allow = {
+        resource_stockpile_compare = { resource = energy value >= 500 }
+    }
+    effect = {
+        log = "AP_ENERGY_DEPOSIT|500"
+    }
+    ai_weight = { weight = 0 }
+}
+
+ap_energy_deposit_2000 = {
+    length = 0
+    icon = "GFX_edict_type_policy"
+    resources = {
+        category = edicts
+        cost = { energy = 2000 }
+    }
+    potential = {
+        is_ai = no
+        has_country_flag = ap_connected
+    }
+    allow = {
+        resource_stockpile_compare = { resource = energy value >= 2000 }
+    }
+    effect = {
+        log = "AP_ENERGY_DEPOSIT|2000"
+    }
+    ai_weight = { weight = 0 }
+}
+
+ap_energy_withdraw_500 = {
+    length = 0
+    icon = "GFX_edict_type_policy"
+    potential = {
+        is_ai = no
+        has_country_flag = ap_connected
+    }
+    effect = {
+        log = "AP_ENERGY_WITHDRAW|500"
+    }
+    ai_weight = { weight = 0 }
+}
+
+ap_energy_withdraw_2000 = {
+    length = 0
+    icon = "GFX_edict_type_policy"
+    potential = {
+        is_ai = no
+        has_country_flag = ap_connected
+    }
+    effect = {
+        log = "AP_ENERGY_WITHDRAW|2000"
+    }
+    ai_weight = { weight = 0 }
+}

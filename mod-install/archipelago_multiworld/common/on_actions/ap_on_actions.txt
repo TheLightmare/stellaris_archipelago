@@ -1,0 +1,104 @@
+# ============================================================================
+# Archipelago On-Actions
+# ============================================================================
+# Hooks into Stellaris game events to trigger AP bridge polling
+# and milestone detection.
+#
+# NOTE: Only on_actions verified to exist in Stellaris 4.x are used.
+# Several counters (anomalies, traditions, wars) are tracked via the
+# periodic monthly scanner instead of dedicated on_actions, because
+# Stellaris does not expose on_actions for all game events.
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# Bridge heartbeat + check scanner — fires every month (country scope)
+# --------------------------------------------------------------------------
+on_monthly_pulse_country = {
+    events = {
+        ap_bridge.1      # Heartbeat + process incoming items
+        ap_check.1       # Milestone threshold scanner
+    }
+}
+
+# --------------------------------------------------------------------------
+# Game start — show connection setup (country scope)
+# --------------------------------------------------------------------------
+on_game_start_country = {
+    events = {
+        ap_bridge.100
+    }
+}
+
+# --------------------------------------------------------------------------
+# System survey completed (country scope)
+# This = country, From = system, FromFrom = fleet (if science ship)
+# NOTE: This is on_system_survey, NOT on_survey_complete (which doesn't exist)
+# --------------------------------------------------------------------------
+on_system_survey = {
+    events = {
+        ap_hooks.6       # Increment survey counter
+    }
+}
+
+# --------------------------------------------------------------------------
+# Tech research completed (country scope)
+# This = country
+# Confirmed to exist: on_tech_increased
+# Also provides last_increased_tech trigger in scope
+# --------------------------------------------------------------------------
+on_tech_increased = {
+    events = {
+        ap_hooks.1       # Increment tech counter
+        ap_hooks.20      # Detect vanilla tech milestones
+    }
+}
+
+# --------------------------------------------------------------------------
+# First contact established (country scope)
+# This = Empire 1, From = Empire 2
+# Fromfromfrom = System where contact occurred
+# --------------------------------------------------------------------------
+on_first_contact = {
+    events = {
+        ap_hooks.4       # Increment first contact counter
+    }
+}
+
+# --------------------------------------------------------------------------
+# War won (country scope)
+# Root = Winner Warleader, From = Loser Warleader, FromFrom = War
+# --------------------------------------------------------------------------
+on_war_won = {
+    events = {
+        ap_hooks.10      # Increment wars won counter
+    }
+}
+
+# --------------------------------------------------------------------------
+# Tradition picked (country scope)
+# THIS = country (fires for starters, finishers, and regular traditions)
+# --------------------------------------------------------------------------
+on_tradition_picked = {
+    events = {
+        ap_hooks.11      # Track tradition progress
+    }
+}
+
+# --------------------------------------------------------------------------
+# Ascension perk picked (country scope)
+# THIS = country
+# --------------------------------------------------------------------------
+on_ascension_perk_picked = {
+    events = {
+        ap_hooks.12      # Track ascension perk progress
+    }
+}
+
+# --------------------------------------------------------------------------
+# TRACKED VIA PERIODIC SCANNER (no dedicated on_action):
+#   - Colony count → num_owned_planets
+#   - Pop count → pop_amount
+#   - Fleet power → fleet_power
+#   - Monthly income → has_monthly_income
+#   - Diplomacy checks → any_country relations
+# --------------------------------------------------------------------------

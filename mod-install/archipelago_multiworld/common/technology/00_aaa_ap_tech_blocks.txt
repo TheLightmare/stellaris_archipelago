@@ -1,0 +1,1996 @@
+# ==========================================================================
+# Vanilla tech overrides for Archipelago
+# These are FULL copies of vanilla tech definitions with an added potential
+# block that hides them when their flag is set by the AP bridge.
+# FIOS: this file (00_aaa_*) loads before vanilla (00_eng_*, 00_phys_*, etc.)
+# ==========================================================================
+
+tech_planetary_unification = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_planetary_unification }
+	}
+
+	cost = @tier1cost1
+	area = society
+	tier = 1
+	category = { statecraft }
+	prerequisites = { "tech_planetary_government" }
+	weight = @tier1weight1
+
+	gateway = capital
+
+	feature_flags = {
+		campaign_edicts
+	}
+
+	# also unlocks planet-happiness edict and gives a one time Unity award
+
+	modifier = {
+		country_unity_produces_mult = 0.025
+		show_only_custom_tooltip = no
+		custom_tooltip = tech_planetary_unification_effect
+	}
+
+	weight_modifier = {
+		factor = 4
+		modifier = {
+			factor = 0.75
+			NOT = {
+				is_pacifist = yes
+			}
+		}
+	}
+
+	ai_weight = {
+		factor = @capital_tech_ai_factor
+		modifier = {
+			factor = 0.75
+			NOT = {
+				is_pacifist = yes
+			}
+		}
+		modifier = {
+			factor = 1.25
+			has_ethic = ethic_authoritarian
+		}
+		modifier = {
+			factor = 1.5
+			has_ethic = ethic_fanatic_authoritarian
+		}
+
+	}
+}
+
+tech_eco_simulation = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_eco_simulation }
+	}
+
+	cost = @tier1cost1
+	area = society
+	tier = 1
+	category = { biology }
+	prerequisites = { "tech_industrial_farming" }
+	weight = @tier1weight1
+
+	gateway = zone
+
+	modifier = {
+		planet_farmers_food_produces_mult = 0.05
+	}
+
+	weight_modifier = {
+		modifier = {
+			factor = 0.01
+			OR = {
+				is_machine_empire = yes
+				is_lithoid_empire = yes
+				is_individual_machine = yes
+				is_infernal_empire = yes
+				has_origin = origin_synthetic_fertility
+			}
+			NOR = {
+				has_country_flag = non_lithoid_subspecies
+				has_valid_civic = civic_machine_servitor
+				has_valid_civic = civic_machine_assimilator
+				any_owned_planet = {
+					OR = {
+						has_any_capped_planet_farming_district = yes
+						has_any_agriculture_zone = yes
+					}
+				}
+			}
+		}
+		modifier = {
+			factor = 0.5
+			OR = {
+				is_machine_empire = yes
+				is_lithoid_empire = yes
+				is_infernal_empire = yes
+				AND = {
+					is_individual_machine = yes
+					NOT = { has_country_flag = non_lithoid_subspecies }
+				}
+			}
+		}
+		modifier = {
+			factor = 1.25
+			has_ethic = ethic_pacifist
+		}
+		modifier = {
+			factor = 1.5
+			has_ethic = ethic_fanatic_pacifist
+		}
+		modifier = {
+			factor = 2
+			has_relic = r_pox_sample
+		}
+		modifier = {
+			factor = 2
+			country_uses_bio_ships = yes
+		}
+		modifier = {
+			factor = 5
+			OR = {
+				has_country_flag = non_lithoid_subspecies
+				country_uses_bio_ships = yes
+				AND = {
+					is_machine_empire = no
+					is_lithoid_empire = no
+					is_individual_machine = no
+				}
+			}
+			any_owned_planet = {
+				OR = {
+					has_any_capped_planet_farming_district = yes
+					has_any_agriculture_zone = yes
+				}
+			}
+		}
+	}
+
+	ai_weight = {
+		modifier = {
+			factor = 1.25
+			has_ethic = ethic_pacifist
+		}
+		modifier = {
+			factor = 1.5
+			has_ethic = ethic_fanatic_pacifist
+		}
+	}
+}
+
+tech_powered_exoskeletons = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_powered_exoskeletons }
+	}
+
+	cost = @tier1cost1
+	area = engineering
+	tier = 1
+	category = { industry }
+	prerequisites = { "tech_basic_industry" }
+	weight = @tier1weight1
+
+	gateway = robotics
+
+	modifier = {
+		army_damage_mult = 0.10
+		worker_and_simple_drone_cat_bonus_workforce_mult = 0.05
+	}
+
+	weight_modifier = {
+		factor = 1.5
+	}
+
+	technology_swap = {
+		name = tech_powered_exoskeletons_wilderness
+		inherit_icon = yes
+		inherit_effects = yes
+		trigger = {
+			is_wilderness_empire = yes
+		}
+	}
+
+	ai_weight = {
+		modifier = {
+			factor = @robots_ai_tech_factor
+			is_spiritualist = no
+			is_hive_empire = no
+		}
+	}
+}
+
+tech_alloys_1 = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_alloys_1 }
+	}
+
+	cost = @tier1cost3
+	area = engineering
+	tier = 1
+	category = { materials }
+	prerequisites = { "tech_basic_industry" }
+	weight = @tier1weight3
+
+	# Unlock better alloy buildings
+
+	technology_swap = { # Wilderness icon swap
+		name = tech_wilderness_alloys_1
+		inherit_icon = no
+		inherit_effects = yes
+		trigger = {
+			is_wilderness_empire = yes
+		}
+	}
+
+	weight_modifier = {
+		modifier = {
+			factor = 0
+			NOR = {
+				has_technology = tech_mine_volatile_motes
+				has_technology = tech_volatile_motes
+				has_country_flag = has_market_access
+			}
+		}
+
+		modifier = {
+			factor = 1.5
+			is_specialist_subject_type = { TYPE = prospectorium }
+		}
+	}
+
+	ai_weight = {
+		factor = @ai_alloy_factor_factor
+
+	}
+}
+
+tech_luxuries_1 = {
+	cost = @tier1cost3
+	area = engineering
+	tier = 1
+	category = { materials }
+	prerequisites = { "tech_basic_industry" }
+	weight = @tier1weight3
+
+	# Unlocks better consumer goods buildings
+
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_luxuries_1 }
+		country_uses_consumer_goods = yes
+	}
+
+	weight_modifier = {
+		modifier = {
+			factor = 0
+			NOR = {
+				has_technology = tech_mine_rare_crystals
+				has_technology = tech_rare_crystals
+				has_country_flag = has_market_access
+			}
+		}
+
+		modifier = {
+			factor = 1.5
+			is_specialist_subject_type = { TYPE = prospectorium }
+		}
+	}
+
+	ai_weight = {
+		factor = @ai_civilian_factory_factor
+
+	}
+}
+
+tech_mineral_purification_1 = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_mineral_purification_1 }
+	}
+
+	cost = @tier1cost3
+	area = engineering
+	tier = 1
+	category = { industry }
+	prerequisites = { "tech_mining_1" }
+	weight = @tier1weight3
+
+	technology_swap = { # Wilderness icon swap
+		name = tech_wilderness_mineral_purification_1
+		inherit_icon = no
+		inherit_effects = yes
+		trigger = {
+			is_wilderness_empire = yes
+		}
+	}
+
+	weight_modifier = {
+		factor = 2
+		modifier = {
+			factor = 1.25
+			has_tradition = tr_prosperity_adopt
+		}
+		modifier = {
+			factor = 1.5
+			is_specialist_subject_type = { TYPE = prospectorium }
+		}
+		modifier = {
+			factor = 5
+			OR = {
+				num_districts = { type = district_mining value > 0 }
+				num_districts = { type = district_hab_mining value > 0 }
+				num_districts = { type = district_hollow_mountains value > 0 }
+				num_districts = { type = district_melting value > 0 }
+				has_any_mining_zone = yes
+			}
+		}
+	}
+
+	ai_weight = {
+		factor = @ai_mining_building_factor
+	}
+}
+
+tech_alloys_2 = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_alloys_2 }
+	}
+
+	cost = @tier3cost1
+	area = engineering
+	tier = 3
+	category = { materials }
+	prerequisites = { "tech_alloys_1" "tech_colonial_centralization" }
+	weight = @tier3weight1
+
+	# Unlock better alloy buildings
+
+	technology_swap = { # Wilderness icon swap
+		name = tech_wilderness_alloys_2
+		inherit_icon = no
+		inherit_effects = yes
+		trigger = {
+			is_wilderness_empire = yes
+		}
+	}
+
+	weight_modifier = {
+		factor = 2
+
+		modifier = {
+			factor = 1.5
+			is_specialist_subject_type = { TYPE = prospectorium }
+		}
+	}
+
+	ai_weight = {
+		factor = @ai_alloy_factor_factor
+
+	}
+}
+
+tech_gene_crops = {
+	cost = @tier2cost1
+	area = society
+	tier = 2
+	category = { biology }
+	prerequisites = { "tech_eco_simulation" }
+	weight = @tier2weight1
+
+	modifier = {
+		planet_farmers_food_produces_mult = 0.05
+	}
+
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_gene_crops }
+		is_wilderness_empire = no
+	}
+
+	weight_modifier = {
+		modifier = {
+			factor = 0.01
+			OR = {
+				is_machine_empire = yes
+				is_lithoid_empire = yes
+				is_individual_machine = yes
+				is_infernal_empire = yes
+				has_origin = origin_synthetic_fertility
+			}
+			NOR = {
+				has_country_flag = non_lithoid_subspecies
+				has_valid_civic = civic_machine_servitor
+				has_valid_civic = civic_machine_assimilator
+				any_owned_planet = {
+					OR = {
+						has_any_capped_planet_farming_district = yes
+						has_any_agriculture_zone = yes
+					}
+				}
+			}
+		}
+		modifier = {
+			factor = 0.5
+			OR = {
+				is_machine_empire = yes
+				is_lithoid_empire = yes
+				is_infernal_empire = yes
+				AND = {
+					is_individual_machine = yes
+					NOT = { has_country_flag = non_lithoid_subspecies }
+				}
+			}
+		}
+		modifier = {
+			factor = 1.25
+			has_ethic = ethic_pacifist
+		}
+		modifier = {
+			factor = 1.5
+			has_ethic = ethic_fanatic_pacifist
+		}
+		modifier = {
+			factor = 2
+			has_relic = r_pox_sample
+		}
+		modifier = {
+			factor = 2
+			country_uses_bio_ships = yes
+		}
+	}
+
+	ai_weight = {
+		factor = @farming_ai_weight_factor
+		modifier = {
+			factor = 1.25
+			has_ethic = ethic_pacifist
+		}
+		modifier = {
+			factor = 1.5
+			has_ethic = ethic_fanatic_pacifist
+		}
+	}
+}
+
+tech_colonial_centralization = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_colonial_centralization }
+	}
+
+	cost = @tier2cost2
+	area = society
+	tier = 2
+	category = { new_worlds }
+	prerequisites = { "tech_planetary_unification" }
+	weight = @tier2weight2
+
+	gateway = capital
+
+	# unlocks Planetary Capital
+	# unlocks production-targets edict
+
+	technology_swap = { # Wilderness icon swap
+		name = tech_wilderness_colonial_centralization
+		inherit_icon = no
+		inherit_effects = yes
+		trigger = {
+			is_wilderness_empire = yes
+		}
+	}
+
+	modifier = {
+		country_official_cap_add = 1
+		country_commander_cap_add = 1
+		country_scientist_cap_add = 1
+	}
+
+	weight_modifier = {
+		factor = 4
+	}
+
+	ai_weight = {
+		factor = @capital_tech_ai_factor
+
+	}
+}
+
+tech_interstellar_economics = {
+	cost = @tier3cost1
+	area = society
+	tier = 3
+	category = { statecraft }
+	prerequisites = { "tech_space_trading" }
+	weight = @tier3weight1
+
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_interstellar_economics }
+		is_gestalt = no
+	}
+
+	weight_modifier = {
+		factor = 2
+		modifier = {
+			factor = 0
+			NOR = {
+				has_technology = tech_mine_rare_crystals
+				has_technology = tech_rare_crystals
+				has_country_flag = has_market_access
+			}
+		}
+
+		modifier = {
+			factor = 1.25
+			has_tradition = tr_prosperity_adopt
+		}
+	}
+
+	ai_weight = {
+
+	}
+}
+
+tech_galactic_markets = {
+	cost = @tier4cost1
+	area = society
+	tier = 4
+	category = { statecraft }
+	prerequisites = { "tech_colonial_centralization" "tech_interstellar_economics" }
+	weight = @tier4weight1
+	is_rare = yes
+
+	# unlocks Galactic Stock Exchange empire wonder
+
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_galactic_markets }
+		is_gestalt = no
+	}
+
+	weight_modifier = {
+		factor = 0.5
+		modifier = {
+			factor = 0.25
+			NOR = {
+				has_trait_in_council = { TRAIT = leader_trait_expertise_statecraft }
+				has_trait_in_council = { TRAIT = leader_trait_curator }
+			}
+		}
+		inline_script = {
+			script = technologies/rare_technologies_weight_modifiers
+			TECHNOLOGY = tech_galactic_markets
+		}
+		modifier = {
+			factor = 0
+			num_communications < 2
+		}
+	}
+
+	ai_weight = {
+
+	}
+}
+
+tech_administrative_ai = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_administrative_ai }
+	}
+
+	area = physics
+	tier = 1
+	cost = @tier1cost1
+	category = { computing }
+	prerequisites = { "tech_basic_science_lab_1" }
+	weight = @tier1weight1
+
+	modifier = {
+		all_technology_research_speed = 0.05
+		planet_researchers_upkeep_mult = 0.05
+	}
+
+	technology_swap = {
+		name = tech_administrative_ai_synth_fert
+		inherit_icon = yes
+		inherit_effects = no
+		trigger = {
+			has_origin = origin_synthetic_fertility
+		}
+		modifier = {
+			custom_tooltip = tech_administrative_ai_synth_fert_tt
+			show_only_custom_tooltip = no
+			all_technology_research_speed = 0.05
+			planet_researchers_upkeep_mult = 0.05
+		}
+	}
+
+	weight_modifier = {
+		modifier = {
+			factor = 1.5
+			is_specialist_subject_type = { TYPE = scholarium }
+		}
+	}
+
+	ai_weight = {
+
+	}
+}
+
+tech_global_research_initiative = {
+	area = physics
+	tier = 3
+	cost = @tier3cost1
+	category = { computing }
+
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_global_research_initiative }
+		is_wilderness_empire = no
+	}
+
+	prerequisites = { "tech_basic_science_lab_2" "tech_colonial_centralization" }
+
+	weight = @tier3weight1
+
+	weight_modifier = {
+		factor = 1.5
+		modifier = {
+			factor = 0.25
+			NOR = {
+				has_trait_in_council = { TRAIT = leader_trait_expertise_computing }
+				has_trait_in_council = { TRAIT = leader_trait_curator }
+			}
+		}
+
+		modifier = {
+			factor = 1.5
+			is_specialist_subject_type = { TYPE = scholarium }
+		}
+	}
+
+	ai_weight = {
+
+	}
+}
+
+tech_robotic_workers = {
+	cost = @tier1cost3
+	area = engineering
+	tier = 1
+	category = { industry }
+	prerequisites = { "tech_powered_exoskeletons" }
+	weight = @tier1weight3
+
+	gateway = robotics
+
+	feature_flags = { robots }
+
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_robotic_workers }
+		NOR = {
+			has_ethic = "ethic_gestalt_consciousness"
+			is_individual_machine = yes
+		}
+	}
+
+	weight_modifier = {
+		factor = 1.5
+		modifier = {
+			factor = 0
+			has_policy_flag = robots_outlawed
+		}
+		modifier = {
+			factor = 0.5
+			OR = {
+				has_ethic = "ethic_spiritualist"
+				has_ethic = "ethic_fanatic_spiritualist"
+			}
+		}
+		modifier = {
+			factor = 2
+			is_materialist = yes
+		}
+
+	}
+
+	ai_weight = {
+		factor = @robots_ai_tech_factor
+		modifier = {
+			factor = 2
+			is_materialist = yes
+		}
+		modifier = {
+			factor = 0
+			NOR = {
+				has_ai_personality_behaviour = robot_exploiter
+				has_ai_personality_behaviour = robot_liberator
+			}
+		}
+		modifier = {
+			factor = 2
+			has_origin = origin_mechanists
+		}
+		modifier = {
+			factor = 1000
+			has_origin = origin_synthetic_fertility
+		}
+	}
+}
+
+tech_droid_workers = {
+	cost = @tier2cost3
+	area = engineering
+	tier = 2
+	category = { industry }
+	prerequisites = { "tech_robotic_workers" "tech_colonial_centralization" }
+	weight = @tier2weight3
+
+	gateway = robotics
+
+	feature_flags = { droids }
+
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_droid_workers }
+		NOR = {
+			has_ethic = "ethic_gestalt_consciousness"
+			is_individual_machine = yes
+		}
+	}
+
+	weight_modifier = {
+		modifier = {
+			factor = 0
+			has_policy_flag = robots_outlawed
+		}
+		modifier = {
+			factor = 0.5
+			OR = {
+				has_ethic = "ethic_spiritualist"
+				has_ethic = "ethic_fanatic_spiritualist"
+			}
+		}
+		modifier = {
+			factor = 2
+			is_materialist = yes
+		}
+		modifier = {
+			factor = 2
+			has_origin = origin_mechanists
+		}
+	}
+
+	ai_weight = {
+		factor = @robots_ai_tech_factor
+		modifier = {
+			factor = 2
+			is_materialist = yes
+		}
+		modifier = {
+			factor = 0
+			NOR = {
+				has_ai_personality_behaviour = robot_exploiter
+				has_ai_personality_behaviour = robot_liberator
+			}
+		}
+		modifier = {
+			factor = 2
+			has_origin = origin_mechanists
+		}
+		modifier = {
+			factor = 1000
+			has_origin = origin_synthetic_fertility
+		}
+	}
+}
+
+tech_synthetic_workers = {
+	cost = @tier4cost2
+	area = engineering
+	tier = 4
+	category = { industry }
+	prerequisites = { "tech_droid_workers" "tech_galactic_administration" "tech_sapient_ai" }
+	is_rare = yes
+	is_dangerous = yes
+	weight = @tier4weight2
+
+	feature_flags = { synths }
+
+	gateway = robotics
+
+	modifier = {
+		robotic_pop_bonus_workforce_mult = 0.10
+	}
+
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_synthetic_workers }
+		NOR = {
+			has_ethic = "ethic_gestalt_consciousness"
+			is_individual_machine = yes
+		}
+	}
+
+	weight_modifier = {
+		factor = 0.5
+		modifier = {
+			factor = 0
+			has_policy_flag = robots_outlawed
+		}
+		modifier = {
+			factor = 0.5
+			OR = {
+				has_ethic = "ethic_spiritualist"
+				has_ethic = "ethic_fanatic_spiritualist"
+			}
+		}
+		modifier = {
+			factor = 2
+			is_materialist = yes
+		}
+		inline_script = {
+			script = technologies/rare_technologies_weight_modifiers
+			TECHNOLOGY = tech_synthetic_workers
+		}
+		modifier = {
+			factor = 2
+			has_origin = origin_mechanists
+		}
+		modifier = {
+			factor = 0.20
+			NOR = {
+				has_trait_in_council = { TRAIT = leader_trait_maniacal }
+				has_trait_in_council = { TRAIT = leader_trait_maniacal_2 }
+				has_trait_in_council = { TRAIT = leader_trait_maniacal_3 }
+				has_trait_in_council = { TRAIT = leader_trait_spark_of_genius }
+				has_trait_in_council = { TRAIT = leader_trait_spark_of_genius_2 }
+				has_trait_in_council = { TRAIT = leader_trait_curator }
+				has_trait_in_council = { TRAIT = leader_trait_expertise_industry }
+			}
+		}
+	}
+
+	ai_weight = {
+		factor = @robots_ai_tech_factor
+		modifier = {
+			factor = 2
+			is_materialist = yes
+		}
+		modifier = {
+			factor = 0
+			NOR = {
+				has_ai_personality_behaviour = robot_exploiter
+				has_ai_personality_behaviour = robot_liberator
+			}
+		}
+		modifier = {
+			factor = 2
+			has_origin = origin_mechanists
+		}
+		modifier = {
+			factor = 1000
+			has_origin = origin_synthetic_fertility
+		}
+	}
+}
+
+tech_gene_tailoring = {
+	cost = @tier3cost1
+	area = society
+	tier = 3
+	category = { biology }
+	prerequisites = { "tech_genome_mapping" }
+	weight = @tier3weight1
+
+	gateway = biological
+
+	modifier = {
+		description = tech_gene_tailoring_modifier_desc
+		description_parameters = {
+			POINTS = @tech_gene_tailoring_POINTS
+		}
+		BIOLOGICAL_species_trait_points_add = @tech_gene_tailoring_POINTS
+	}
+
+	feature_flags = {
+		modify_traits
+		pop_self_modification
+	}
+
+	technology_swap = {
+		name = tech_gene_tailoring_overtuned
+		inherit_icon = yes
+		inherit_effects = no
+
+		trigger = {
+			has_origin = origin_overtuned
+		}
+	}
+
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_gene_tailoring }
+		OR = {
+			is_machine_empire = no
+			has_civic = civic_machine_assimilator
+			has_civic = civic_machine_servitor
+		}
+		is_natural_design_empire = no
+	}
+
+	weight_modifier = {
+		factor = 2.0	# genetech needs to be a bit more common
+		modifier = {
+			factor = 1.25
+			is_hive_empire = yes
+		}
+		modifier = {
+			factor = 1.25
+			is_xenophile = yes
+		}
+		modifier = {
+			factor = 1.25
+			has_origin = origin_necrophage
+			has_trait = trait_necrophage
+		}
+		modifier = {
+			factor = 2
+			has_relic = r_pox_sample
+		}
+		modifier = {
+			factor = 0
+			is_individual_machine = yes
+			NOT = {
+				any_owned_species = {
+					is_organic_species = yes
+				}
+			}
+		}
+	}
+
+	ai_weight = {
+		modifier = {
+			factor = 2
+			has_origin = origin_necrophage
+			has_trait = trait_necrophage
+		}
+	}
+}
+
+tech_cloning = {
+	cost = @tier2cost2
+	area = society
+	tier = 2
+	category = { biology }
+	prerequisites = { "tech_genome_mapping" }
+	weight = @tier2weight2
+
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cloning }
+		OR = {
+			is_machine_empire = no
+			has_civic = civic_machine_assimilator
+		}
+		is_wilderness_empire = no
+		is_natural_design_empire = no
+	}
+
+	weight_modifier = {
+		factor = 1.5	# genetech needs to be a bit more common
+		modifier = {
+			factor = 1.25
+			is_hive_empire = yes
+		}
+		modifier = {
+			factor = 1.25
+			has_tradition = tr_supremacy_adopt
+		}
+		modifier = {
+			factor = 2
+			has_relic = r_pox_sample
+		}
+		modifier = {
+			factor = 0.5
+			is_individual_machine = yes
+		}
+		modifier = {
+			factor = 0.5
+			has_origin = origin_synthetic_fertility
+		}
+		modifier = {
+			factor = 2
+			AND = {
+				is_individual_machine = yes
+				any_owned_species = {
+					is_organic_species = yes
+				}
+			}
+		}
+	}
+
+	ai_weight = {
+		factor = @pop_growth_tech_ai_factor
+	}
+}
+
+tech_glandular_acclimation = {
+	cost = @tier3cost3
+	area = society
+	tier = 3
+	category = { biology }
+	prerequisites = { "tech_gene_tailoring" }
+	weight = @tier3weight3
+
+	feature_flags = {
+		habitability_gene_modding # No longer does anything except make a tooltip, handled in game rules ("can_gene_mod_habitability")
+	}
+
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_glandular_acclimation }
+		OR = {
+			is_machine_empire = no
+			has_civic = civic_machine_assimilator
+			has_civic = civic_machine_servitor
+		}
+		is_natural_design_empire = no
+	}
+
+	weight_modifier = {
+		factor = 1.5	# genetech needs to be a bit more common
+		modifier = {
+			factor = 1.25
+			is_hive_empire = yes
+		}
+		modifier = {
+			factor = 1.25
+			has_origin = origin_necrophage
+			has_trait = trait_necrophage
+		}
+		modifier = {
+			factor = 2
+			has_relic = r_pox_sample
+		}
+		modifier = {
+			factor = 0.5
+			is_individual_machine = yes
+		}
+		modifier = {
+			factor = 2
+			AND = {
+				is_individual_machine = yes
+				any_owned_species = {
+					is_organic_species = yes
+				}
+			}
+		}
+	}
+
+	ai_weight = {
+		modifier = {
+			factor = 2
+			has_origin = origin_necrophage
+			has_trait = trait_necrophage
+		}
+	}
+}
+
+tech_psionic_theory = {
+	cost = @tier3cost1
+	area = society
+	tier = 3
+	category = { psionics }
+	is_rare = yes
+	weight = @tier3weight1
+	is_reverse_engineerable = no
+
+	gateway = psionics
+
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_psionic_theory }
+		OR = { #The OR is so that Gestalts can get Zro Distillation with that Resolution
+			has_shroud_dlc = yes # Shroud allows everyone to become psionic
+			NOT = { has_ethic = ethic_gestalt_consciousness }
+			is_active_resolution = resolution_galacticstudies_extradimensional_experimentation
+			has_relic = r_zro_crystal
+		}
+		NOT = { has_origin = origin_mindwardens } # Except Mindwardens since they can't psionically ascend
+	}
+
+	modifier = {
+		empire_size_pops_mult = -0.05
+		army_morale_damage_taken_mult = -0.10
+	}
+
+	weight_modifier = {
+		factor = 0.5
+		modifier = {
+			factor = 0
+			has_shroud_dlc = no
+			has_ethic = ethic_gestalt_consciousness
+		}
+		modifier = {
+			factor = 0.5
+			is_spiritualist = no
+		}
+		modifier = {
+			factor = 2
+			has_ethic = "ethic_fanatic_spiritualist"
+		}
+		modifier = {
+			factor = 2
+			any_country = {
+				has_origin = origin_mindwardens
+				NOT = { is_same_value = prev }
+			}
+		}
+		modifier = {
+			factor = 2
+			OR = {
+				has_trait_in_council = { TRAIT = leader_trait_maniacal }
+				has_trait_in_council = { TRAIT = leader_trait_maniacal_2 }
+				has_trait_in_council = { TRAIT = leader_trait_maniacal_3 }
+			}
+		}
+		modifier = {
+			factor = 2
+			OR = {
+				has_trait_in_council = { TRAIT = leader_trait_psionic }
+				has_trait_in_council = { TRAIT = leader_trait_chosen }
+				has_trait_in_council = { TRAIT = leader_trait_composer_chosen }
+				has_trait_in_council = { TRAIT = leader_trait_instrument_chosen }
+				has_trait_in_council = { TRAIT = leader_trait_whisperers_chosen }
+			}
+		}
+		inline_script = {
+			script = technologies/rare_technologies_weight_modifiers
+			TECHNOLOGY = tech_psionic_theory
+		}
+		modifier = {
+			factor = 2
+			any_owned_pop_group = {
+				is_psionic_species = yes
+			}
+		}
+		modifier = {
+			factor = 1.25
+			any_owned_pop_group = {
+				is_latent_psionic_species = yes
+			}
+			NOT = {
+				any_owned_pop_group = {
+					is_psionic_species = yes
+				}
+			}
+		}
+		modifier = {
+			factor = 2
+			has_paragon_dlc = no
+			any_owned_leader = {
+				has_trait = leader_trait_shroudwalker
+			}
+		}
+		modifier = {
+			factor = 0
+			AND = {
+				is_materialist = yes
+				NOR = {
+					has_tier1or2or3_in_council = { TRAIT = leader_trait_expertise_psionics }
+					has_councilor = { COUNCILOR = "councilor_shroudwalker_teacher" }
+					any_owned_pop_group = {
+						has_psionic_species_trait = yes
+					}
+				}
+			}
+		}
+		modifier = {
+			factor = 0
+			has_origin = origin_endbringers
+		}
+	}
+
+	ai_weight = {
+		modifier = {
+			factor = 5
+			is_spiritualist = yes
+		}
+
+		modifier = {
+			factor = 2
+			is_ai = no #auto-research
+		}
+
+		modifier = {
+			factor = 10
+			any_country = {
+				has_origin = origin_mindwardens
+			}
+		}
+	}
+}
+
+tech_telepathy = {
+	cost = @tier3cost3
+	area = society
+	tier = 3
+	category = { psionics }
+	is_rare = yes
+	prerequisites = { "tech_psionic_theory" }
+	weight = @tier3weight3
+	is_reverse_engineerable = no
+
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_telepathy }
+		OR = {
+			has_shroud_dlc = yes
+			NOT = { has_ethic = ethic_gestalt_consciousness }
+		}
+	}
+
+	technology_swap = {
+		name = tech_telepathy_machine_gestalt
+		inherit_icon = yes
+		inherit_effects = yes
+		trigger = {
+			is_machine_empire = yes
+		}
+	}
+
+	technology_swap = {
+		name = tech_telepathy_hive
+		inherit_icon = yes
+		inherit_effects = yes
+		trigger = {
+			is_hive_empire = yes
+			is_wilderness_empire = no
+		}
+	}
+
+	technology_swap = {
+		name = tech_telepathy_wilderness
+		inherit_icon = yes
+		inherit_effects = yes
+		trigger = {
+			is_wilderness_empire = yes
+		}
+	}
+
+	weight_modifier = {
+		factor = 0.5
+		modifier = {
+			factor = 0
+			OR = {
+				has_utopia = yes
+				has_shroud_dlc = yes
+			}
+			has_psionic_ascension = no
+		}
+		modifier = {
+			factor = 0.50
+			NOT = {
+				has_trait_in_council = { TRAIT = leader_trait_expertise_psionics }
+			}
+		}
+		inline_script = {
+			script = technologies/rare_technologies_weight_modifiers
+			TECHNOLOGY = tech_telepathy
+		}
+		modifier = {
+			factor = 2
+			has_ethic = "ethic_spiritualist"
+		}
+		modifier = {
+			factor = 3
+			has_ethic = "ethic_fanatic_spiritualist"
+		}
+		modifier = {
+			factor = 3
+			has_paragon_dlc = no
+			any_owned_leader = {
+				has_trait = leader_trait_shroudwalker
+			}
+		}
+		modifier = {
+			factor = 4
+			OR = {
+				has_trait_in_council = { TRAIT = leader_trait_maniacal }
+				has_trait_in_council = { TRAIT = leader_trait_maniacal_2 }
+				has_trait_in_council = { TRAIT = leader_trait_maniacal_3 }
+			}
+		}
+	}
+
+	ai_weight = {
+		modifier = {
+			factor = 5
+			is_spiritualist = yes
+		}
+	}
+}
+
+tech_sensors_2 = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_sensors_2 }
+	}
+
+	area = physics
+	cost = @tier2cost1
+	tier = 2
+	category = { computing }
+	ai_update_type = all
+	weight = @tier2weight1
+
+	weight_modifier = {
+		modifier = {
+			factor = 1.25
+			has_tradition = tr_discovery_adopt
+		}
+		modifier = {
+			factor = 1.25
+			has_tradition = tr_subterfuge_adopt
+		}
+		modifier = {
+			factor = 1.25
+			any_system_within_border = {
+				is_inside_nebula = yes
+			}
+		}
+	}
+
+	ai_weight = {
+
+	}
+
+	prereqfor_desc = {
+		component = {
+			title = "TECH_UNLOCK_SENSOR_2_TITLE"
+			desc = "TECH_UNLOCK_SENSOR_2_DESC"
+		}
+	}
+
+	technology_swap = {
+		name = tech_bioship_sensors_2
+		inherit_icon = yes
+		inherit_effects = no
+		trigger = {
+			country_uses_bio_ships = yes
+		}
+		prereqfor_desc = {
+			custom = {
+				title = "TECH_UNLOCK_BIOSHIP_SENSOR_2_TITLE"
+				desc = "TECH_UNLOCK_BIOSHIP_SENSOR_2_DESC"
+			}
+		}
+	}
+}
+
+tech_sensors_3 = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_sensors_3 }
+	}
+
+	area = physics
+	cost = @tier3cost1
+	tier = 3
+	category = { computing }
+	ai_update_type = all
+	prerequisites = { "tech_sensors_2" }
+	weight = @tier3weight1
+
+	weight_modifier = {
+		modifier = {
+			factor = 1.25
+			has_tradition = tr_discovery_adopt
+		}
+		modifier = {
+			factor = 1.25
+			has_tradition = tr_subterfuge_adopt
+		}
+		modifier = {
+			factor = 1.25
+			any_system_within_border = {
+				is_inside_nebula = yes
+			}
+		}
+	}
+
+	ai_weight = {
+
+	}
+
+	prereqfor_desc = {
+		component = {
+			title = "TECH_UNLOCK_SENSOR_3_TITLE"
+			desc = "TECH_UNLOCK_SENSOR_3_DESC"
+		}
+	}
+
+	technology_swap = {
+		name = tech_bioship_sensors_3
+		inherit_icon = yes
+		inherit_effects = no
+		trigger = {
+			country_uses_bio_ships = yes
+		}
+		prereqfor_desc = {
+			custom = {
+				title = "TECH_UNLOCK_BIOSHIP_SENSOR_3_TITLE"
+				desc = "TECH_UNLOCK_BIOSHIP_SENSOR_3_DESC"
+			}
+		}
+	}
+}
+
+tech_doctrine_fleet_size_1 = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_doctrine_fleet_size_1 }
+	}
+
+	cost = @tier1cost1
+	area = society
+	tier = 1
+	category = { military_theory }
+	weight = @tier1weight1
+
+	modifier = {
+		command_limit_add = 20
+	}
+
+	weight_modifier = {
+		factor = 3
+		modifier = {
+			factor = 2
+			is_militarist = yes
+		}
+
+	}
+
+	ai_weight = {
+		modifier = {
+			factor = 2
+			is_militarist = yes
+		}
+
+	}
+}
+
+tech_doctrine_fleet_size_3 = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_doctrine_fleet_size_3 }
+	}
+
+	cost = @tier3cost2
+	area = society
+	tier = 3
+	category = { military_theory }
+	prerequisites = { "tech_doctrine_fleet_size_2" }
+	weight = @tier3weight2
+
+	modifier = {
+		command_limit_add = 60
+	}
+
+	weight_modifier = {
+		factor = 3
+		modifier = {
+			factor = 2
+			is_militarist = yes
+		}
+
+	}
+
+	ai_weight = {
+		modifier = {
+			factor = 2
+			is_militarist = yes
+		}
+
+	}
+}
+
+tech_doctrine_fleet_size_5 = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_doctrine_fleet_size_5 }
+	}
+
+	cost = @tier5cost3
+	area = society
+	tier = 5
+	category = { military_theory }
+	prerequisites = { "tech_doctrine_fleet_size_4" }
+	weight = @tier5weight3
+
+	modifier = {
+		command_limit_add = 100
+	}
+
+	weight_modifier = {
+		factor = 3
+		modifier = {
+			factor = 2
+			is_militarist = yes
+		}
+
+	}
+
+	ai_weight = {
+		modifier = {
+			factor = 2
+			is_militarist = yes
+		}
+
+	}
+}
+
+tech_doctrine_navy_size_1 = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_doctrine_navy_size_1 }
+	}
+
+	cost = @tier1cost2
+	area = society
+	tier = 1
+	category = { military_theory }
+	weight = @tier1weight2
+
+	modifier = {
+		country_naval_cap_add = 25
+	}
+
+	weight_modifier = {
+		factor = 3
+		modifier = {
+			factor = 2
+			is_militarist = yes
+		}
+
+	}
+
+	ai_weight = {
+		modifier = {
+			factor = 2
+			is_militarist = yes
+		}
+
+	}
+}
+
+tech_doctrine_navy_size_3 = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_doctrine_navy_size_3 }
+	}
+
+	cost = @tier3cost1
+	area = society
+	tier = 3
+	category = { military_theory }
+	prerequisites = { "tech_doctrine_navy_size_2" }
+	weight = @tier3weight1
+
+	modifier = {
+		country_naval_cap_add = 75
+	}
+
+	weight_modifier = {
+		factor = 3
+		modifier = {
+			factor = 2
+			is_militarist = yes
+		}
+
+	}
+
+	ai_weight = {
+		modifier = {
+			factor = 2
+			is_militarist = yes
+		}
+
+	}
+}
+
+tech_centralized_command = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_centralized_command }
+	}
+
+	cost = @tier3cost2
+	area = society
+	tier = 3
+	category = { military_theory }
+	weight = @tier3weight2
+
+	# unlocks military academy
+
+	modifier = {
+		country_occupation_armies_add = 2
+	}
+
+	weight_modifier = {
+		modifier = {
+			factor = 2
+			is_militarist = yes
+		}
+
+	}
+
+	ai_weight = {
+		modifier = {
+			factor = 2
+			is_militarist = yes
+		}
+
+	}
+}
+
+tech_habitat_1 = {
+	cost = @tier3cost2
+	area = engineering
+	category = { voidcraft }
+	tier = 3
+	prerequisites = { "tech_starbase_3" }
+	weight = @tier3weight2
+
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_habitat_1 }
+		is_wilderness_empire = no
+		OR = {
+			has_void_dweller_origin = yes
+			has_origin = origin_toxic_knights
+			host_has_dlc = "Utopia"
+		}
+	}
+
+	# unlocks Habitats
+	weight_modifier = {
+		modifier = {
+			factor = 0.1
+			NOT = { years_passed > 50 }
+		}
+		modifier = {
+			factor = 10
+			any_neighbor_country = {
+				has_technology = tech_habitat_1
+			}
+		}
+		modifier = {
+			factor = 2
+			years_passed > 60
+		}
+		modifier = {
+			factor = 3
+			years_passed > 65
+		}
+		modifier = {
+			factor = 4
+			years_passed > 70
+		}
+		modifier = {
+			factor = 5
+			count_starbase_sizes = {
+				starbase_size = starbase_starhold
+				count >= 3
+			}
+		}
+		modifier = {
+			factor = 1.25
+			has_tradition = tr_expansion_adopt
+		}
+		modifier = {
+			factor = 1.25
+			has_tradition = tr_expansion_finish
+		}
+	}
+
+	prereqfor_desc = {
+		ship = {
+			title = "allow_habitats"
+			desc = "habitat_central_complex_MEGASTRUCTURE_DETAILS"
+		}
+	}
+
+	ai_weight = {
+		modifier = {
+			factor = 100
+			OR = {
+				has_origin = origin_toxic_knights
+				has_country_flag = payback_habitat
+				has_valid_civic = civic_void_hive
+			}
+		}
+	}
+}
+
+tech_habitat_2 = {
+	cost = @tier4cost2
+	area = engineering
+	category = { voidcraft }
+	tier = 4
+	prerequisites = { "tech_habitat_1" "tech_starbase_4" }
+	weight = @tier4weight3
+	is_rare = yes
+
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_habitat_2 }
+		is_wilderness_empire = no
+		OR = {
+			has_void_dweller_origin = yes #Not toxic knights, they just need level 1 tech
+			host_has_dlc = "Utopia"
+		}
+	}
+
+	modifier = {
+		habitat_max_districts_add = 1
+	}
+
+	weight_modifier = {
+		modifier = {
+			factor = 0
+			NOT = {
+				any_owned_planet = {
+					is_planet_class = pc_habitat
+				}
+			}
+		}
+		modifier = {
+			factor = 10
+			is_void_dweller_empire = yes
+		}
+		inline_script = {
+			script = technologies/rare_technologies_weight_modifiers
+			TECHNOLOGY = tech_habitat_2
+		}
+	}
+
+	ai_weight = {
+		modifier = {
+			factor = 100
+			OR = {
+				has_origin = origin_toxic_knights
+				has_country_flag = payback_habitat
+				has_valid_civic = civic_void_hive
+			}
+		}
+	}
+}
+
+tech_climate_restoration = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_climate_restoration }
+	}
+
+	cost = @tier4cost1
+	area = society
+	tier = 4
+	category = { new_worlds }
+	prerequisites = { "tech_terrestrial_sculpting" }
+	weight = @tier4weight1
+
+	# unlocks additional terraforming-options
+
+	prereqfor_desc = {
+		diplo_action = {
+			title = "TECH_UNLOCK_TERRAFORMING_NUKED_CHANGE_TITLE"
+			desc = "TECH_UNLOCK_TERRAFORMING_NUKED_CHANGE_DESC"
+		}
+	}
+
+	weight_modifier = {
+		modifier = {
+			factor = 1.25
+			has_tradition = tr_expansion_adopt
+		}
+
+	}
+
+	ai_weight = {
+		factor = @terraforming_tech_ai_factor
+
+		modifier = {
+			factor = 2
+			OR = {
+				is_xenophobe = yes
+				is_hive_empire = yes
+			}
+		}
+
+		modifier = {
+			factor = 5
+			has_origin = origin_life_seeded
+		}
+		modifier = {
+			factor = 5
+			any_system_within_border = {
+				any_system_planet = {
+					is_planet_class = pc_nuked
+				}
+			}
+		}
+	}
+}
+
+tech_capital_productivity_1 = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_capital_productivity_1 }
+	}
+
+	cost = @tier2cost3
+	area = society
+	tier = 2
+	category = { statecraft }
+	prerequisites = { "tech_planetary_unification" }
+	weight = @tier2weight3
+
+	# Increases production and upkeep of planets with tier 2 capitals or better.
+
+	modifier = {
+		description = tech_capital_productivity_1_effect
+	}
+
+	weight_modifier = {
+		factor = 1
+		modifier = {
+			factor = 0.25
+			NOT = { has_tradition = tr_prosperity_finish }
+		}
+
+	}
+
+	ai_weight = {
+
+	}
+}
+
+tech_capital_productivity_3 = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_capital_productivity_3 }
+	}
+
+	cost = @tier4cost3
+	area = society
+	tier = 4
+	category = { statecraft }
+	prerequisites = { "tech_galactic_administration" "tech_capital_productivity_2" }
+	weight = @tier2weight3
+
+	# Increases production and upkeep of planets with tier 2 capitals or better.
+
+	modifier = {
+		description = tech_capital_productivity_3_effect
+	}
+
+	weight_modifier = {
+		factor = 1
+		modifier = {
+			factor = 0.25
+			NOT = { has_tradition = tr_prosperity_finish }
+		}
+
+	}
+
+	ai_weight = {
+
+	}
+}
+
+tech_global_defense_grid = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_global_defense_grid }
+	}
+
+	cost = @tier2cost1
+	area = society
+	tier = 2
+	category = { military_theory }
+	prerequisites = { "tech_ground_defense_planning" }
+	weight = @tier2weight1
+
+	# unlocks fortress
+
+	technology_swap = { # Wilderness icon swap
+		name = tech_wilderness_defense_grid
+		inherit_icon = no
+		inherit_effects = yes
+		trigger = {
+			is_wilderness_empire = yes
+		}
+	}
+
+	modifier = {
+		army_defense_health_mult = 0.25
+	}
+
+	weight_modifier = {
+		factor = 2
+		modifier = {
+			factor = 2
+			is_militarist = yes
+		}
+
+		modifier = {
+			factor = 1.5
+			is_specialist_subject_type = { TYPE = bulwark }
+		}
+	}
+
+	ai_weight = {
+		modifier = {
+			factor = 2
+			is_militarist = yes
+		}
+
+	}
+}
+
+tech_planetary_shield_generator = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_planetary_shield_generator }
+	}
+
+	area = physics
+	cost = @tier3cost1
+	tier = 3
+	category = { field_manipulation }
+	ai_update_type = all
+	is_rare = yes
+	prerequisites = { "tech_shields_3" }
+	weight = @tier3weight1
+
+	technology_swap = { # Wilderness icon swap
+		name = tech_wilderness_shield_generator
+		inherit_icon = no
+		inherit_effects = yes
+		trigger = {
+			is_wilderness_empire = yes
+		}
+	}
+
+	weight_modifier = {
+		factor = 0.5
+		modifier = {
+			factor = 0.5
+			NOR = {
+				has_trait_in_council = { TRAIT = leader_trait_expertise_field_manipulation }
+				has_trait_in_council = { TRAIT = leader_trait_curator }
+				has_trait_in_council = { TRAIT = leader_trait_spark_of_genius }
+				has_trait_in_council = { TRAIT = leader_trait_spark_of_genius_2 }
+			}
+		}
+		inline_script = {
+			script = technologies/rare_technologies_weight_modifiers
+			TECHNOLOGY = tech_planetary_shield_generator
+		}
+	}
+
+	# unlocks building: planetary shield generator
+}
+
+tech_galactic_administration = {
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_galactic_administration }
+	}
+
+	cost = @tier3cost3
+	area = society
+	tier = 3
+	category = { statecraft }
+	prerequisites = { "tech_colonial_centralization" }
+	weight = @tier3weight3
+
+	gateway = capital # unlocks Empire Capital-Complex
+
+	technology_swap = { # Wilderness icon swap
+		name = tech_wilderness_galactic_administration
+		inherit_icon = no
+		inherit_effects = yes
+		trigger = {
+			is_wilderness_empire = yes
+		}
+	}
+
+	modifier = { # add civic slot
+		country_government_civic_points_add = 1
+	}
+
+	weight_modifier = {
+		factor = 4
+
+	}
+
+	ai_weight = {
+		factor = @capital_tech_ai_factor
+
+	}
+}
