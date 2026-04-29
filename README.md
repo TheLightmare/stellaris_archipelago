@@ -121,7 +121,7 @@ Stellaris Game <-> DLL (version.dll proxy) <-> Named Pipe <-> ap_bridge.py <-> A
      +-- game.log (AP_CHECK lines) -------------------------------->+
 ```
 
-**Inbound (server -> game):** AP server sends items via WebSocket. Bridge writes console commands to a file. DLL types `run ap_bridge_commands.txt` into the Stellaris console via SendInput.
+**Inbound (server -> game):** AP server sends items via WebSocket. Bridge writes console commands to a file. DLL types `run ap_bridge_commands.txt` into the Stellaris console via a hook into the game executable.
 
 **Outbound (game -> server):** Mod writes `AP_CHECK|id|name` to game.log. Bridge tails the log and sends LocationChecks to the AP server.
 
