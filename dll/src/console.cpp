@@ -260,13 +260,56 @@ static bool phase1_execute_batch(const std::vector<std::string>& commands) {
 // =========================================================================
 
 static bool phase2_execute_batch(const std::vector<std::string>& commands) {
+    int succeeded = 0;
+    int crashed = 0;
     for (const auto& cmd : commands) {
         EngineString buf = {};
-        g_fnStringConstruct(&buf, cmd.c_str());
-        g_fnExecuteCommand(&buf);
-        g_fnStringDestruct(&buf);
+        // SEH around the engine call. ExecuteCommand can crash if the
+        // command requires game state that doesn't exist (e.g.
+        // set_country_flag at the main menu has no country scope and
+        // dereferences null). SEH here means we get a log line naming
+        // the offending command instead of a silent process death.
+        // CAVEAT: catching engine exceptions can leave game state
+        // inconsistent; the next command might fail too, and a delayed
+        // crash later is possible. This is strictly better than dying
+        // immediately with no diagnostic, but it is not a substitute
+        // for not sending bad commands in the first place.
+        __try {
+            g_fnStringConstruct(&buf, cmd.c_str());
+            g_fnExecuteCommand(&buf);
+            g_fnStringDestruct(&buf);
+            succeeded++;
+        } __except (EXCEPTION_EXECUTE_HANDLER) {
+            DWORD code = GetExceptionCode();
+            ap_log("Console: Phase 2 EXCEPTION 0x%08lX during command: %s",
+                   code, cmd.c_str());
+            ap_log("  (likely cause: command requires save game state that "
+                   "is not currently loaded, e.g. effect commands at the "
+                   "main menu with no country scope)");
+            crashed++;
+            // Do not call StringDestruct on a possibly-uninitialized buf.
+            // Small leak per crashed command, but safer than a secondary
+            // fault inside the destructor.
+        }
     }
-    ap_log("Console: Phase 2 — executed %zu command(s) directly", commands.size());
+    ap_log("Console: Phase 2 — executed %d/%zu command(s) directly%s",
+           succeeded, commands.size(),
+           crashed ? " (some commands triggered exceptions, see above)" : "");
+    // ALWAYS return true. The retry-on-failure logic in console_process_queue
+    // was designed for Phase 1's SendInput failures (couldn't focus the game
+    // window, etc.) which are genuinely transient. Phase 2 "failures" are
+    // SEH-caught access violations from ExecuteCommand — these are NOT
+    // transient. The same command in the same game state (e.g.
+    // set_country_flag at the main menu with no country scope) will crash
+    // identically every tick. Re-queuing produces a 5Hz infinite loop of
+    // exceptions until the bridge happens to send a different command or
+    // the game state changes.
+    //
+    // The bridge owns the decision to re-send. If a blocking flag failed
+    // because the player wasn't in a save yet, the bridge should re-send
+    // it after the player loads a game (ideally gated on an on_load_game
+    // signal from the log tailer rather than blind retry). The DLL's job
+    // is to execute or drop, not retry.
     return true;
 }
 

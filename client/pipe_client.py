@@ -186,17 +186,24 @@ class FallbackPipeClient:
     """No-op pipe client for when pywin32 is not available or on non-Windows."""
 
     def __init__(self):
+        import sys
         self.connected = False
-        self.last_error: Optional[str] = (
-            "pywin32 is not installed (or not on Windows). "
-            "Run: pip install pywin32"
-        )
+        if sys.platform == "win32":
+            self.last_error = (
+                "pywin32 is not installed in this Python environment. "
+                "Run: pip install pywin32 (then restart the client)"
+            )
+        else:
+            self.last_error = (
+                "DLL bridge is Windows-only. Items cannot be delivered "
+                "to Stellaris on this platform; outbound checks still "
+                "work via log tailing."
+            )
         self._warned = False
 
     def connect(self) -> bool:
         if not self._warned:
-            logger.info("DLL bridge not available (non-Windows or pywin32 missing)")
-            logger.info("Items cannot be received — outbound checks still work via log tailing")
+            logger.warning(f"DLL bridge unavailable: {self.last_error}")
             self._warned = True
         return False
 

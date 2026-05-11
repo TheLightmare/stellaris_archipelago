@@ -67,9 +67,24 @@ CLASSIFICATION_TIER = {
 from tech_catalog import TECH_CATALOG, location_name as _tech_location_name
 
 VANILLA_TECH_DATA = {
-    t.key: {"tier": t.tier, "area": t.area, "prereqs": list(t.prereqs)}
+    t.key: {"tier": t.tier, "area": t.area, "prereqs": list(t.prereqs), "cost": None}
     for t in TECH_CATALOG
 }
+
+# Attempt to read exact costs from the local Stellaris install (best-effort).
+# If available, populate `cost` for vanilla techs so generated AP techs
+# exactly match the base tech cost instead of using the heuristic.
+try:
+    from tech_scanner import find_game_dir, parse_tech_files
+    game_dir = find_game_dir()
+    if game_dir:
+        _scanned = parse_tech_files(game_dir)
+        for k, v in _scanned.items():
+            if k in VANILLA_TECH_DATA and v.get("cost"):
+                VANILLA_TECH_DATA[k]["cost"] = v["cost"]
+except Exception:
+    # Best-effort only; leave None on failure and fall back to heuristic.
+    pass
 
 # Map location names ("Research <Display>") to vanilla tech keys for tier/area
 # inheritance. Used at runtime for catalog-driven Research-X tech-type
@@ -157,8 +172,13 @@ def generate_mod_files(
             area = vanilla["area"]
             tier = vanilla["tier"]
             prereqs = vanilla["prereqs"]
-            # Cost scales with tier: ~500 per tier
-            cost = max(500, tier * 600)
+            # Prefer exact vanilla cost if we scanned it; fall back to
+            # the previous heuristic when exact cost is unavailable.
+            exact = vanilla.get("cost")
+            if exact:
+                cost = exact
+            else:
+                cost = max(500, tier * 600)
         else:
             # Non-vanilla locations: use timing-based tier
             timing = slot.get("timing", "mid")

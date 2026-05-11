@@ -45,11 +45,13 @@ on_system_survey = {
 # This = country
 # Confirmed to exist: on_tech_increased
 # Also provides last_increased_tech trigger in scope
+# Note: catalog techs are detected via slot_generator-emitted
+# ap_on_research_<slot> effects baked into the per-slot AP-tech entries,
+# not via a static ap_hooks.20 event.
 # --------------------------------------------------------------------------
 on_tech_increased = {
     events = {
         ap_hooks.1       # Increment tech counter
-        ap_hooks.20      # Detect vanilla tech milestones
     }
 }
 

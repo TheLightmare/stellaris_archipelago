@@ -657,7 +657,8 @@ class StellarisAPBridge:
             for e in effects:
                 logger.info(f"    {e}")
         else:
-            logger.warning(f"  → NO PIPE: {len(effects)} effect(s) lost (DLL not running?)")
+            reason = getattr(pipe, "last_error", None) or "pipe connect failed"
+            logger.warning(f"  → NO PIPE: {len(effects)} effect(s) lost — {reason}")
 
     def _grant_energy(self, amount: int):
         """Grant energy credits in-game from EnergyLink withdrawal."""

@@ -570,10 +570,45 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
             self._json_response({"error": "Windows only"}, 400)
             return
         try:
-            from pipe_client import create_pipe_client
+            from pipe_client import create_pipe_client, HAS_WIN32
+
+            # Pre-flight: pywin32 is what actually opens the pipe handle.
+            # Without it we can't talk to the DLL at all.
+            if not HAS_WIN32:
+                self._json_response({
+                    "connected": False,
+                    "error": "pywin32 is not installed. Run: pip install pywin32"
+                })
+                return
+
             p = create_pipe_client()
             if not p.connect():
-                self._json_response({"connected": False, "error": "Could not connect to DLL pipe"})
+                error = getattr(p, "last_error", None) or "Could not connect to DLL pipe"
+                # If the pipe simply doesn't exist, disambiguate "game not
+                # running" from "game running but DLL silent" by checking
+                # the Windows process list. This is the difference between
+                # "launch the game" and "fix your mod install."
+                if "Pipe does not exist" in error:
+                    if self._is_stellaris_running():
+                        error = (
+                            "Pipe does not exist, but stellaris.exe is "
+                            "running. The DLL bridge isn't responding — "
+                            "check that 'Archipelago Multiworld' is "
+                            "enabled in the Stellaris launcher, that "
+                            "version.dll is in the game folder, and "
+                            "wait ~5 seconds after the game window "
+                            "appears for the bridge to initialize. If "
+                            "it still fails, look at dll/log.txt next "
+                            "to version.dll for the DLL's own log."
+                        )
+                    else:
+                        error = (
+                            "stellaris.exe is not running. Launch "
+                            "Stellaris (with the Archipelago Multiworld "
+                            "mod enabled in the launcher) and try "
+                            "again."
+                        )
+                self._json_response({"connected": False, "error": error})
                 return
             ping = p.ping()
             p.send_effect("add_resource = { energy = 500 }")
@@ -582,6 +617,19 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
             self._json_response({"connected": True, "ping": ping, "flushed": flushed})
         except Exception as e:
             self._json_response({"connected": False, "error": str(e)})
+
+    def _is_stellaris_running(self) -> bool:
+        """Return True if stellaris.exe is in the Windows process list."""
+        try:
+            r = subprocess.run(
+                ["tasklist", "/FI", "IMAGENAME eq stellaris.exe", "/NH"],
+                capture_output=True, text=True, timeout=5
+            )
+            return "stellaris.exe" in r.stdout.lower()
+        except Exception:
+            # If tasklist is unavailable for any reason, don't claim to
+            # know either way — fall through and let the caller decide.
+            return False
 
 
     def _api_build_dll(self):

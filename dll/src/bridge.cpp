@@ -36,7 +36,14 @@ static void handle_message(HANDLE pipe, const std::string& message) {
         while (std::getline(stream, cmd, '|')) { if (!cmd.empty()) { console_queue_command(cmd); count++; } }
         send_response(pipe, "OK BATCH " + std::to_string(count));
     } else if (message == "FLUSH") {
-        int flushed = console_process_queue();
+        // CRITICAL: do NOT call console_process_queue() directly here.
+        // We're on the pipe server thread, but Phase 2 console execution
+        // calls Stellaris's internal ExecuteCommand which only works from
+        // the game thread (touches script VM, save state, etc.).
+        // Calling it from this thread reliably crashes the game on the
+        // first effect. dispatch_flush_on_game_thread() uses SendMessage
+        // to marshal the work onto the game thread synchronously.
+        int flushed = dispatch_flush_on_game_thread();
         send_response(pipe, "OK FLUSHED " + std::to_string(flushed));
     } else if (message == "PING") {
         send_response(pipe, console_is_ready() ? "PONG READY" : "PONG NOT_READY");
@@ -83,7 +90,11 @@ static void server_loop() {
             }
         }
         DisconnectNamedPipe(g_pipe); CloseHandle(g_pipe); g_pipe = INVALID_HANDLE_VALUE;
-        int flushed = console_process_queue();
+        // Drain any leftover queued commands. Same threading concern as
+        // the FLUSH handler above — must marshal to the game thread.
+        // If the game window is gone (game shutting down), this returns
+        // -1 and we just skip the log.
+        int flushed = dispatch_flush_on_game_thread();
         if (flushed > 0) ap_log("Bridge: flushed %d command(s) after client session", flushed);
         if (g_running) { ap_log("Bridge: ready for next client"); }
     }
