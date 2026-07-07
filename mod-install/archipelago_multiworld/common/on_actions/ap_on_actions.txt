@@ -12,9 +12,13 @@
 
 # --------------------------------------------------------------------------
 # Bridge heartbeat + check scanner — fires every month (country scope)
+# ap_bridge.100 is the connection-setup popup; its trigger requires
+# NOT ap_connected, so it only actually shows for players who enabled
+# the mod on an existing save (on_game_start never fires for those).
 # --------------------------------------------------------------------------
 on_monthly_pulse_country = {
     events = {
+        ap_bridge.100    # Connection setup fallback for existing saves
         ap_bridge.1      # Heartbeat + process incoming items
         ap_check.1       # Milestone threshold scanner
     }

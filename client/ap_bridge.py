@@ -156,14 +156,10 @@ _STATIC_TECH_LOCATION_IDS: Set[int] = {
 
 
 def find_stellaris_dir() -> Path:
-    home = Path.home()
-    for p in [
-        home / "Documents" / "Paradox Interactive" / "Stellaris",
-        home / "OneDrive" / "Documents" / "Paradox Interactive" / "Stellaris",
-    ]:
-        if p.exists():
-            return p
-    return home / "Documents" / "Paradox Interactive" / "Stellaris"
+    # Shared marker-based detection (client/ap_paths.py): prefers the
+    # directory with recent game activity, honors STELLARIS_USER_DIR.
+    from ap_paths import find_stellaris_user_dir
+    return find_stellaris_user_dir(fallback=True)
 
 
 def find_game_log(d: Path) -> Path:

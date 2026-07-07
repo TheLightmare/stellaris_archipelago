@@ -54,30 +54,19 @@ def _read_process_output(name, proc):
 
 sys.path.insert(0, str(CLIENT_DIR))
 
+# Shared marker-based detection (client/ap_paths.py): prefers the user
+# dir with recent game activity, honors STELLARIS_USER_DIR/GAME_DIR.
+from ap_paths import find_stellaris_user_dir as _find_user_dir  # noqa: E402
+from ap_paths import find_stellaris_game_dir as _find_game_dir  # noqa: E402
+from mod_installer import install_mod  # noqa: E402
+
 
 def find_stellaris_user_dir():
-    home = Path.home()
-    for p in [
-        home / "Documents" / "Paradox Interactive" / "Stellaris",
-        home / "OneDrive" / "Documents" / "Paradox Interactive" / "Stellaris",
-    ]:
-        if p.exists():
-            return p
-    return None
+    return _find_user_dir()
 
 
 def find_stellaris_game_dir():
-    candidates = [
-        Path("C:/Program Files (x86)/Steam/steamapps/common/Stellaris"),
-        Path("C:/Program Files/Steam/steamapps/common/Stellaris"),
-        Path("D:/SteamLibrary/steamapps/common/Stellaris"),
-        Path("D:/Steam/steamapps/common/Stellaris"),
-        Path("E:/SteamLibrary/steamapps/common/Stellaris"),
-    ]
-    for p in candidates:
-        if p.exists() and (p / "common" / "technology").exists():
-            return p
-    return None
+    return _find_game_dir(require="data")
 
 
 # =============================================================================
@@ -354,6 +343,8 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
             self._api_yaml_options()
         elif path == "/api/tech-catalog":
             self._api_tech_catalog()
+        elif path == "/api/tech-selection":
+            self._api_get_tech_selection()
         else:
             self.send_error(404)
 
@@ -383,6 +374,9 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
         elif path == "/api/apply-milestones":
             body = self._read_body()
             self._api_apply_milestones(body)
+        elif path == "/api/tech-selection":
+            body = self._read_body()
+            self._api_save_tech_selection(body)
         elif path == "/api/bridge-status":
             self._api_bridge_status()
         else:
@@ -500,16 +494,9 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
                 self._json_response({"error": "Stellaris user dir not found"}, 404)
                 return
 
-            mod_src = SCRIPT_DIR / "mod-install"
-            mod_dir = user_dir / "mod" / "archipelago_multiworld"
-            mod_file = user_dir / "mod" / "archipelago_multiworld.mod"
-
-            shutil.copy2(mod_src / "archipelago_multiworld.mod", mod_file)
-            if mod_dir.exists():
-                shutil.rmtree(mod_dir)
-            shutil.copytree(mod_src / "archipelago_multiworld", mod_dir)
-
-            count = sum(1 for _ in mod_dir.rglob("*") if _.is_file())
+            # Shared installer: keeps generated ap_dynamic_* files so a
+            # reinstall mid-campaign doesn't wipe the AP techs.
+            count = install_mod(SCRIPT_DIR / "mod-install", user_dir)
             self._json_response({"success": True, "files": count})
         except Exception as e:
             self._json_response({"error": str(e)}, 500)
@@ -815,6 +802,40 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
                 "catalog": [],
             }, 500)
 
+    # Persisted Tech Config selection. Without this the catalog tab's
+    # picks lived only in browser memory and an F5 lost them all.
+    def _tech_selection_path(self):
+        user_dir = find_stellaris_user_dir()
+        return (user_dir / "ap_tech_selection.json") if user_dir else None
+
+    def _api_get_tech_selection(self):
+        path = self._tech_selection_path()
+        try:
+            if path and path.exists():
+                data = json.loads(path.read_text(encoding="utf-8"))
+                self._json_response({"selected": data.get("selected", [])})
+            else:
+                self._json_response({"selected": None})
+        except Exception as e:
+            self._json_response({"error": str(e), "selected": None}, 500)
+
+    def _api_save_tech_selection(self, body):
+        path = self._tech_selection_path()
+        if not path:
+            self._json_response({"error": "Stellaris user dir not found"}, 404)
+            return
+        try:
+            data = json.loads(body)
+            selected = sorted(set(data.get("selected", [])))
+            path.write_text(json.dumps({
+                "_help": "Tech Config tab selection (dashboard). "
+                         "Feeds the YAML wizard's randomized_techs.",
+                "selected": selected,
+            }, indent=2), encoding="utf-8")
+            self._json_response({"success": True, "count": len(selected)})
+        except Exception as e:
+            self._json_response({"error": str(e)}, 500)
+
     def _api_bridge_status(self):
         result = {}
         for name in ["bridge", "mock"]:
@@ -930,11 +951,36 @@ select option { background: #0a0e1a; }
 </head>
 <body>
 <div id="root"></div>
+<script>
+// The UI needs React/Babel from a CDN. Offline (or firewalled), those
+// script tags fail silently and the page stays blank forever — show a
+// plain-HTML explanation instead. Runs before the CDN tags so it can't
+// itself be blocked; checks after a grace period for slow connections.
+setTimeout(function () {
+  var root = document.getElementById("root");
+  if (window.React && window.ReactDOM && root.hasChildNodes()) return;
+  root.innerHTML =
+    '<div style="max-width:640px;margin:80px auto;padding:24px;' +
+    'font-family:sans-serif;color:#dce6f5;background:#141a2a;' +
+    'border:1px solid #3a4a60;border-radius:8px;line-height:1.6">' +
+    '<h2 style="margin-top:0;color:#4da6ff">Dashboard UI failed to load</h2>' +
+    '<p>The dashboard interface loads React from cdnjs.cloudflare.com, ' +
+    'which appears to be unreachable. This usually means no internet ' +
+    'connection or a firewall blocking CDN access.</p>' +
+    '<p>The local server itself is running fine &mdash; command-line ' +
+    'setup still works:</p>' +
+    '<pre style="background:#0a0e1a;padding:12px;border-radius:6px">' +
+    'python setup.py status\npython setup.py install\n' +
+    'python setup.py play --server HOST:PORT --slot NAME</pre>' +
+    '<p><a href="javascript:location.reload()" style="color:#4da6ff">' +
+    'Retry</a> once you are back online.</p></div>';
+}, 6000);
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
 <script type="text/babel">
-const { useState, useEffect, useMemo, useCallback } = React;
+const { useState, useEffect, useMemo, useCallback, useRef } = React;
 const API = "";
 
 function App() {
@@ -981,7 +1027,8 @@ function App() {
 
   // Lazy-load the tech catalog (from apworld/stellaris/data/tech_catalog.py)
   // the first time either Tech Config or YAML Wizard needs it. Initial
-  // selection comes from the catalog's default_selection() (no DLC techs).
+  // selection: the server-side saved selection (ap_tech_selection.json)
+  // if one exists, else the catalog's default_selection().
   const loadTechCatalog = useCallback(async () => {
     if (techCatalog) return; // already loaded
     try {
@@ -991,15 +1038,38 @@ function App() {
         setTechCatalog(d.catalog);
         setTechDefaults(d.default_selection || []);
         if (randomizedTechs === null) {
-          setRandomizedTechs(new Set(d.default_selection || []));
+          let initial = d.default_selection || [];
+          let source = "defaults";
+          try {
+            const rs = await fetch(API+"/api/tech-selection");
+            const ds = await rs.json();
+            if (Array.isArray(ds.selected)) { initial = ds.selected; source = "saved selection"; }
+          } catch(e) {}
+          setRandomizedTechs(new Set(initial));
+          addLog("Loaded "+d.catalog.length+" catalog techs ("
+                 + initial.length + " selected from " + source + ")", "ok");
         }
-        addLog("Loaded "+d.catalog.length+" catalog techs ("
-               + (d.default_selection||[]).length + " default-selected)", "ok");
       } else {
         addLog("Could not load tech catalog: "+(d.error||"empty"), "err");
       }
     } catch(e) { addLog("Failed to load tech catalog: "+e, "err"); }
   }, [techCatalog, randomizedTechs]);
+
+  // Auto-save the Tech Config selection (debounced) so an F5 or a
+  // dashboard restart never loses the picks.
+  const selectionLoaded = useRef(false);
+  useEffect(() => {
+    if (randomizedTechs === null) return;
+    if (!selectionLoaded.current) { selectionLoaded.current = true; return; }
+    const t = setTimeout(() => {
+      fetch(API+"/api/tech-selection", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({selected: Array.from(randomizedTechs)}),
+      }).catch(() => {});
+    }, 800);
+    return () => clearTimeout(t);
+  }, [randomizedTechs]);
 
   useEffect(() => { fetchStatus(); }, []);
   useEffect(() => {

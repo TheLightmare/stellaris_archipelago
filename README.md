@@ -212,3 +212,19 @@ The suite checks ID stability, item/location counts, region connectivity, fill s
 - Windows (for DLL + named pipe)
 - Visual Studio 2022 / MSVC Build Tools (for DLL compilation)
 - Archipelago server (for real multiworld sessions)
+
+## Troubleshooting
+
+**Wrong Stellaris folder detected?** All tools share one detector
+(`client/ap_paths.py`) that prefers the user directory with the most
+recent `game.log`. If your setup is unusual (OneDrive redirection, a
+custom Steam library), override it explicitly:
+
+```powershell
+$env:STELLARIS_USER_DIR = "C:\path\to\Documents\Paradox Interactive\Stellaris"
+$env:STELLARIS_GAME_DIR = "D:\SteamLibrary\steamapps\common\Stellaris"
+```
+
+**Enabled the mod on an existing campaign?** That works — the
+connection-setup popup appears at the next monthly tick instead of
+game start.

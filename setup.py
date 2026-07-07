@@ -27,54 +27,41 @@ MOD_SRC = PROJECT_DIR / "mod-install"
 CLIENT_DIR = PROJECT_DIR / "client"
 DLL_DIR = PROJECT_DIR / "dll"
 
+# Shared path detection + installer (single source of truth in client/)
+sys.path.insert(0, str(CLIENT_DIR))
+from ap_paths import find_stellaris_game_dir as _find_game_dir  # noqa: E402
+from ap_paths import find_stellaris_user_dir as _find_user_dir  # noqa: E402
+from mod_installer import install_mod  # noqa: E402
+
 
 def find_stellaris_user_dir() -> Path:
+    p = _find_user_dir()
+    if p:
+        return p
     home = Path.home()
-    for p in [
-        home / "Documents" / "Paradox Interactive" / "Stellaris",
-        home / "OneDrive" / "Documents" / "Paradox Interactive" / "Stellaris",
-    ]:
-        if p.exists():
-            return p
     print("ERROR: Stellaris user directory not found.")
     print("Looked in:")
     print(f"  {home / 'Documents' / 'Paradox Interactive' / 'Stellaris'}")
     print(f"  {home / 'OneDrive' / 'Documents' / 'Paradox Interactive' / 'Stellaris'}")
+    print("Set the STELLARIS_USER_DIR environment variable to override.")
     sys.exit(1)
 
 
 def find_stellaris_game_dir() -> Path:
-    """Try common Steam install locations."""
-    candidates = [
-        Path("C:/Program Files (x86)/Steam/steamapps/common/Stellaris"),
-        Path("C:/Program Files/Steam/steamapps/common/Stellaris"),
-        Path.home() / "Steam" / "steamapps" / "common" / "Stellaris",
-        Path("D:/SteamLibrary/steamapps/common/Stellaris"),
-    ]
-    for p in candidates:
-        if p.exists() and (p / "stellaris.exe").exists():
-            return p
-    return None
+    return _find_game_dir(require="exe")
 
 
 def cmd_install():
     """Install the Stellaris mod."""
     stellaris = find_stellaris_user_dir()
     mod_dir = stellaris / "mod" / "archipelago_multiworld"
-    mod_file = stellaris / "mod" / "archipelago_multiworld.mod"
 
     print(f"Installing mod to: {mod_dir}")
 
-    # Copy .mod descriptor
-    shutil.copy2(MOD_SRC / "archipelago_multiworld.mod", mod_file)
-
-    # Copy mod content
-    if mod_dir.exists():
-        shutil.rmtree(mod_dir)
-    shutil.copytree(MOD_SRC / "archipelago_multiworld", mod_dir)
-
-    file_count = sum(1 for _ in mod_dir.rglob("*") if _.is_file())
-    print(f"  Copied {file_count} mod files")
+    # Copies static mod files, keeping any generated ap_dynamic_* content
+    # so a reinstall mid-campaign doesn't wipe the AP techs.
+    file_count = install_mod(MOD_SRC, stellaris)
+    print(f"  Copied {file_count} mod files (generated AP techs preserved)")
 
     # Check DLL
     game_dir = find_stellaris_game_dir()

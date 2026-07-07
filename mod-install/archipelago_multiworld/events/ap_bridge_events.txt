@@ -30,7 +30,10 @@ country_event = {
 }
 
 # --------------------------------------------------------------------------
-# Connection setup — fires on game start
+# Connection setup — fires on game start, and monthly as a fallback so
+# enabling the mod on an EXISTING campaign still activates it (the
+# on_game_start hook never fires for saves created before the mod was
+# added). The NOT ap_connected guard stops it re-firing once accepted.
 # --------------------------------------------------------------------------
 country_event = {
     id = ap_bridge.100
@@ -42,6 +45,7 @@ country_event = {
 
     trigger = {
         is_ai = no
+        NOT = { has_country_flag = ap_connected }
     }
 
     option = {

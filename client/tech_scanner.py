@@ -28,30 +28,14 @@ logger = logging.getLogger("TechScanner")
 
 
 def find_game_dir() -> Optional[Path]:
-    """Find Stellaris game installation."""
-    candidates = [
-        Path("C:/Program Files (x86)/Steam/steamapps/common/Stellaris"),
-        Path("C:/Program Files/Steam/steamapps/common/Stellaris"),
-        Path("D:/SteamLibrary/steamapps/common/Stellaris"),
-        Path("D:/Steam/steamapps/common/Stellaris"),
-        Path("E:/SteamLibrary/steamapps/common/Stellaris"),
-        Path.home() / ".steam" / "steam" / "steamapps" / "common" / "Stellaris",
-    ]
-    for p in candidates:
-        if p.exists() and (p / "common" / "technology").exists():
-            return p
-    return None
+    """Find Stellaris game installation (needs unpacked common/technology)."""
+    from ap_paths import find_stellaris_game_dir
+    return find_stellaris_game_dir(require="data")
 
 
 def find_user_dir() -> Path:
-    home = Path.home()
-    for p in [
-        home / "Documents" / "Paradox Interactive" / "Stellaris",
-        home / "OneDrive" / "Documents" / "Paradox Interactive" / "Stellaris",
-    ]:
-        if p.exists():
-            return p
-    return home / "Documents" / "Paradox Interactive" / "Stellaris"
+    from ap_paths import find_stellaris_user_dir
+    return find_stellaris_user_dir(fallback=True)
 
 
 def extract_tech_block(content: str, tech_name: str) -> Optional[str]:
