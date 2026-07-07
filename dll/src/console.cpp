@@ -384,8 +384,16 @@ bool console_execute_batch(const std::vector<std::string>& commands) {
     }
 }
 
+// Consecutive execution failures and the next tick we're allowed to
+// retry at. Without backoff, a persistent failure (e.g. Phase 1 can't
+// focus a backgrounded game) retried every 200ms WM_TIMER tick spams
+// SendInput keystrokes into whatever app IS focused, 5 times a second.
+static int g_failStreak = 0;
+static ULONGLONG g_nextRetryTick = 0;
+
 int console_process_queue() {
     if (!g_ready || g_executing) return 0;
+    if (g_failStreak > 0 && GetTickCount64() < g_nextRetryTick) return 0;
     std::vector<std::string> batch;
     {
         std::lock_guard<std::mutex> lock(g_queueMutex);
@@ -400,11 +408,22 @@ int console_process_queue() {
     bool ok = console_execute_batch(batch);
     g_executing = false;
     if (!ok) {
-        ap_log("Console: execution failed, re-queuing %d command(s)", count);
+        g_failStreak++;
+        // Exponential backoff: 1s, 2s, 4s, ... capped at 30s.
+        int shift = g_failStreak - 1;
+        if (shift > 5) shift = 5;
+        ULONGLONG delay = 1000ULL << shift;
+        if (delay > 30000ULL) delay = 30000ULL;
+        g_nextRetryTick = GetTickCount64() + delay;
+        ap_log("Console: execution failed (streak %d), re-queuing %d command(s), retry in %llu ms",
+               g_failStreak, count, delay);
+        // Re-queue in original order (queue is FIFO — pushing front-first
+        // preserves order; the old reverse loop inverted it every retry).
         std::lock_guard<std::mutex> lock(g_queueMutex);
-        for (auto it = batch.rbegin(); it != batch.rend(); ++it)
-            g_commandQueue.push(*it);
+        for (const auto& cmd : batch)
+            g_commandQueue.push(cmd);
         return 0;
     }
+    g_failStreak = 0;
     return count;
 }

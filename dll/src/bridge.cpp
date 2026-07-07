@@ -59,7 +59,7 @@ static void server_loop() {
     ap_log("Bridge: starting pipe server on %s", PIPE_NAME);
     while (g_running) {
         g_pipe = CreateNamedPipeA(PIPE_NAME, PIPE_ACCESS_DUPLEX,
-            PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT,
+            PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS,
             1, PIPE_BUFFER_SIZE, PIPE_BUFFER_SIZE, 1000, nullptr);
         if (g_pipe == INVALID_HANDLE_VALUE) { ap_log("Bridge: CreateNamedPipe failed (%d)", GetLastError()); Sleep(1000); continue; }
         ap_log("Bridge: waiting for client connection...");
@@ -74,13 +74,22 @@ static void server_loop() {
         while (g_running) {
             DWORD bytesRead;
             BOOL success = ReadFile(g_pipe, buffer, sizeof(buffer)-1, &bytesRead, nullptr);
-            if (!success || bytesRead == 0) {
+            if (!success) {
                 DWORD err = GetLastError();
                 if (err == ERROR_BROKEN_PIPE || err == ERROR_PIPE_NOT_CONNECTED) ap_log("Bridge: client disconnected");
+                else if (err == ERROR_OPERATION_ABORTED) ap_log("Bridge: read cancelled (shutdown)");
                 else if (g_running) ap_log("Bridge: read error %d", err);
                 break;
             }
-            buffer[bytesRead] = '\0'; partial += buffer;
+            if (bytesRead == 0) {
+                // Zero-byte read with success: client wrote nothing —
+                // GetLastError() is stale here, don't report it.
+                ap_log("Bridge: client disconnected");
+                break;
+            }
+            // Length-bounded append: a stray NUL byte from the client
+            // must not truncate the rest of the read.
+            partial.append(buffer, bytesRead);
             size_t pos;
             while ((pos = partial.find('\n')) != std::string::npos) {
                 std::string line = partial.substr(0, pos);
@@ -104,9 +113,24 @@ static void server_loop() {
 bool bridge_start() { if (g_running) return true; g_running = true; g_serverThread = std::thread(server_loop); return true; }
 void bridge_stop() {
     g_running = false;
+    // Wake a thread blocked in ConnectNamedPipe (waiting for a client).
     HANDLE dummy = CreateFileA(PIPE_NAME, GENERIC_READ|GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, 0, nullptr);
     if (dummy != INVALID_HANDLE_VALUE) CloseHandle(dummy);
-    if (g_serverThread.joinable()) g_serverThread.join();
+    if (g_serverThread.joinable()) {
+        // Wake a thread blocked in ReadFile (client connected but idle) —
+        // the dummy-connect above can't reach it (single-instance pipe
+        // reports ERROR_PIPE_BUSY while a client is attached).
+        HANDLE th = (HANDLE)g_serverThread.native_handle();
+        CancelSynchronousIo(th);
+        // Bounded wait: joining without a timeout can deadlock if the
+        // thread cannot exit (e.g. loader lock held by our caller).
+        if (WaitForSingleObject(th, 3000) == WAIT_OBJECT_0) {
+            g_serverThread.join();
+        } else {
+            ap_log("Bridge: server thread did not exit in 3s — detaching");
+            g_serverThread.detach();
+        }
+    }
     if (g_pipe != INVALID_HANDLE_VALUE) { CloseHandle(g_pipe); g_pipe = INVALID_HANDLE_VALUE; }
     ap_log("Bridge: stopped");
 }

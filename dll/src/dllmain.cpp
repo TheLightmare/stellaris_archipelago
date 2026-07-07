@@ -60,10 +60,20 @@ int dispatch_flush_on_game_thread() {
                "commands stay queued");
         return -1;
     }
-    LRESULT r = g_windowIsUnicode
-        ? SendMessageW(hwnd, WM_AP_FLUSH, 0, 0)
-        : SendMessageA(hwnd, WM_AP_FLUSH, 0, 0);
-    return (int)r;
+    // Bounded dispatch: a plain SendMessage blocks this (pipe) thread
+    // forever if the game thread isn't pumping messages (loading screen,
+    // autosave stall, shutdown). On timeout the commands stay queued and
+    // the WM_TIMER tick drains them later.
+    DWORD_PTR result = 0;
+    LRESULT ok = g_windowIsUnicode
+        ? SendMessageTimeoutW(hwnd, WM_AP_FLUSH, 0, 0, SMTO_ABORTIFHUNG | SMTO_NORMAL, 10000, &result)
+        : SendMessageTimeoutA(hwnd, WM_AP_FLUSH, 0, 0, SMTO_ABORTIFHUNG | SMTO_NORMAL, 10000, &result);
+    if (!ok) {
+        ap_log("Bridge: flush dispatch timed out — game thread busy; "
+               "commands stay queued for the timer tick");
+        return -1;
+    }
+    return (int)result;
 }
 static BOOL CALLBACK find_game_window(HWND hwnd, LPARAM lParam) {
     DWORD pid; GetWindowThreadProcessId(hwnd, &pid);
@@ -165,6 +175,16 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
         // calling any one specific export first.
         break;
     case DLL_PROCESS_DETACH:
+        // reserved != nullptr means the process is terminating: every
+        // other thread has already been killed at an arbitrary point and
+        // may hold locks (the pipe thread logs constantly, so g_logMutex
+        // is a real risk). Touching mutexes, handles, or windows here can
+        // deadlock or crash the exiting process — do nothing; the OS
+        // reclaims everything.
+        if (reserved != nullptr)
+            break;
+        // FreeLibrary path (never happens for a load-time version.dll
+        // proxy, but be correct anyway): best-effort teardown.
         ap_log("Shutting down...");
         bridge_stop();
         if (g_gameWindow) {

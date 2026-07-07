@@ -18,6 +18,9 @@ void ap_log_init() {
 }
 
 void ap_log_shutdown() {
+    // Take the same lock as ap_log so a thread mid-log can't use the
+    // FILE* while we free it.
+    std::lock_guard<std::mutex> lock(g_logMutex);
     if (g_logFile) {
         fprintf(g_logFile, "=== DLL unloaded ===\n");
         fclose(g_logFile);
