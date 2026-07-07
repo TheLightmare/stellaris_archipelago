@@ -77,3 +77,6 @@ desktop.ini
 *.local
 *.scratch
 TODO.local.md
+
+# Never commit executables into the source tree
+dll/src/*.exe

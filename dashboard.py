@@ -389,12 +389,14 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
             self.send_error(404)
 
     def _serve_dashboard(self):
-        html = DASHBOARD_HTML
+        # Encode first: Content-Length must be the byte count, not the
+        # character count, or multi-byte characters truncate the page.
+        body = DASHBOARD_HTML.encode("utf-8")
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
-        self.send_header("Content-Length", len(html))
+        self.send_header("Content-Length", len(body))
         self.end_headers()
-        self.wfile.write(html.encode())
+        self.wfile.write(body)
 
     def _api_status(self):
         user_dir = find_stellaris_user_dir()
@@ -708,7 +710,10 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
         global _processes
         if _processes["bridge"] and _processes["bridge"].poll() is None:
             _processes["bridge"].terminate()
-            _processes["bridge"].wait(timeout=5)
+            try:
+                _processes["bridge"].wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                _processes["bridge"].kill()
             self._json_response({"success": True})
         else:
             self._json_response({"error": "Bridge not running"}, 400)
@@ -731,7 +736,10 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
         global _processes
         if _processes["mock"] and _processes["mock"].poll() is None:
             _processes["mock"].terminate()
-            _processes["mock"].wait(timeout=5)
+            try:
+                _processes["mock"].wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                _processes["mock"].kill()
             self._json_response({"success": True})
         else:
             self._json_response({"error": "Mock server not running"}, 400)
@@ -1560,7 +1568,9 @@ ReactDOM.render(React.createElement(App), document.getElementById("root"));
 
 def main():
     print(f"Starting Stellaris AP Dashboard on http://localhost:{PORT}")
-    server = http.server.HTTPServer(("localhost", PORT), DashboardHandler)
+    # ThreadingHTTPServer: long-running requests (DLL build takes up to
+    # 3 minutes) must not block status polling and other UI actions.
+    server = http.server.ThreadingHTTPServer(("localhost", PORT), DashboardHandler)
 
     # Open browser after a short delay
     def open_browser():

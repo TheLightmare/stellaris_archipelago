@@ -140,7 +140,6 @@ dll/                                C++ DLL (version.dll proxy)
   src/                              Proxy, bridge, console injection, logging
   CMakeLists.txt                    Build with: cmake -G "Visual Studio 17 2022" -A x64
   ARCHITECTURE.md                   How the DLL fits together
-  HOOKING_RESEARCH.md               Design rationale (ref to similar engine mods)
 
 apworld/stellaris/                  Archipelago world definition
   __init__.py                       World class (generation, rules, items, regions)
