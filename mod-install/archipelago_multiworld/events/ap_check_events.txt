@@ -44,7 +44,13 @@ country_event = {
         # --- Traditions ---
         ap_check_tradition_milestones = yes
 
-        # --- Victory ---
+        # --- Ascension paths (sets goal-2 flags) ---
+        ap_check_ascension_milestones = yes
+
+        # --- Crisis (sets goal-1 flag) ---
+        ap_check_crisis_milestones = yes
+
+        # --- Victory (reads flags set above, same tick) ---
         ap_check_victory_condition = yes
         ap_check_extended_milestones = yes
     }

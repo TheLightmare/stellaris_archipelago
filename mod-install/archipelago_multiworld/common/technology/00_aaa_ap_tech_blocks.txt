@@ -53,9 +53,6 @@ cost = @tier1cost2
 }
 
 tech_adaptive_combat_algorithms = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_adaptive_combat_algorithms }
-	}
 
 cost = @tier2cost2
 	area = society
@@ -64,6 +61,7 @@ cost = @tier2cost2
 	weight = @tier2weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_adaptive_combat_algorithms }
 		OR = {
 			is_machine_empire = yes
 			is_individual_machine = yes
@@ -125,9 +123,6 @@ area = physics
 }
 
 tech_advanced_industrial_storm_protection = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_advanced_industrial_storm_protection }
-	}
 
 cost = {
 		factor = @tier2cost1
@@ -143,6 +138,7 @@ cost = {
 	prerequisites = { "tech_industrial_storm_protection" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_advanced_industrial_storm_protection }
 		has_cosmic_storms_dlc = yes
 		is_wilderness_empire = no
 	}
@@ -227,9 +223,6 @@ cost = @tier4cost1
 }
 
 tech_advanced_storm_manipulation = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_advanced_storm_manipulation }
-	}
 
 cost = {
 		factor = @tier3cost1
@@ -249,6 +242,7 @@ cost = {
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_advanced_storm_manipulation }
 		has_cosmic_storms_dlc = yes
 	}
 
@@ -415,9 +409,6 @@ area = physics
 }
 
 tech_alien_cloning = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_alien_cloning }
-	}
 
 cost = @tier2cost1
 	area = society
@@ -428,6 +419,7 @@ cost = @tier2cost1
 	ai_update_type = military
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_alien_cloning }
 		has_grand_archive_dlc = yes
 		OR = {
 			is_beastmasters_empire = yes
@@ -469,9 +461,6 @@ cost = @tier2cost1
 }
 
 tech_alien_life_studies = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_alien_life_studies }
-	}
 
 cost = @tier1cost2
 	area = society
@@ -480,6 +469,7 @@ cost = @tier1cost2
 	weight = @tier1weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_alien_life_studies }
 		is_regular_empire = yes
 	}
 
@@ -563,9 +553,6 @@ cost = @tier1cost2
 }
 
 tech_alien_topography = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_alien_topography }
-	}
 
 cost = @tier2cost3
 	area = society
@@ -576,6 +563,7 @@ cost = @tier2cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_alien_topography }
 		has_first_contact_dlc = yes
 	}
 
@@ -592,9 +580,6 @@ cost = @tier2cost3
 }
 
 tech_alloy_fossilization = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_alloy_fossilization }
-	}
 
 cost = @tier2cost1
 	area = engineering
@@ -603,6 +588,7 @@ cost = @tier2cost1
 	weight = 0 # unlocked via Chthonian Preservation anomaly
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_alloy_fossilization }
 		has_shroud_dlc = yes
 	}
 
@@ -938,9 +924,6 @@ cost = @tier2cost3
 }
 
 tech_archaeo_detection_scrambler = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_detection_scrambler }
-	}
 
 cost = @tier4cost2
 	area = society
@@ -952,6 +935,7 @@ cost = @tier4cost2
 	weight = @tier5weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_detection_scrambler }
 		has_ancrel = yes
 	}
 
@@ -992,9 +976,6 @@ cost = @tier4cost2
 }
 
 tech_archaeo_lasers = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_lasers }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -1006,6 +987,7 @@ cost = @tier3cost3
 	weight = @tier4weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_lasers }
 		has_ancrel = yes
 	}
 
@@ -1050,9 +1032,6 @@ cost = @tier3cost3
 }
 
 tech_archaeo_mass_accelerator = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_mass_accelerator }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -1064,6 +1043,7 @@ cost = @tier3cost3
 	weight = @tier4weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_mass_accelerator }
 		has_ancrel = yes
 	}
 
@@ -1108,9 +1088,6 @@ cost = @tier3cost3
 }
 
 tech_archaeo_mass_drivers = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_mass_drivers }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -1122,6 +1099,7 @@ cost = @tier3cost3
 	weight = @tier4weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_mass_drivers }
 		has_ancrel = yes
 	}
 
@@ -1166,9 +1144,6 @@ cost = @tier3cost3
 }
 
 tech_archaeo_missiles = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_missiles }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -1180,6 +1155,7 @@ cost = @tier3cost3
 	weight = @tier4weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_missiles }
 		has_ancrel = yes
 	}
 
@@ -1212,9 +1188,6 @@ cost = @tier3cost3
 }
 
 tech_archaeo_overcharger = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_overcharger }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -1226,6 +1199,7 @@ cost = @tier3cost3
 	weight = @tier4weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_overcharger }
 		has_ancrel = yes
 	}
 
@@ -1258,9 +1232,6 @@ cost = @tier3cost3
 }
 
 tech_archaeo_pk_devolving_beam = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_pk_devolving_beam }
-	}
 
 area = society
 	cost = @tier5cost3
@@ -1272,6 +1243,7 @@ area = society
 	weight = @tier5weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_pk_devolving_beam }
 		host_has_dlc = "Apocalypse"
 		has_ancrel = yes
 	}
@@ -1306,9 +1278,6 @@ area = society
 }
 
 tech_archaeo_point_defence = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_point_defence }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -1320,6 +1289,7 @@ cost = @tier3cost3
 	weight = @tier4weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_point_defence }
 		has_ancrel = yes
 	}
 
@@ -1364,9 +1334,6 @@ cost = @tier3cost3
 }
 
 tech_archaeo_rampart = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_rampart }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -1378,6 +1345,7 @@ cost = @tier3cost3
 	weight = @tier4weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_rampart }
 		has_ancrel = yes
 	}
 
@@ -1410,9 +1378,6 @@ cost = @tier3cost3
 }
 
 tech_archaeo_refinery = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_refinery }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -1424,6 +1389,7 @@ cost = @tier3cost3
 	weight = @tier4weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_refinery }
 		has_ancrel = yes
 		is_wilderness_empire = no
 	}
@@ -1457,9 +1423,6 @@ cost = @tier3cost3
 }
 
 tech_archaeo_strike_crafts = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_strike_crafts }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -1471,6 +1434,7 @@ cost = @tier3cost3
 	weight = @tier4weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_strike_crafts }
 		has_ancrel = yes
 	}
 
@@ -1515,9 +1479,6 @@ cost = @tier3cost3
 }
 
 tech_archaeo_titan_beam = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_titan_beam }
-	}
 
 cost = @tier4cost2
 	area = society
@@ -1529,6 +1490,7 @@ cost = @tier4cost2
 	weight = @tier4weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archaeo_titan_beam }
 		has_ancrel = yes
 	}
 
@@ -1561,9 +1523,6 @@ cost = @tier4cost2
 }
 
 tech_archaeoarmor = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archaeoarmor }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -1575,6 +1534,7 @@ cost = @tier3cost3
 	weight = @tier4weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archaeoarmor }
 		has_ancrel = yes
 	}
 
@@ -1619,9 +1579,6 @@ cost = @tier3cost3
 }
 
 tech_archaeoshield = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archaeoshield }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -1633,6 +1590,7 @@ cost = @tier3cost3
 	weight = @tier4weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archaeoshield }
 		has_ancrel = yes
 	}
 
@@ -1677,9 +1635,6 @@ cost = @tier3cost3
 }
 
 tech_archaeostudies = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archaeostudies }
-	}
 
 cost = @tier2cost1
 	area = society
@@ -1689,6 +1644,7 @@ cost = @tier2cost1
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archaeostudies }
 		has_ancrel = yes
 	}
 
@@ -1736,9 +1692,6 @@ cost = @tier2cost1
 }
 
 tech_archeology_lab = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archeology_lab }
-	}
 
 area = physics
 	category = { computing }
@@ -1783,14 +1736,12 @@ area = physics
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archeology_lab }
 		has_ancrel = no
 	}
 }
 
 tech_archeology_lab_ancrel = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_archeology_lab_ancrel }
-	}
 
 area = society
 	category = { archaeostudies }
@@ -1835,6 +1786,7 @@ area = society
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_archeology_lab_ancrel }
 		has_ancrel = yes
 	}
 }
@@ -1884,9 +1836,6 @@ area = engineering
 }
 
 tech_artificial_moral_codes = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_artificial_moral_codes }
-	}
 
 cost = @tier2cost3
 	area = society
@@ -1900,6 +1849,7 @@ cost = @tier2cost3
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_artificial_moral_codes }
 		NOT = { has_ethic = ethic_gestalt_consciousness }
 	}
 
@@ -2000,9 +1950,6 @@ cost = @tier2cost3
 }
 
 tech_assisted_detection = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_assisted_detection }
-	}
 
 cost = @tier2cost3
 	area = physics
@@ -2014,6 +1961,7 @@ cost = @tier2cost3
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_assisted_detection }
 		has_first_contact_dlc = yes
 	}
 
@@ -2043,9 +1991,6 @@ cost = @tier2cost3
 }
 
 tech_asteroidal_carapace = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_asteroidal_carapace }
-	}
 
 area = engineering
 	tier = 3
@@ -2053,14 +1998,12 @@ area = engineering
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_asteroidal_carapace }
 		has_grand_archive_dlc = yes
 	}
 }
 
 tech_astral_harvesting = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_astral_harvesting }
-	}
 
 cost = @tier2cost1
 	area = physics
@@ -2075,6 +2018,7 @@ cost = @tier2cost1
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_astral_harvesting }
 		has_astral_planes_dlc = yes
 	}
 
@@ -2113,9 +2057,6 @@ cost = @tier2cost1
 }
 
 tech_atmospheric_orbital_mechanics = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_atmospheric_orbital_mechanics }
-	}
 
 cost = @tier2cost3
 	area = physics
@@ -2126,6 +2067,7 @@ cost = @tier2cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_atmospheric_orbital_mechanics }
 		has_first_contact_dlc = yes
 	}
 
@@ -2138,9 +2080,6 @@ cost = @tier2cost3
 }
 
 tech_aura_intensification = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_aura_intensification }
-	}
 
 cost = @tier4cost1
 	area = society
@@ -2151,6 +2090,7 @@ cost = @tier4cost1
 	prerequisites = { "tech_psionic_aura" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_aura_intensification }
 		has_shroud_dlc = yes
 	}
 
@@ -2175,9 +2115,6 @@ cost = @tier4cost1
 }
 
 tech_aura_resonation = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_aura_resonation }
-	}
 
 cost = @tier3cost1
 	area = society
@@ -2188,6 +2125,7 @@ cost = @tier3cost1
 	prerequisites = { "tech_psionic_aura" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_aura_resonation }
 		has_shroud_dlc = yes
 	}
 
@@ -2389,9 +2327,6 @@ area = engineering
 }
 
 tech_autocurating_vault = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_autocurating_vault }
-	}
 
 cost = @tier3cost2
 	area = society
@@ -2401,6 +2336,7 @@ cost = @tier3cost2
 	weight = @tier3weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_autocurating_vault }
 		NOR = {
 			is_spiritualist = yes
 			is_wilderness_empire = yes
@@ -2488,9 +2424,6 @@ area = physics
 }
 
 tech_autonomous_agents = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_autonomous_agents }
-	}
 
 cost = @tier2cost3
 	area = society
@@ -2500,6 +2433,7 @@ cost = @tier2cost3
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_autonomous_agents }
 		has_ethic = ethic_gestalt_consciousness
 	}
 
@@ -2677,9 +2611,6 @@ area = physics
 }
 
 tech_battleship_build_speed = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_battleship_build_speed }
-	}
 
 cost = @tier4cost2
 	area = engineering
@@ -2689,6 +2620,7 @@ cost = @tier4cost2
 	weight = @tier4weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_battleship_build_speed }
 		country_uses_bio_ships = no
 	}
 
@@ -2723,9 +2655,6 @@ cost = @tier4cost2
 }
 
 tech_battleship_hull_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_battleship_hull_1 }
-	}
 
 cost = @tier4cost3
 	area = engineering
@@ -2735,6 +2664,7 @@ cost = @tier4cost3
 	weight = @tier4weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_battleship_hull_1 }
 		country_uses_bio_ships = no
 	}
 
@@ -2771,9 +2701,6 @@ cost = @tier4cost3
 }
 
 tech_battleship_hull_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_battleship_hull_2 }
-	}
 
 cost = @tier5cost1
 	area = engineering
@@ -2784,6 +2711,7 @@ cost = @tier5cost1
 	weight = @tier5weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_battleship_hull_2 }
 		country_uses_bio_ships = no
 	}
 
@@ -2833,9 +2761,6 @@ cost = @tier5cost1
 }
 
 tech_battleships = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_battleships }
-	}
 
 cost = @tier4cost1
 	area = engineering
@@ -2845,6 +2770,7 @@ cost = @tier4cost1
 	weight = @tier4weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_battleships }
 		country_uses_bio_ships = no
 	}
 
@@ -2896,9 +2822,6 @@ cost = @tier4cost1
 }
 
 tech_binary_motivators = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_binary_motivators }
-	}
 
 cost = @tier3cost1
 	area = engineering
@@ -2915,6 +2838,7 @@ cost = @tier3cost1
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_binary_motivators }
 		OR = {
 			is_machine_empire = yes
 			is_individual_machine = yes
@@ -2932,9 +2856,6 @@ cost = @tier3cost1
 }
 
 tech_bio_reactor = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_bio_reactor }
-	}
 
 cost = @tier1cost1
 	area = society
@@ -2945,6 +2866,7 @@ cost = @tier1cost1
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_bio_reactor }
 		is_wilderness_empire = no
 	}
 
@@ -2971,9 +2893,6 @@ cost = @tier1cost1
 }
 
 tech_bio_reactor_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_bio_reactor_2 }
-	}
 
 cost = @tier2cost1
 	area = society
@@ -2984,6 +2903,7 @@ cost = @tier2cost1
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_bio_reactor_2 }
 		is_wilderness_empire = no
 	}
 
@@ -3010,9 +2930,6 @@ cost = @tier2cost1
 }
 
 tech_biomechanics = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_biomechanics }
-	}
 
 cost = @tier4cost2
 	area = society
@@ -3023,6 +2940,7 @@ cost = @tier4cost2
 	weight = @tier4weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_biomechanics }
 		OR = {
 			is_machine_empire = yes
 			is_individual_machine = yes
@@ -3045,9 +2963,6 @@ cost = @tier4cost2
 }
 
 tech_boarding_cables = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_boarding_cables }
-	}
 
 cost = @tier3cost1
 	area = engineering
@@ -3056,14 +2971,12 @@ cost = @tier3cost1
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_boarding_cables }
 		has_grand_archive_dlc = yes
 	}
 }
 
 tech_btc_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_btc_1 }
-	}
 
 area = engineering
 	cost = @tier5cost3
@@ -3076,6 +2989,7 @@ area = engineering
 	weight = @tier5weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_btc_1 }
 		has_nemesis = yes
 		has_ascension_perk = ap_become_the_crisis
 		has_country_flag = can_build_star_eaters
@@ -3091,9 +3005,6 @@ area = engineering
 }
 
 tech_capacity_boosters = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_capacity_boosters }
-	}
 
 cost = @tier4cost3
 	area = society
@@ -3106,6 +3017,7 @@ cost = @tier4cost3
 	# Modifiers from this tech is added through a policy-option
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_capacity_boosters }
 		is_machine_empire = no
 		is_natural_design_empire = no
 	}
@@ -3336,9 +3248,6 @@ cost = @tier4cost1
 }
 
 tech_cloaking_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cloaking_1 }
-	}
 
 cost = @tier2cost3
 	area = physics
@@ -3350,6 +3259,7 @@ cost = @tier2cost3
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cloaking_1 }
 		has_first_contact_dlc = yes
 	}
 
@@ -3393,9 +3303,6 @@ cost = @tier2cost3
 }
 
 tech_cloaking_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cloaking_2 }
-	}
 
 cost = @tier3cost3
 	area = physics
@@ -3407,6 +3314,7 @@ cost = @tier3cost3
 	weight = @tier3weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cloaking_2 }
 		has_first_contact_dlc = yes
 	}
 
@@ -3451,9 +3359,6 @@ cost = @tier3cost3
 }
 
 tech_cloaking_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cloaking_3 }
-	}
 
 cost = @tier4cost3
 	area = physics
@@ -3465,6 +3370,7 @@ cost = @tier4cost3
 	weight = @tier4weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cloaking_3 }
 		has_first_contact_dlc = yes
 	}
 
@@ -3545,9 +3451,6 @@ cost = @fallentechcost
 }
 
 tech_cloaking_psi = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cloaking_psi }
-	}
 
 cost = @tier5cost3
 	area = society
@@ -3560,6 +3463,7 @@ cost = @tier5cost3
 	is_reverse_engineerable = no
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cloaking_psi }
 		OR = {
 			has_shroud_dlc = yes
 			NOT = { has_ethic = ethic_gestalt_consciousness }
@@ -3600,9 +3504,6 @@ cost = @tier5cost3
 }
 
 tech_cloning = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cloning }
-	}
 
 cost = @tier2cost2
 	area = society
@@ -3612,6 +3513,7 @@ cost = @tier2cost2
 	weight = @tier2weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cloning }
 		OR = {
 			is_machine_empire = no
 			has_civic = civic_machine_assimilator
@@ -3716,9 +3618,6 @@ area = physics
 }
 
 tech_collective_production_methods = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_collective_production_methods }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -3732,6 +3631,7 @@ cost = @tier3cost3
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_collective_production_methods }
 		is_hive_empire = yes
 	}
 
@@ -3745,9 +3645,6 @@ cost = @tier3cost3
 }
 
 tech_collective_self = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_collective_self }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -3764,6 +3661,7 @@ cost = @tier3cost3
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_collective_self }
 		NOT = { has_ethic = ethic_gestalt_consciousness }
 	}
 
@@ -3983,9 +3881,6 @@ cost = @tier4cost3
 }
 
 tech_colossus = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_colossus }
-	}
 
 cost = @tier5cost3
 	area = engineering
@@ -3997,6 +3892,7 @@ cost = @tier5cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_colossus }
 		host_has_dlc = "Apocalypse"
 	}
 
@@ -4116,9 +4012,6 @@ area = physics
 }
 
 tech_combat_computers_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_combat_computers_3 }
-	}
 
 area = physics
 	tier = 4
@@ -4133,6 +4026,7 @@ area = physics
 	# unlocks sapient combat computers
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_combat_computers_3 }
 		NOT = { has_ethic = ethic_gestalt_consciousness }
 	}
 
@@ -4174,9 +4068,6 @@ area = physics
 }
 
 tech_combat_computers_autonomous = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_combat_computers_autonomous }
-	}
 
 area = physics
 	tier = 4
@@ -4190,6 +4081,7 @@ area = physics
 	# unlocks autonomous combat computers
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_combat_computers_autonomous }
 		has_ethic = ethic_gestalt_consciousness
 	}
 
@@ -4317,9 +4209,6 @@ cost = @tier3cost3
 }
 
 tech_compact_living = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_compact_living }
-	}
 
 cost = @tier2cost3
 	area = society
@@ -4330,6 +4219,7 @@ cost = @tier2cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_compact_living }
 		has_first_contact_dlc = yes
 	}
 
@@ -4346,9 +4236,6 @@ cost = @tier2cost3
 }
 
 tech_consecration_fields = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_consecration_fields }
-	}
 
 cost = @tier3cost2
 	area = society
@@ -4358,6 +4245,7 @@ cost = @tier3cost2
 	weight = @tier3weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_consecration_fields }
 		OR = {
 			is_spiritualist = yes
 			AND = {
@@ -4433,9 +4321,6 @@ cost = @tier4cost2
 }
 
 tech_consumer_good_refinement_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_consumer_good_refinement_1 }
-	}
 
 cost = @tier2cost1
 	area = physics
@@ -4449,6 +4334,7 @@ cost = @tier2cost1
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_consumer_good_refinement_1 }
 		country_uses_consumer_goods = yes
 	}
 
@@ -4463,9 +4349,6 @@ cost = @tier2cost1
 }
 
 tech_consumer_good_refinement_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_consumer_good_refinement_2 }
-	}
 
 cost = @tier4cost1
 	area = physics
@@ -4479,6 +4362,7 @@ cost = @tier4cost1
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_consumer_good_refinement_2 }
 		country_uses_consumer_goods = yes
 	}
 
@@ -4493,9 +4377,6 @@ cost = @tier4cost1
 }
 
 tech_containment_vessel = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_containment_vessel }
-	}
 
 area = physics
 	category = { field_manipulation }
@@ -4519,6 +4400,7 @@ area = physics
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_containment_vessel }
 		has_grand_archive_dlc = yes
 	}
 
@@ -4535,9 +4417,6 @@ area = physics
 }
 
 tech_controlled_mutations = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_controlled_mutations }
-	}
 
 cost = @tier2cost2
 	area = society
@@ -4547,6 +4426,7 @@ cost = @tier2cost2
 	prerequisites = { tech_alien_cloning }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_controlled_mutations }
 		OR = {
 			is_beastmasters_empire = yes
 			has_any_dna = yes
@@ -4618,9 +4498,6 @@ cost = @tier4cost2
 }
 
 tech_corvette_build_speed = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_corvette_build_speed }
-	}
 
 cost = @tier1cost2
 	area = engineering
@@ -4630,6 +4507,7 @@ cost = @tier1cost2
 	weight = @tier1weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_corvette_build_speed }
 		country_uses_bio_ships = no
 	}
 
@@ -4665,9 +4543,6 @@ cost = @tier1cost2
 }
 
 tech_corvette_hull_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_corvette_hull_1 }
-	}
 
 cost = @tier1cost3
 	area = engineering
@@ -4677,6 +4552,7 @@ cost = @tier1cost3
 	weight = @tier1weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_corvette_hull_1 }
 		country_uses_bio_ships = no
 	}
 
@@ -4710,9 +4586,6 @@ cost = @tier1cost3
 }
 
 tech_corvette_hull_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_corvette_hull_2 }
-	}
 
 cost = @tier2cost3
 	area = engineering
@@ -4723,6 +4596,7 @@ cost = @tier2cost3
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_corvette_hull_2 }
 		country_uses_bio_ships = no
 	}
 
@@ -4769,9 +4643,6 @@ cost = @tier2cost3
 }
 
 tech_cosmogenesis_FE_titan = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_FE_titan }
-	}
 
 area = engineering
 	cost = @fallentechcost
@@ -4783,6 +4654,7 @@ area = engineering
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_FE_titan }
 		has_machine_age_dlc = yes
         country_uses_bio_ships = no
 	}
@@ -4796,9 +4668,6 @@ area = engineering
 }
 
 tech_cosmogenesis_battlecruiser = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_battlecruiser }
-	}
 
 area = engineering
 	cost = @fallentechcost
@@ -4810,6 +4679,7 @@ area = engineering
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_battlecruiser }
 		has_machine_age_dlc = yes
         country_uses_bio_ships = no
 	}
@@ -4823,9 +4693,6 @@ area = engineering
 }
 
 tech_cosmogenesis_crisis_1 = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_crisis_1 }
-	}
 
 area = physics
     cost = 10000
@@ -4836,6 +4703,7 @@ area = physics
     weight = 0
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_crisis_1 }
         has_machine_age_dlc = yes
         has_ascension_perk = ap_cosmogenesis
     }
@@ -4849,9 +4717,6 @@ area = physics
 }
 
 tech_cosmogenesis_crisis_2 = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_crisis_2 }
-	}
 
 area = physics
     cost = 50000
@@ -4862,6 +4727,7 @@ area = physics
     weight = 0
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_crisis_2 }
         has_machine_age_dlc = yes
         has_ascension_perk = ap_cosmogenesis
     }
@@ -4875,9 +4741,6 @@ area = physics
 }
 
 tech_cosmogenesis_crisis_3 = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_crisis_3 }
-	}
 
 area = physics
     cost = 100000
@@ -4888,6 +4751,7 @@ area = physics
     weight = 0
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_crisis_3 }
         has_machine_age_dlc = yes
         has_ascension_perk = ap_cosmogenesis
     }
@@ -4901,9 +4765,6 @@ area = physics
 }
 
 tech_cosmogenesis_crisis_4 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_crisis_4 }
-	}
 
 area = physics
 	cost = 200000
@@ -4914,6 +4775,7 @@ area = physics
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_crisis_4 }
 		has_machine_age_dlc = yes
 		has_ascension_perk = ap_cosmogenesis
 	}
@@ -4927,9 +4789,6 @@ area = physics
 }
 
 tech_cosmogenesis_crisis_5 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_crisis_5 }
-	}
 
 area = physics
 	cost = 300000
@@ -4940,6 +4799,7 @@ area = physics
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_crisis_5 }
 		has_machine_age_dlc = yes
 		has_ascension_perk = ap_cosmogenesis
 	}
@@ -4953,9 +4813,6 @@ area = physics
 }
 
 tech_cosmogenesis_escort = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_escort }
-	}
 
 area = engineering
 	cost = @fallentechcost
@@ -4967,6 +4824,7 @@ area = engineering
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_escort }
 		has_machine_age_dlc = yes
         country_uses_bio_ships = no
 	}
@@ -4980,9 +4838,6 @@ area = engineering
 }
 
 tech_cosmogenesis_harbinger = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_harbinger }
-	}
 
 area = society
 	cost = @fallentechcost
@@ -4994,6 +4849,7 @@ area = society
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_harbinger }
 		has_machine_age_dlc = yes
         country_uses_bio_ships = yes
 	}
@@ -5007,9 +4863,6 @@ area = society
 }
 
 tech_cosmogenesis_mauler = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_mauler }
-	}
 
 area = society
 	cost = @fallentechcost
@@ -5021,6 +4874,7 @@ area = society
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_mauler }
 		has_machine_age_dlc = yes
         country_uses_bio_ships = yes
 	}
@@ -5034,9 +4888,6 @@ area = society
 }
 
 tech_cosmogenesis_stinger = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_stinger }
-	}
 
 area = society
 	cost = @fallentechcost
@@ -5048,6 +4899,7 @@ area = society
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_stinger }
 		has_machine_age_dlc = yes
         country_uses_bio_ships = yes
 	}
@@ -5061,9 +4913,6 @@ area = society
 }
 
 tech_cosmogenesis_thesis = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_thesis }
-	}
 
 area = physics
     cost = 75000
@@ -5075,6 +4924,7 @@ area = physics
     weight = @repeatableTechWeight
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_thesis }
         has_machine_age_dlc = yes
         has_ascension_perk = ap_cosmogenesis
         NOT = { has_country_flag = cosmogenesis_aborted }
@@ -5103,9 +4953,6 @@ area = physics
 }
 
 tech_cosmogenesis_weaver = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_weaver }
-	}
 
 area = society
 	cost = @fallentechcost
@@ -5117,6 +4964,7 @@ area = society
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_weaver }
 		has_machine_age_dlc = yes
         country_uses_bio_ships = yes
 	}
@@ -5130,9 +4978,6 @@ area = society
 }
 
 tech_cosmogenesis_world = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_world }
-	}
 
 area = engineering
     cost = @tier5cost1
@@ -5143,6 +4988,7 @@ area = engineering
     weight = 0
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_cosmogenesis_world }
         has_machine_age_dlc = yes
         has_ascension_perk = ap_cosmogenesis
     }
@@ -5261,9 +5107,6 @@ area = society
 }
 
 tech_cruiser_build_speed = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cruiser_build_speed }
-	}
 
 cost = @tier3cost2
 	area = engineering
@@ -5273,6 +5116,7 @@ cost = @tier3cost2
 	weight = @tier3weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cruiser_build_speed }
 		country_uses_bio_ships = no
 	}
 
@@ -5307,9 +5151,6 @@ cost = @tier3cost2
 }
 
 tech_cruiser_hull_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cruiser_hull_1 }
-	}
 
 cost = @tier3cost3
 	area = engineering
@@ -5319,6 +5160,7 @@ cost = @tier3cost3
 	weight = @tier3weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cruiser_hull_1 }
 		country_uses_bio_ships = no
 	}
 
@@ -5355,9 +5197,6 @@ cost = @tier3cost3
 }
 
 tech_cruiser_hull_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cruiser_hull_2 }
-	}
 
 cost = @tier4cost1
 	area = engineering
@@ -5368,6 +5207,7 @@ cost = @tier4cost1
 	weight = @tier4weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cruiser_hull_2 }
 		country_uses_bio_ships = no
 	}
 
@@ -5417,9 +5257,6 @@ cost = @tier4cost1
 }
 
 tech_cruisers = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cruisers }
-	}
 
 cost = @tier3cost1
 	area = engineering
@@ -5431,6 +5268,7 @@ cost = @tier3cost1
 	gateway = ship
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cruisers }
 		country_uses_bio_ships = no
 	}
 
@@ -5556,9 +5394,6 @@ cost = @tier2cost3
 }
 
 tech_cryovault = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cryovault }
-	}
 
 cost = @tier2cost1
 	area = society
@@ -5567,6 +5402,7 @@ cost = @tier2cost1
 	weight = 0 # unlocked via Absolute Zero arc site
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cryovault }
 		has_shroud_dlc = yes
 	}
 
@@ -5617,9 +5453,6 @@ area = engineering
 }
 
 tech_cultural_heritage = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_cultural_heritage }
-	}
 
 cost = @tier1cost2
 	area = society
@@ -5629,6 +5462,7 @@ cost = @tier1cost2
 	weight = @tier1weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_cultural_heritage }
 		is_wilderness_empire = no
 	}
 
@@ -5815,9 +5649,6 @@ cost = @fallentechcost
 }
 
 tech_dark_matter_detection = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_dark_matter_detection }
-	}
 
 cost = @tier5cost3
 	area = physics
@@ -5829,6 +5660,7 @@ cost = @tier5cost3
 	weight = @tier5weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_dark_matter_detection }
 		has_first_contact_dlc = yes
 	}
 
@@ -6133,9 +5965,6 @@ cost = @tier1cost2
 }
 
 tech_deep_space_citadel = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_deep_space_citadel }
-	}
 
 area = society
 	cost = @tier3cost3
@@ -6147,6 +5976,7 @@ area = society
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_deep_space_citadel }
 		has_biogenesis_dlc = yes
 	}
 
@@ -6315,9 +6145,6 @@ cost = @tier1cost2
 }
 
 tech_destroyer_build_speed = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_destroyer_build_speed }
-	}
 
 cost = @tier2cost2
 	area = engineering
@@ -6327,6 +6154,7 @@ cost = @tier2cost2
 	weight = @tier2weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_destroyer_build_speed }
 		country_uses_bio_ships = no
 	}
 
@@ -6361,9 +6189,6 @@ cost = @tier2cost2
 }
 
 tech_destroyer_hull_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_destroyer_hull_1 }
-	}
 
 cost = @tier2cost3
 	area = engineering
@@ -6373,6 +6198,7 @@ cost = @tier2cost3
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_destroyer_hull_1 }
 		country_uses_bio_ships = no
 	}
 
@@ -6409,9 +6235,6 @@ cost = @tier2cost3
 }
 
 tech_destroyer_hull_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_destroyer_hull_2 }
-	}
 
 cost = @tier3cost1
 	area = engineering
@@ -6422,6 +6245,7 @@ cost = @tier3cost1
 	weight = @tier3weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_destroyer_hull_2 }
 		country_uses_bio_ships = no
 	}
 
@@ -6472,9 +6296,6 @@ cost = @tier3cost1
 }
 
 tech_destroyers = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_destroyers }
-	}
 
 cost = @tier2cost1
 	area = engineering
@@ -6486,6 +6307,7 @@ cost = @tier2cost1
 	gateway = ship
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_destroyers }
 		country_uses_bio_ships = no
 	}
 
@@ -6537,9 +6359,6 @@ cost = @tier2cost1
 }
 
 tech_detection_array = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_detection_array }
-	}
 
 cost = @tier2cost3
 	area = physics
@@ -6551,6 +6370,7 @@ cost = @tier2cost3
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_detection_array }
 		has_first_contact_dlc = yes
 	}
 
@@ -7091,9 +6911,6 @@ area = engineering
 }
 
 tech_droid_workers = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_droid_workers }
-	}
 
 cost = @tier2cost3
 	area = engineering
@@ -7107,6 +6924,7 @@ cost = @tier2cost3
 	feature_flags = { droids }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_droid_workers }
 		NOR = {
 			has_ethic = "ethic_gestalt_consciousness"
 			is_individual_machine = yes
@@ -7160,9 +6978,6 @@ cost = @tier2cost3
 }
 
 tech_dyson_sphere = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_dyson_sphere }
-	}
 
 area = physics
 	cost = @tier5cost3
@@ -7174,6 +6989,7 @@ area = physics
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_dyson_sphere }
 		host_has_dlc = "Utopia"
 	}
 
@@ -7188,9 +7004,6 @@ area = physics
 }
 
 tech_dyson_swarm = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_dyson_swarm }
-	}
 
 area = physics
     cost = @tier2cost3
@@ -7203,6 +7016,7 @@ area = physics
     weight = @tier2weight3
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_dyson_swarm }
         has_machine_age_dlc = yes
     }
 
@@ -7420,9 +7234,6 @@ cost = @tier3cost2
 }
 
 tech_effective_bureaucracy = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_effective_bureaucracy }
-	}
 
 cost = @tier2cost1
 	area = society
@@ -7432,6 +7243,7 @@ cost = @tier2cost1
 	weight = @tier2weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_effective_bureaucracy }
 		is_gestalt = no
 	}
 
@@ -7465,9 +7277,6 @@ cost = @tier2cost1
 }
 
 tech_embodied_dynamism = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_embodied_dynamism }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -7485,6 +7294,7 @@ cost = @tier3cost3
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_embodied_dynamism }
 		has_ethic = ethic_gestalt_consciousness
 	}
 
@@ -7872,9 +7682,6 @@ area = physics
 }
 
 tech_engineering_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_engineering_1 }
-	}
 
 area = engineering
 	category = { materials }
@@ -7884,6 +7691,7 @@ area = engineering
 	weight = @tier1weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_engineering_1 }
 		is_wilderness_empire = no
 	}
 
@@ -7922,9 +7730,6 @@ area = engineering
 }
 
 tech_engineering_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_engineering_2 }
-	}
 
 area = engineering
 	category = { materials }
@@ -7934,6 +7739,7 @@ area = engineering
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_engineering_2 }
 		is_wilderness_empire = no
 	}
 
@@ -7976,9 +7782,6 @@ area = engineering
 }
 
 tech_engineering_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_engineering_3 }
-	}
 
 area = engineering
 	category = { materials }
@@ -7988,6 +7791,7 @@ area = engineering
 	weight = @tier3weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_engineering_3 }
 		is_wilderness_empire = no
 	}
 
@@ -8082,9 +7886,6 @@ cost = @guardiantechcost
 }
 
 tech_epigenetic_triggers = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_epigenetic_triggers }
-	}
 
 cost = @tier2cost2
 	area = society
@@ -8098,6 +7899,7 @@ cost = @tier2cost2
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_epigenetic_triggers }
 		NOR = {
 			has_valid_civic = civic_fanatic_purifiers
 			is_natural_design_empire = yes
@@ -8195,9 +7997,6 @@ cost = @tier2cost2
 }
 
 tech_executive_retreat = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_executive_retreat }
-	}
 
 cost = @tier3cost1
 	area = society
@@ -8206,6 +8005,7 @@ cost = @tier3cost1
 	weight = @tier3weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_executive_retreat }
 		is_megacorp = yes
 	}
 
@@ -8475,7 +8275,7 @@ area = society
 			}
 		}
 		modifier = {
-			factor = @EnigmaticEngineeringDraw
+			factor = 0.025
 			NOT = { has_crisis_level = crisis_cosmogenesis_level_3 }
 		}
 		modifier = {
@@ -8566,7 +8366,7 @@ area = engineering
 			}
 		}
 		modifier = {
-			factor = @EnigmaticEngineeringDraw
+			factor = 0.025
 			NOT = { has_crisis_level = crisis_cosmogenesis_level_5 }
 		}
 		modifier = {
@@ -8672,7 +8472,7 @@ tech_fe_assembly_1 = { 	potential = {
 			}
 		}
 		modifier = {
-			factor = @EnigmaticEngineeringDraw
+			factor = 0.025
 			NOT = { has_crisis_level = crisis_cosmogenesis_level_4 }
 		}
 		modifier = {
@@ -8775,7 +8575,7 @@ tech_fe_clinic_1 = { 	potential = {
 			}
 		}
 		modifier = {
-			factor = @EnigmaticEngineeringDraw
+			factor = 0.025
 			NOT = { has_crisis_level = crisis_cosmogenesis_level_4 }
 		}
 		modifier = {
@@ -8870,7 +8670,7 @@ area = society
 			}
 		}
 		modifier = {
-			factor = @EnigmaticEngineeringDraw
+			factor = 0.025
 			NOT = { has_crisis_level = crisis_cosmogenesis_level_1 }
 		}
 		modifier = {
@@ -8961,7 +8761,7 @@ tech_fe_entertainment_1 = { 	potential = {
 			}
 		}
 		modifier = {
-			factor = @EnigmaticEngineeringDraw
+			factor = 0.025
 			NOT = { has_crisis_level = crisis_cosmogenesis_level_4 }
 		}
 		modifier = {
@@ -9056,7 +8856,7 @@ area = engineering
 			}
 		}
 		modifier = {
-			factor = @EnigmaticEngineeringDraw
+			factor = 0.025
 			NOT = { has_crisis_level = crisis_cosmogenesis_level_4 }
 		}
 		modifier = {
@@ -9147,7 +8947,7 @@ area = engineering
 			}
 		}
 		modifier = {
-			factor = @EnigmaticEngineeringDraw
+			factor = 0.025
 			NOT = { has_crisis_level = crisis_cosmogenesis_level_5 }
 		}
 		modifier = {
@@ -9238,7 +9038,7 @@ area = society
 			}
 		}
 		modifier = {
-			factor = @EnigmaticEngineeringDraw
+			factor = 0.025
 			NOT = { has_crisis_level = crisis_cosmogenesis_level_3 }
 		}
 		modifier = {
@@ -9329,7 +9129,7 @@ area = physics
 			}
 		}
 		modifier = {
-			factor = @EnigmaticEngineeringDraw
+			factor = 0.025
 			NOT = { has_crisis_level = crisis_cosmogenesis_level_5 }
 		}
 		modifier = {
@@ -9420,7 +9220,7 @@ tech_fe_market_1 = { 	potential = {
 			}
 		}
 		modifier = {
-			factor = @EnigmaticEngineeringDraw
+			factor = 0.025
 			NOT = { has_crisis_level = crisis_cosmogenesis_level_3 }
 		}
 		modifier = {
@@ -9515,7 +9315,7 @@ area = engineering
 			}
 		}
 		modifier = {
-			factor = @EnigmaticEngineeringDraw
+			factor = 0.025
 			NOT = { has_crisis_level = crisis_cosmogenesis_level_2 }
 		}
 		modifier = {
@@ -9606,7 +9406,7 @@ area = society
 			}
 		}
 		modifier = {
-			factor = @EnigmaticEngineeringDraw
+			factor = 0.025
 			NOT = { has_crisis_level = crisis_cosmogenesis_level_2 }
 		}
 		modifier = {
@@ -9709,7 +9509,7 @@ area = society
 			}
 		}
 		modifier = {
-			factor = @EnigmaticEngineeringDraw
+			factor = 0.025
 			NOT = { has_crisis_level = crisis_cosmogenesis_level_1 }
 		}
 		modifier = {
@@ -9800,7 +9600,7 @@ area = physics
 			}
 		}
 		modifier = {
-			factor = @EnigmaticEngineeringDraw
+			factor = 0.025
 			NOT = { has_crisis_level = crisis_cosmogenesis_level_1 }
 		}
 		modifier = {
@@ -9891,7 +9691,7 @@ area = physics
 			}
 		}
 		modifier = {
-			factor = @EnigmaticEngineeringDraw
+			factor = 0.025
 			NOT = { has_crisis_level = crisis_cosmogenesis_level_2 }
 		}
 		modifier = {
@@ -9937,9 +9737,6 @@ area = physics
 }
 
 tech_federation_code = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_federation_code }
-	}
 
 cost = @tier1cost2
 	area = society
@@ -9949,6 +9746,7 @@ cost = @tier1cost2
 	weight = @tier2weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_federation_code }
 		OR = {
 			# The tech can be given at the start of the game
 			days_passed = 0
@@ -10319,9 +10117,6 @@ cost = @tier3cost1
 }
 
 tech_frontier_health = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_frontier_health }
-	}
 
 cost = @tier1cost2
 	area = society
@@ -10331,6 +10126,7 @@ cost = @tier1cost2
 	weight = @tier1weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_frontier_health }
 		is_regular_empire = yes
 		is_individual_machine = no
 	}
@@ -10353,9 +10149,6 @@ cost = @tier1cost2
 }
 
 tech_frontier_hospital = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_frontier_hospital }
-	}
 
 cost = @tier2cost3
 	area = society
@@ -10365,6 +10158,7 @@ cost = @tier2cost3
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_frontier_hospital }
 		is_gestalt = no
 		is_individual_machine = no
 	}
@@ -10561,9 +10355,6 @@ cost = @tier2cost2
 }
 
 tech_galactic_archivism = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_galactic_archivism }
-	}
 
 cost = @tier2cost1
 	area = society
@@ -10572,6 +10363,7 @@ cost = @tier2cost1
 	weight = @tier2weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_galactic_archivism }
 		has_grand_archive_dlc = yes
 		OR = {
 			acquired_specimen_count > 0
@@ -10709,9 +10501,6 @@ cost = @tier4cost1
 }
 
 tech_galactic_markets = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_galactic_markets }
-	}
 
 cost = @tier4cost1
 	area = society
@@ -10724,6 +10513,7 @@ cost = @tier4cost1
 	# unlocks Galactic Stock Exchange empire wonder
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_galactic_markets }
 		is_gestalt = no
 	}
 
@@ -10914,9 +10704,6 @@ cost = @tier5cost3
 }
 
 tech_gene_banks = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_gene_banks }
-	}
 
 cost = @tier2cost3
 	area = society
@@ -10927,6 +10714,7 @@ cost = @tier2cost3
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_gene_banks }
 		OR = {
 			is_machine_empire = no
 			is_wilderness_empire = no
@@ -10971,9 +10759,6 @@ cost = @tier2cost3
 }
 
 tech_gene_crops = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_gene_crops }
-	}
 
 cost = @tier2cost1
 	area = society
@@ -10987,6 +10772,7 @@ cost = @tier2cost1
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_gene_crops }
 		is_wilderness_empire = no
 	}
 
@@ -11056,9 +10842,6 @@ cost = @tier2cost1
 }
 
 tech_gene_expressions = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_gene_expressions }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -11083,6 +10866,7 @@ cost = @tier3cost3
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_gene_expressions }
 		OR = {
 			NOR = {
 				is_machine_empire = yes
@@ -11126,9 +10910,6 @@ cost = @tier3cost3
 }
 
 tech_gene_seed_purification = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_gene_seed_purification }
-	}
 
 cost = @tier4cost1
 	area = society
@@ -11141,6 +10922,7 @@ cost = @tier4cost1
 	# unlocks gene-warrior armies
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_gene_seed_purification }
 		NOR = {
 			is_machine_empire = yes
 			is_natural_design_empire = yes
@@ -11204,9 +10986,6 @@ cost = @tier4cost1
 }
 
 tech_gene_tailoring = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_gene_tailoring }
-	}
 
 cost = @tier3cost1
 	area = society
@@ -11220,9 +10999,9 @@ cost = @tier3cost1
 	modifier = {
 		description = tech_gene_tailoring_modifier_desc
 		description_parameters = {
-			POINTS = @tech_gene_tailoring_POINTS
+			POINTS = 2
 		}
-		BIOLOGICAL_species_trait_points_add = @tech_gene_tailoring_POINTS
+		BIOLOGICAL_species_trait_points_add = 2
 	}
 
 	feature_flags = {
@@ -11241,6 +11020,7 @@ cost = @tier3cost1
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_gene_tailoring }
 		OR = {
 			is_machine_empire = no
 			has_civic = civic_machine_assimilator
@@ -11289,9 +11069,6 @@ cost = @tier3cost1
 }
 
 tech_genome_mapping = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_genome_mapping }
-	}
 
 cost = @tier1cost1
 	area = society
@@ -11306,6 +11083,7 @@ cost = @tier1cost1
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_genome_mapping }
 		OR = {
 			is_machine_empire = no
 			has_civic = civic_machine_assimilator
@@ -11365,9 +11143,6 @@ cost = @tier1cost1
 }
 
 tech_georadiation_terraforming = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_georadiation_terraforming }
-	}
 
 cost = @tier3cost1
 	area = society
@@ -11376,6 +11151,7 @@ cost = @tier3cost1
 	weight = 0 # unlocked via Georadiation Terraforming event chain
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_georadiation_terraforming }
 		has_shroud_dlc = yes
 	}
 
@@ -11385,9 +11161,6 @@ cost = @tier3cost1
 }
 
 tech_glandular_acclimation = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_glandular_acclimation }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -11401,6 +11174,7 @@ cost = @tier3cost3
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_glandular_acclimation }
 		OR = {
 			is_machine_empire = no
 			has_civic = civic_machine_assimilator
@@ -11533,9 +11307,6 @@ cost = @tier3cost1
 }
 
 tech_global_research_initiative = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_global_research_initiative }
-	}
 
 area = physics
 	tier = 3
@@ -11543,6 +11314,7 @@ area = physics
 	category = { computing }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_global_research_initiative }
 		is_wilderness_empire = no
 	}
 
@@ -11572,9 +11344,6 @@ area = physics
 }
 
 tech_gravity_snare_capacity_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_gravity_snare_capacity_1 }
-	}
 
 area = physics
 	category = { field_manipulation }
@@ -11589,6 +11358,7 @@ area = physics
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_gravity_snare_capacity_1 }
 		has_grand_archive_dlc = yes
 	}
 
@@ -11596,9 +11366,6 @@ area = physics
 }
 
 tech_gravity_snare_capacity_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_gravity_snare_capacity_2 }
-	}
 
 area = physics
 	category = { field_manipulation }
@@ -11614,6 +11381,7 @@ area = physics
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_gravity_snare_capacity_2 }
 		has_grand_archive_dlc = yes
 	}
 
@@ -11632,9 +11400,6 @@ area = physics
 }
 
 tech_gravity_snare_capacity_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_gravity_snare_capacity_3 }
-	}
 
 area = physics
 	category = { field_manipulation }
@@ -11652,6 +11417,7 @@ area = physics
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_gravity_snare_capacity_3 }
 		has_grand_archive_dlc = yes
 	}
 
@@ -11670,9 +11436,6 @@ area = physics
 }
 
 tech_gravity_wells = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_gravity_wells }
-	}
 
 cost = @tier2cost1
 	area = physics
@@ -11685,6 +11448,7 @@ cost = @tier2cost1
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_gravity_wells }
 		has_grand_archive_dlc = yes
 		OR = {
 			has_encountered_any_fauna = yes
@@ -11754,9 +11518,6 @@ cost = @tier1cost2
 }
 
 tech_growth_chamber_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_growth_chamber_1 }
-	}
 
 tier = 4
 	cost = @tier4cost2
@@ -11774,6 +11535,7 @@ tier = 4
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_growth_chamber_1 }
 		country_uses_bio_ships = yes
 	}
 
@@ -11813,9 +11575,6 @@ tier = 4
 }
 
 tech_growth_chamber_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_growth_chamber_2 }
-	}
 
 tier = 4
 	cost = @tier4cost3
@@ -11833,6 +11592,7 @@ tier = 4
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_growth_chamber_2 }
 		country_uses_bio_ships = yes
 	}
 
@@ -11869,9 +11629,6 @@ tier = 4
 }
 
 tech_habitat_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_habitat_1 }
-	}
 
 cost = @tier3cost2
 	area = engineering
@@ -11881,6 +11638,7 @@ cost = @tier3cost2
 	weight = @tier3weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_habitat_1 }
 		is_wilderness_empire = no
 		OR = {
 			has_void_dweller_origin = yes
@@ -11950,9 +11708,6 @@ cost = @tier3cost2
 }
 
 tech_habitat_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_habitat_2 }
-	}
 
 cost = @tier4cost2
 	area = engineering
@@ -11963,6 +11718,7 @@ cost = @tier4cost2
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_habitat_2 }
 		is_wilderness_empire = no
 		OR = {
 			has_void_dweller_origin = yes #Not toxic knights, they just need level 1 tech
@@ -12006,9 +11762,6 @@ cost = @tier4cost2
 }
 
 tech_habitat_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_habitat_3 }
-	}
 
 cost = @tier5cost2
 	area = engineering
@@ -12019,6 +11772,7 @@ cost = @tier5cost2
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_habitat_3 }
 		is_wilderness_empire = no
 		OR = {
 			is_void_dweller_empire = yes
@@ -12063,9 +11817,6 @@ cost = @tier5cost2
 }
 
 tech_harbinger_build_speed = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_harbinger_build_speed }
-	}
 
 tier = 3
 	cost = @tier3cost2
@@ -12075,6 +11826,7 @@ tier = 3
 	prerequisites = { "tech_harbingers" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_harbinger_build_speed }
 		country_uses_bio_ships = yes
 	}
 
@@ -12098,9 +11850,6 @@ tier = 3
 }
 
 tech_harbinger_growth_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_harbinger_growth_1 }
-	}
 
 tier = 3
 	cost = @tier3cost2
@@ -12110,6 +11859,7 @@ tier = 3
 	prerequisites = { "tech_harbingers" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_harbinger_growth_1 }
 		country_uses_bio_ships = yes
 	}
 
@@ -12155,9 +11905,6 @@ tier = 3
 }
 
 tech_harbinger_growth_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_harbinger_growth_2 }
-	}
 
 tier = 3
 	cost = @tier3cost3
@@ -12167,6 +11914,7 @@ tier = 3
 	prerequisites = { "tech_harbinger_growth_1" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_harbinger_growth_2 }
 		country_uses_bio_ships = yes
 	}
 
@@ -12212,9 +11960,6 @@ tier = 3
 }
 
 tech_harbingers = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_harbingers }
-	}
 
 tier = 3
 	cost = @tier3cost1
@@ -12224,6 +11969,7 @@ tier = 3
 	prerequisites = { "tech_weavers" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_harbingers }
 		country_uses_bio_ships = yes
 	}
 
@@ -12319,9 +12065,6 @@ cost = @tier2cost2
 }
 
 tech_hive_cluster = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_hive_cluster }
-	}
 
 cost = @tier2cost2
 	area = society
@@ -12331,6 +12074,7 @@ cost = @tier2cost2
 	weight = @tier2weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_hive_cluster }
 		is_wilderness_empire = no
 	}
 
@@ -12357,9 +12101,6 @@ cost = @tier3cost2
 }
 
 tech_holographic_rituals = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_holographic_rituals }
-	}
 
 cost = @tier2cost2
 	area = society
@@ -12369,6 +12110,7 @@ cost = @tier2cost2
 	weight = @tier2weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_holographic_rituals }
 		OR = {
 			is_spiritualist = yes
 			AND = {
@@ -12396,9 +12138,6 @@ cost = @tier2cost2
 }
 
 tech_housing_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_housing_1 }
-	}
 
 cost = @tier2cost2
 	area = engineering
@@ -12407,6 +12146,7 @@ cost = @tier2cost2
 	weight = @tier2weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_housing_1 }
 		is_wilderness_empire = no
 	}
 
@@ -12429,9 +12169,6 @@ cost = @tier2cost2
 }
 
 tech_housing_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_housing_2 }
-	}
 
 cost = @tier3cost1
 	area = engineering
@@ -12441,6 +12178,7 @@ cost = @tier3cost1
 	weight = @tier3weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_housing_2 }
 		is_wilderness_empire = no
 	}
 
@@ -12698,9 +12436,6 @@ cost = @tier2cost1
 }
 
 tech_hyper_entertainment_forum = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_hyper_entertainment_forum }
-	}
 
 cost = @tier1cost3
 	area = society
@@ -12710,6 +12445,7 @@ cost = @tier1cost3
 	weight = @tier1weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_hyper_entertainment_forum }
 		is_gestalt = no
 	}
 
@@ -12731,9 +12467,6 @@ cost = @tier1cost3
 }
 
 tech_hyper_relays = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_hyper_relays }
-	}
 
 cost = @tier2cost3
 	area = physics
@@ -12744,7 +12477,8 @@ cost = @tier2cost3
 	weight = @tier2weight3
 	prerequisites = { "tech_hyper_drive_2" }
 
-	potential = { has_overlord_dlc = yes }
+	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_hyper_relays } has_overlord_dlc = yes }
 
 	feature_flags = { hyper_relay_construction }
 
@@ -12867,9 +12601,6 @@ cost = @tier3cost2
 }
 
 tech_identity_copy = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_identity_copy }
-	}
 
 cost = @tier4cost1
     area = engineering
@@ -12878,6 +12609,7 @@ cost = @tier4cost1
     weight = 0 # Made available in script, not by research
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_identity_copy }
         has_machine_age_dlc = yes
     }
 
@@ -12891,9 +12623,6 @@ cost = @tier4cost1
 }
 
 tech_identity_fusion = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_identity_fusion }
-	}
 
 cost = @tier4cost2
     area = engineering
@@ -12902,6 +12631,7 @@ cost = @tier4cost2
     weight = @tier4weight2
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_identity_fusion }
         has_machine_age_dlc = yes
         has_country_flag = advanced_identity_creation
     }
@@ -12916,9 +12646,6 @@ cost = @tier4cost2
 }
 
 tech_identity_initialization = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_identity_initialization }
-	}
 
 cost = @tier4cost2
     area = engineering
@@ -12927,6 +12654,7 @@ cost = @tier4cost2
     weight = @tier4weight2
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_identity_initialization }
         has_machine_age_dlc = yes
         has_country_flag = advanced_identity_creation
     }
@@ -12941,9 +12669,6 @@ cost = @tier4cost2
 }
 
 tech_improved_incubators = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_improved_incubators }
-	}
 
 cost = @tier2cost1
 	area = society
@@ -12954,6 +12679,7 @@ cost = @tier2cost1
 	ai_update_type = military
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_improved_incubators }
 		has_grand_archive_dlc = yes
 	}
 
@@ -13011,9 +12737,6 @@ cost = @tier2cost1
 }
 
 tech_industrial_storm_protection = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_industrial_storm_protection }
-	}
 
 cost = {
 		factor = @tier1cost1
@@ -13028,6 +12751,7 @@ cost = {
 	weight = @tier1weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_industrial_storm_protection }
 		has_cosmic_storms_dlc = yes
 	}
 
@@ -13085,9 +12809,6 @@ cost = {
 }
 
 tech_integrated_cybernetics = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_integrated_cybernetics }
-	}
 
 cost = @tier2cost3
 	area = engineering
@@ -13103,6 +12824,7 @@ cost = @tier2cost3
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_integrated_cybernetics }
 		OR = {
 			AND = {
 				is_machine_empire = no
@@ -13127,9 +12849,6 @@ cost = @tier2cost3
 }
 
 tech_interstellar_assembly = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_interstellar_assembly }
-	}
 
 area = society
 	cost = @tier5cost3
@@ -13141,6 +12860,7 @@ area = society
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_interstellar_assembly }
 		host_has_dlc = "Megacorp"
 	}
 
@@ -13246,9 +12966,6 @@ cost = @tier2cost3
 }
 
 tech_interstellar_economics = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_interstellar_economics }
-	}
 
 cost = @tier3cost1
 	area = society
@@ -13258,6 +12975,7 @@ cost = @tier3cost1
 	weight = @tier3weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_interstellar_economics }
 		is_gestalt = no
 	}
 
@@ -13313,9 +13031,6 @@ cost = @tier2cost2
 }
 
 tech_juggernaut = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_juggernaut }
-	}
 
 cost = @tier5cost3
 	area = engineering
@@ -13332,6 +13047,7 @@ cost = @tier5cost3
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_juggernaut }
 		host_has_dlc = "Federations"
 	}
 
@@ -13829,9 +13545,6 @@ area = physics
 }
 
 tech_lathe_cogitator = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_lathe_cogitator }
-	}
 
 area = society
     cost = 30000
@@ -13842,6 +13555,7 @@ area = society
     weight = @tier5weight1
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_lathe_cogitator }
         has_machine_age_dlc = yes
         has_ascension_perk = ap_cosmogenesis
         has_technology = tech_cosmogenesis_world
@@ -13875,9 +13589,6 @@ area = society
 }
 
 tech_lathe_life_support = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_lathe_life_support }
-	}
 
 area = society
     cost = 30000
@@ -13888,6 +13599,7 @@ area = society
     weight = @tier5weight1
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_lathe_life_support }
         has_machine_age_dlc = yes
         has_ascension_perk = ap_cosmogenesis
         has_technology = tech_cosmogenesis_world
@@ -13921,9 +13633,6 @@ area = society
 }
 
 tech_lathe_overclocker = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_lathe_overclocker }
-	}
 
 area = physics
     cost = 30000
@@ -13934,6 +13643,7 @@ area = physics
     weight = @tier5weight1
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_lathe_overclocker }
         has_machine_age_dlc = yes
         has_ascension_perk = ap_cosmogenesis
         has_technology = tech_cosmogenesis_world
@@ -13967,9 +13677,6 @@ area = physics
 }
 
 tech_lathe_preserver = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_lathe_preserver }
-	}
 
 area = society
     cost = 30000
@@ -13980,6 +13687,7 @@ area = society
     weight = @tier5weight1
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_lathe_preserver }
         has_machine_age_dlc = yes
         has_ascension_perk = ap_cosmogenesis
         has_technology = tech_cosmogenesis_world
@@ -14013,9 +13721,6 @@ area = society
 }
 
 tech_lathe_resonator = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_lathe_resonator }
-	}
 
 area = physics
     cost = 30000
@@ -14026,6 +13731,7 @@ area = physics
     weight = @tier5weight1
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_lathe_resonator }
         has_machine_age_dlc = yes
         has_ascension_perk = ap_cosmogenesis
         has_technology = tech_cosmogenesis_world
@@ -14059,9 +13765,6 @@ area = physics
 }
 
 tech_lathe_validator = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_lathe_validator }
-	}
 
 area = physics
     cost = 30000
@@ -14072,6 +13775,7 @@ area = physics
     weight = @tier5weight1
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_lathe_validator }
         has_machine_age_dlc = yes
         has_ascension_perk = ap_cosmogenesis
         has_technology = tech_cosmogenesis_world
@@ -14105,9 +13809,6 @@ area = physics
 }
 
 tech_leviathan_techgenesis = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_leviathan_techgenesis }
-	}
 
 cost = @tier5cost1
 	area = engineering
@@ -14117,6 +13818,7 @@ cost = @tier5cost1
 	category = { industry }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_leviathan_techgenesis }
 		has_machine_age_dlc = yes
 	}
 
@@ -14153,9 +13855,6 @@ cost = @tier5cost1
 }
 
 tech_lgate_activation = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_lgate_activation }
-	}
 
 cost = @tier3cost3
 	area = physics
@@ -14166,6 +13865,7 @@ cost = @tier3cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_lgate_activation }
 		NOT = { has_global_flag = l_cluster_opened }
 	}
 
@@ -14182,9 +13882,6 @@ cost = @tier3cost3
 }
 
 tech_living_state = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_living_state }
-	}
 
 cost = @tier2cost3
 	area = society
@@ -14194,6 +13891,7 @@ cost = @tier2cost3
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_living_state }
 		NOT = { has_ethic = ethic_gestalt_consciousness }
 	}
 
@@ -14231,9 +13929,6 @@ cost = @tier2cost3
 }
 
 tech_living_test_subjects = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_living_test_subjects }
-	}
 
 cost = @tier1cost1
 	area = society
@@ -14242,6 +13937,7 @@ cost = @tier1cost1
 	weight = 0 # unlocked via Toxic Matrix arc site
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_living_test_subjects }
 		has_shroud_dlc = yes
 	}
 
@@ -14251,9 +13947,6 @@ cost = @tier1cost1
 }
 
 tech_lost_building_methods = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_lost_building_methods }
-	}
 
 cost = @tier2cost3
 	area = engineering
@@ -14264,6 +13957,7 @@ cost = @tier2cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_lost_building_methods }
 		has_first_contact_dlc = yes
 	}
 
@@ -14275,9 +13969,6 @@ cost = @tier2cost3
 }
 
 tech_luxuries_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_luxuries_1 }
-	}
 
 cost = @tier1cost3
 	area = engineering
@@ -14289,6 +13980,7 @@ cost = @tier1cost3
 	# Unlocks better consumer goods buildings
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_luxuries_1 }
 		country_uses_consumer_goods = yes
 	}
 
@@ -14315,9 +14007,6 @@ cost = @tier1cost3
 }
 
 tech_luxuries_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_luxuries_2 }
-	}
 
 cost = @tier3cost1
 	area = engineering
@@ -14329,6 +14018,7 @@ cost = @tier3cost1
 	# Unlocks better luxury goods buildings
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_luxuries_2 }
 		country_uses_consumer_goods = yes
 	}
 
@@ -14348,9 +14038,6 @@ cost = @tier3cost1
 }
 
 tech_mandibles_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_mandibles_2 }
-	}
 
 area = engineering
 	cost = @tier3cost2
@@ -14361,6 +14048,7 @@ area = engineering
 	prerequisites = { tech_maulers }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_mandibles_2 }
 		country_uses_bio_ships = yes
 	}
 
@@ -14397,9 +14085,6 @@ area = engineering
 }
 
 tech_mandibles_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_mandibles_3 }
-	}
 
 area = engineering
 	cost = @tier4cost2
@@ -14410,6 +14095,7 @@ area = engineering
 	prerequisites = { tech_mandibles_2 }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_mandibles_3 }
 		country_uses_bio_ships = yes
 	}
 
@@ -14926,9 +14612,6 @@ cost = @tier1cost2
 }
 
 tech_materiality_engine = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_materiality_engine }
-	}
 
 cost = @tier5cost1
 	area = society
@@ -14938,6 +14621,7 @@ cost = @tier5cost1
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_materiality_engine }
 		has_shroud_dlc = yes
 	}
 
@@ -14953,9 +14637,6 @@ cost = @tier5cost1
 }
 
 tech_matter_decompressor = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_matter_decompressor }
-	}
 
 area = physics
 	cost = @tier5cost3
@@ -14967,6 +14648,7 @@ area = physics
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_matter_decompressor }
 		host_has_dlc = "Megacorp"
 	}
 
@@ -14980,9 +14662,6 @@ area = physics
 }
 
 tech_mauler_build_speed = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_mauler_build_speed }
-	}
 
 tier = 1
 	cost = @tier1cost2
@@ -14992,6 +14671,7 @@ tier = 1
 	prerequisites = { "tech_maulers" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_mauler_build_speed }
 		country_uses_bio_ships = yes
 	}
 
@@ -15015,9 +14695,6 @@ tier = 1
 }
 
 tech_mauler_growth_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_mauler_growth_1 }
-	}
 
 tier = 1
 	cost = @tier1cost2
@@ -15027,6 +14704,7 @@ tier = 1
 	prerequisites = { "tech_maulers" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_mauler_growth_1 }
 		country_uses_bio_ships = yes
 	}
 
@@ -15078,9 +14756,6 @@ tier = 1
 }
 
 tech_mauler_growth_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_mauler_growth_2 }
-	}
 
 tier = 1
 	cost = @tier1cost3
@@ -15090,6 +14765,7 @@ tier = 1
 	prerequisites = { "tech_mauler_growth_1" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_mauler_growth_2 }
 		country_uses_bio_ships = yes
 	}
 
@@ -15135,9 +14811,6 @@ tier = 1
 }
 
 tech_mega_art = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_mega_art }
-	}
 
 area = society
 	cost = @tier5cost3
@@ -15149,6 +14822,7 @@ area = society
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_mega_art }
 		host_has_dlc = "Megacorp"
 	}
 
@@ -15204,9 +14878,6 @@ area = society
 }
 
 tech_mega_assembly = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_mega_assembly }
-	}
 
 cost = @tier4cost1
 	area = engineering
@@ -15217,6 +14888,7 @@ cost = @tier4cost1
 	weight = @tier4weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_mega_assembly }
 		OR = {
 			is_machine_empire = yes
 			is_individual_machine = yes
@@ -15422,9 +15094,6 @@ area = engineering
 }
 
 tech_mega_shipyard = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_mega_shipyard }
-	}
 
 area = society
 	cost = @tier5cost3
@@ -15436,6 +15105,7 @@ area = society
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_mega_shipyard }
 		host_has_dlc = "Federations"
 	}
 
@@ -15491,9 +15161,6 @@ area = society
 }
 
 tech_metabolic_gases = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_metabolic_gases }
-	}
 
 cost = @tier3cost1
 	area = society
@@ -15504,6 +15171,7 @@ cost = @tier3cost1
 	ai_update_type = military
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_metabolic_gases }
 		has_grand_archive_dlc = yes
 	}
 
@@ -15561,9 +15229,6 @@ cost = @tier3cost1
 }
 
 tech_micro_replicators = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_micro_replicators }
-	}
 
 cost = @tier2cost2
 	area = engineering
@@ -15576,6 +15241,7 @@ cost = @tier2cost2
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_micro_replicators }
 		OR = {
 			is_machine_empire = yes
 			is_individual_machine = yes
@@ -16193,9 +15859,6 @@ area = physics
 }
 
 tech_missiles_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_missiles_2 }
-	}
 
 area = engineering
 	cost = @tier1cost2
@@ -16237,14 +15900,12 @@ area = engineering
 		}
 	}
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_missiles_2 }
 		country_uses_bio_ships = no
 	}
 }
 
 tech_missiles_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_missiles_3 }
-	}
 
 area = engineering
 	cost = @tier2cost1
@@ -16286,14 +15947,12 @@ area = engineering
 		}
 	}
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_missiles_3 }
 		country_uses_bio_ships = no
 	}
 }
 
 tech_missiles_4 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_missiles_4 }
-	}
 
 area = engineering
 	cost = @tier3cost1
@@ -16335,14 +15994,12 @@ area = engineering
 		}
 	}
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_missiles_4 }
 		country_uses_bio_ships = no
 	}
 }
 
 tech_missiles_5 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_missiles_5 }
-	}
 
 area = engineering
 	cost = @tier4cost2
@@ -16384,6 +16041,7 @@ area = engineering
 		}
 	}
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_missiles_5 }
 		country_uses_bio_ships = no
 	}
 }
@@ -16427,9 +16085,6 @@ cost = @tier2cost3
 }
 
 tech_morphogenetic_field_mastery = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_morphogenetic_field_mastery }
-	}
 
 cost = @tier4cost1
 	area = society
@@ -16442,6 +16097,7 @@ cost = @tier4cost1
 	# unlocks xeno-armies
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_morphogenetic_field_mastery }
 		NOR = {
 			is_machine_empire = yes
 			is_natural_design_empire = yes
@@ -16564,9 +16220,6 @@ cost = @tier2cost2
 }
 
 tech_nanite_assemblers = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_nanite_assemblers }
-	}
 
 cost = @tier4cost1
 	area = engineering
@@ -16582,6 +16235,7 @@ cost = @tier4cost1
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_nanite_assemblers }
 		OR = {
 			is_machine_empire = yes
 			is_individual_machine = yes
@@ -16693,9 +16347,6 @@ area = engineering
 }
 
 tech_nanite_repair_system_synth_queen = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_nanite_repair_system_synth_queen }
-	}
 
 area = engineering
     cost = @tier5cost3
@@ -16706,14 +16357,12 @@ area = engineering
     weight = 0
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_nanite_repair_system_synth_queen }
         has_machine_age_dlc = yes
     }
 }
 
 tech_nanite_transmutation = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_nanite_transmutation }
-	}
 
 cost = @tier2cost3
 	area = engineering
@@ -16723,6 +16372,7 @@ cost = @tier2cost3
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_nanite_transmutation }
 		host_has_dlc = "Distant Stars Story Pack"
 	}
 
@@ -16745,9 +16395,6 @@ cost = @tier2cost3
 }
 
 tech_nano_vitality_crops = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_nano_vitality_crops }
-	}
 
 cost = @tier3cost1
 	area = society
@@ -16761,6 +16408,7 @@ cost = @tier3cost1
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_nano_vitality_crops }
 		is_wilderness_empire = no
 	}
 
@@ -16830,9 +16478,6 @@ cost = @tier3cost1
 }
 
 tech_neural_implants = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_neural_implants }
-	}
 
 cost = @tier1cost3
 	area = society
@@ -16843,6 +16488,7 @@ cost = @tier1cost3
 	# unlocks slave processing plant, slave armies
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_neural_implants }
 		is_regular_empire = yes
 		allows_slavery = yes
 	}
@@ -16896,9 +16542,6 @@ cost = @tier1cost3
 }
 
 tech_neuro_quantum_links = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_neuro_quantum_links }
-	}
 
 area = physics
 	tier = 3
@@ -16912,6 +16555,7 @@ area = physics
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_neuro_quantum_links }
 		is_wilderness_empire = no
 		OR = {
 			is_machine_empire = no
@@ -16970,9 +16614,6 @@ cost = @tier4cost2
 }
 
 tech_new_numbers = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_new_numbers }
-	}
 
 cost = @tier2cost3
 	area = physics
@@ -16983,6 +16624,7 @@ cost = @tier2cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_new_numbers }
 		has_first_contact_dlc = yes
 	}
 
@@ -16993,9 +16635,6 @@ cost = @tier2cost3
 }
 
 tech_node_culling_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_node_culling_1 }
-	}
 
 cost = @tier2cost3
 	area = society
@@ -17005,6 +16644,7 @@ cost = @tier2cost3
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_node_culling_1 }
 		is_hive_empire = yes
 	}
 
@@ -17093,9 +16733,6 @@ cost = @tier2cost3
 }
 
 tech_node_culling_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_node_culling_2 }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -17105,6 +16742,7 @@ cost = @tier3cost3
 	weight = @tier3weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_node_culling_2 }
 		is_hive_empire = yes
 	}
 
@@ -17154,9 +16792,6 @@ cost = @tier3cost3
 }
 
 tech_node_culling_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_node_culling_3 }
-	}
 
 cost = @tier4cost3
 	area = society
@@ -17167,6 +16802,7 @@ cost = @tier4cost3
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_node_culling_3 }
 		is_hive_empire = yes
 	}
 
@@ -17219,9 +16855,6 @@ cost = @tier4cost3
 }
 
 tech_node_reformatting_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_node_reformatting_1 }
-	}
 
 cost = @tier2cost3
 	area = society
@@ -17231,6 +16864,7 @@ cost = @tier2cost3
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_node_reformatting_1 }
 		is_machine_empire = yes
 	}
 
@@ -17292,9 +16926,6 @@ cost = @tier2cost3
 }
 
 tech_node_reformatting_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_node_reformatting_2 }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -17304,6 +16935,7 @@ cost = @tier3cost3
 	weight = @tier3weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_node_reformatting_2 }
 		is_machine_empire = yes
 	}
 
@@ -17353,9 +16985,6 @@ cost = @tier3cost3
 }
 
 tech_node_reformatting_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_node_reformatting_3 }
-	}
 
 cost = @tier4cost3
 	area = society
@@ -17366,6 +16995,7 @@ cost = @tier4cost3
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_node_reformatting_3 }
 		is_machine_empire = yes
 	}
 
@@ -17481,9 +17111,6 @@ cost = @tier1cost2
 }
 
 tech_nutrient_replication = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_nutrient_replication }
-	}
 
 cost = @tier4cost3
 	area = society
@@ -17498,6 +17125,7 @@ cost = @tier4cost3
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_nutrient_replication }
 		is_machine_empire = no
 		is_wilderness_empire = no
 	}
@@ -17579,9 +17207,6 @@ cost = @tier4cost3
 }
 
 tech_orbital_arc_furnace = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_orbital_arc_furnace }
-	}
 
 area = engineering
     cost = @tier2cost3
@@ -17594,6 +17219,7 @@ area = engineering
     weight = @tier2weight3
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_orbital_arc_furnace }
         has_machine_age_dlc = yes
     }
 
@@ -17652,9 +17278,6 @@ area = engineering
 }
 
 tech_orbital_maneuvers = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_orbital_maneuvers }
-	}
 
 cost = @tier2cost1
 	area = physics
@@ -17663,6 +17286,7 @@ cost = @tier2cost1
 	weight = 0 # unlocked via Orbital Resonance anomaly
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_orbital_maneuvers }
 		has_shroud_dlc = yes
 	}
 
@@ -17672,9 +17296,6 @@ cost = @tier2cost1
 }
 
 tech_orbital_ring_tier_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_orbital_ring_tier_1 }
-	}
 
 cost = @tier3cost2
 	area = engineering
@@ -17686,6 +17307,7 @@ cost = @tier3cost2
 	gateway = infrastructure
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_orbital_ring_tier_1 }
 		has_overlord_dlc = yes
 	}
 
@@ -17765,9 +17387,6 @@ area = engineering
 }
 
 tech_ordered_retreat = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_ordered_retreat }
-	}
 
 cost = @tier2cost3
 	area = engineering
@@ -17778,6 +17397,7 @@ cost = @tier2cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_ordered_retreat }
 		has_first_contact_dlc = yes
 	}
 
@@ -17788,9 +17408,6 @@ cost = @tier2cost3
 }
 
 tech_paradise_dome = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_paradise_dome }
-	}
 
 cost = @tier3cost1
 	area = society
@@ -17800,6 +17417,7 @@ cost = @tier3cost1
 	weight = @tier3weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_paradise_dome }
 		OR = {
 			is_gestalt = no
 			has_valid_civic = civic_machine_servitor
@@ -17914,9 +17532,6 @@ area = physics
 }
 
 tech_penal_colonies = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_penal_colonies }
-	}
 
 cost = @tier2cost3
 	area = society
@@ -17927,6 +17542,7 @@ cost = @tier2cost3
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_penal_colonies }
 		is_gestalt = no
 	}
 
@@ -17959,9 +17575,6 @@ cost = @tier2cost3
 }
 
 tech_physics_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_physics_1 }
-	}
 
 area = physics
 	category = { field_manipulation }
@@ -17971,6 +17584,7 @@ area = physics
 	weight = @tier1weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_physics_1 }
 		is_wilderness_empire = no
 	}
 
@@ -18009,9 +17623,6 @@ area = physics
 }
 
 tech_physics_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_physics_2 }
-	}
 
 area = physics
 	category = { field_manipulation }
@@ -18021,6 +17632,7 @@ area = physics
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_physics_2 }
 		is_wilderness_empire = no
 	}
 
@@ -18063,9 +17675,6 @@ area = physics
 }
 
 tech_physics_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_physics_3 }
-	}
 
 area = physics
 	category = { field_manipulation }
@@ -18075,6 +17684,7 @@ area = physics
 	weight = @tier3weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_physics_3 }
 		is_wilderness_empire = no
 	}
 
@@ -18108,9 +17718,6 @@ area = physics
 }
 
 tech_pk_cracker = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_pk_cracker }
-	}
 
 area = engineering
 	cost = @tier5cost3
@@ -18123,6 +17730,7 @@ area = engineering
 	weight = @tier5weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_pk_cracker }
 		host_has_dlc = "Apocalypse"
 		has_country_flag = colossus_project
 		is_pacifist = no
@@ -18152,9 +17760,6 @@ area = engineering
 }
 
 tech_pk_godray = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_pk_godray }
-	}
 
 area = society
 	cost = @tier5cost3
@@ -18167,6 +17772,7 @@ area = society
 	weight = @tier5weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_pk_godray }
 		host_has_dlc = "Apocalypse"
 		has_country_flag = colossus_project
 		is_spiritualist = yes
@@ -18217,9 +17823,6 @@ area = society
 }
 
 tech_pk_nanobots = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_pk_nanobots }
-	}
 
 area = engineering
 	cost = @tier5cost3
@@ -18232,6 +17835,7 @@ area = engineering
 	weight = @tier5weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_pk_nanobots }
 		host_has_dlc = "Apocalypse"
 		has_country_flag = colossus_project
 		has_valid_civic = civic_machine_assimilator
@@ -18266,9 +17870,6 @@ area = engineering
 }
 
 tech_pk_neutron = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_pk_neutron }
-	}
 
 area = physics
 	cost = @tier5cost3
@@ -18281,6 +17882,7 @@ area = physics
 	weight = @tier5weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_pk_neutron }
 		host_has_dlc = "Apocalypse"
 		has_country_flag = colossus_project
 		OR = {
@@ -18338,9 +17940,6 @@ area = physics
 }
 
 tech_pk_shielder = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_pk_shielder }
-	}
 
 area = physics
 	cost = @tier5cost3
@@ -18353,6 +17952,7 @@ area = physics
 	weight = @tier5weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_pk_shielder }
 		host_has_dlc = "Apocalypse"
 		has_country_flag = colossus_project
 	}
@@ -18393,9 +17993,6 @@ area = physics
 }
 
 tech_pk_smelter = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_pk_smelter }
-	}
 
 area = engineering
 	cost = @tier5cost3
@@ -18408,6 +18005,7 @@ area = engineering
 	weight = @tier5weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_pk_smelter }
 		host_has_dlc = "Apocalypse"
 		has_country_flag = colossus_project
 		can_get_planet_smelter = yes
@@ -18818,9 +18416,6 @@ area = physics
 }
 
 tech_positronic_implants = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_positronic_implants }
-	}
 
 area = physics
 	tier = 4
@@ -18835,6 +18430,7 @@ area = physics
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_positronic_implants }
 		has_ethic = ethic_gestalt_consciousness
 	}
 
@@ -19094,9 +18690,6 @@ cost = @tier1cost1
 }
 
 tech_precognition_interface = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_precognition_interface }
-	}
 
 cost = @tier4cost2
 	area = society
@@ -19118,6 +18711,7 @@ cost = @tier4cost2
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_precognition_interface }
 		OR = {
 			has_shroud_dlc = yes
 			NOT = { has_ethic = ethic_gestalt_consciousness }
@@ -19175,9 +18769,6 @@ cost = @tier4cost2
 }
 
 tech_predatory_tactics = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_predatory_tactics }
-	}
 
 cost = @tier2cost3
 	area = society
@@ -19188,6 +18779,7 @@ cost = @tier2cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_predatory_tactics }
 		has_first_contact_dlc = yes
 	}
 
@@ -19240,9 +18832,6 @@ cost = @tier3cost1
 }
 
 tech_psi_jump_drive_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_psi_jump_drive_1 }
-	}
 
 cost = @tier5cost2
 	area = society
@@ -19268,6 +18857,7 @@ cost = @tier5cost2
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_psi_jump_drive_1 }
 		OR = {
 			has_shroud_dlc = yes
 			NOT = { has_ethic = ethic_gestalt_consciousness }
@@ -19333,9 +18923,6 @@ cost = @tier5cost2
 }
 
 tech_psionic_aura = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_psionic_aura }
-	}
 
 cost = @tier3cost1
 	area = society
@@ -19345,6 +18932,7 @@ cost = @tier3cost1
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_psionic_aura }
 		has_shroud_dlc = yes
 	}
 
@@ -19420,9 +19008,6 @@ area = society
 }
 
 tech_psionic_bombers = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_psionic_bombers }
-	}
 
 cost = @tier5cost2
 	area = society
@@ -19433,6 +19018,7 @@ cost = @tier5cost2
 	is_reverse_engineerable = no
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_psionic_bombers }
 		has_shroud_dlc = yes
 	}
 
@@ -19458,9 +19044,6 @@ cost = @tier5cost2
 }
 
 tech_psionic_disruptor = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_psionic_disruptor }
-	}
 
 cost = @tier5cost2
 	area = society
@@ -19471,6 +19054,7 @@ cost = @tier5cost2
 	is_reverse_engineerable = no
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_psionic_disruptor }
 		has_shroud_dlc = yes
 	}
 
@@ -19496,9 +19080,6 @@ cost = @tier5cost2
 }
 
 tech_psionic_lightning = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_psionic_lightning }
-	}
 
 cost = @tier5cost2
 	area = society
@@ -19509,6 +19090,7 @@ cost = @tier5cost2
 	is_reverse_engineerable = no
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_psionic_lightning }
 		has_shroud_dlc = yes
 	}
 
@@ -19585,9 +19167,6 @@ area = society
 }
 
 tech_psionic_suppression = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_psionic_suppression }
-	}
 
 cost = @tier2cost1
 	area = society
@@ -19596,6 +19175,7 @@ cost = @tier2cost1
 	weight = @tier2weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_psionic_suppression }
 		has_shroud_dlc = yes
 		has_encountered_psionic_auras = yes
 	}
@@ -19639,9 +19219,6 @@ cost = @tier2cost1
 }
 
 tech_psionic_theory = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_psionic_theory }
-	}
 
 cost = @tier3cost1
 	area = society
@@ -19654,6 +19231,7 @@ cost = @tier3cost1
 	gateway = psionics
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_psionic_theory }
 		OR = { #The OR is so that Gestalts can get Zro Distillation with that Resolution
 			has_shroud_dlc = yes # Shroud allows everyone to become psionic
 			NOT = { has_ethic = ethic_gestalt_consciousness }
@@ -19776,9 +19354,6 @@ cost = @tier3cost1
 }
 
 tech_pyroclastic_resonation = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_pyroclastic_resonation }
-	}
 
 cost = @tier2cost1
 	area = engineering
@@ -19787,14 +19362,12 @@ cost = @tier2cost1
 	weight = 0 # unlocked via Infernal Tornadoes anomaly
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_pyroclastic_resonation }
 		has_shroud_dlc = yes
 	}
 }
 
 tech_quantum_catapult = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_quantum_catapult }
-	}
 
 area = physics
 	cost = @tier4cost1
@@ -19805,6 +19378,7 @@ area = physics
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_quantum_catapult }
 		has_overlord_dlc = yes
 		OR = {
 			has_technology = tech_mega_engineering
@@ -20113,9 +19687,6 @@ area = society
 }
 
 tech_repeatable_lcluster_clue = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_repeatable_lcluster_clue }
-	}
 
 area = engineering
 	cost = 2000
@@ -20128,6 +19699,7 @@ area = engineering
 	weight = 70
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_repeatable_lcluster_clue }
 		has_country_flag = encountered_first_lgate
 		NOT = { has_country_flag = completed_lcluster_chain }
 		NOT = { has_global_flag = l_cluster_opened }
@@ -20153,9 +19725,6 @@ area = engineering
 }
 
 tech_resort_colonies = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_resort_colonies }
-	}
 
 cost = @tier2cost3
 	area = society
@@ -20165,6 +19734,7 @@ cost = @tier2cost3
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_resort_colonies }
 		is_gestalt = no
 	}
 
@@ -20182,9 +19752,6 @@ cost = @tier2cost3
 }
 
 tech_resource_processing_algorithms = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_resource_processing_algorithms }
-	}
 
 cost = @tier3cost1
 	area = society
@@ -20198,6 +19765,7 @@ cost = @tier3cost1
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_resource_processing_algorithms }
 		is_machine_empire = yes
 	}
 
@@ -20211,9 +19779,6 @@ cost = @tier3cost1
 }
 
 tech_rift_sphere = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_rift_sphere }
-	}
 
 cost = @tier3cost2
 	area = physics
@@ -20227,14 +19792,12 @@ cost = @tier3cost2
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_rift_sphere }
 		has_astral_planes_dlc = yes
 	}
 }
 
 tech_ring_world = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_ring_world }
-	}
 
 area = engineering
 	cost = @tier5cost3
@@ -20246,6 +19809,7 @@ area = engineering
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_ring_world }
 		host_has_dlc = "Utopia"
 		is_wilderness_empire = no
 	}
@@ -20261,9 +19825,6 @@ area = engineering
 }
 
 tech_robomodding = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_robomodding }
-	}
 
 cost = @tier2cost1
 	area = engineering
@@ -20281,6 +19842,7 @@ cost = @tier2cost1
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_robomodding }
 		NOR = {
 			has_ethic = "ethic_gestalt_consciousness"
 			is_individual_machine = yes
@@ -20318,9 +19880,6 @@ cost = @tier2cost1
 }
 
 tech_robomodding_m = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_robomodding_m }
-	}
 
 cost = @tier2cost1
 	area = engineering
@@ -20339,6 +19898,7 @@ cost = @tier2cost1
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_robomodding_m }
 		OR = {
 			is_machine_empire = yes
 			is_individual_machine = yes
@@ -20355,9 +19915,6 @@ cost = @tier2cost1
 }
 
 tech_robomodding_points_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_robomodding_points_1 }
-	}
 
 cost = @tier3cost1
 	area = engineering
@@ -20372,6 +19929,7 @@ cost = @tier3cost1
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_robomodding_points_1 }
 		NOT = {
 			has_ethic = "ethic_gestalt_consciousness"
 			is_individual_machine = yes
@@ -20413,9 +19971,6 @@ cost = @tier3cost1
 }
 
 tech_robomodding_points_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_robomodding_points_2 }
-	}
 
 cost = @tier4cost1
 	area = engineering
@@ -20431,6 +19986,7 @@ cost = @tier4cost1
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_robomodding_points_2 }
 		NOT = {
 			has_ethic = "ethic_gestalt_consciousness"
 			is_individual_machine = yes
@@ -20492,9 +20048,6 @@ cost = @tier4cost1
 }
 
 tech_robot_assembly_complex = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_robot_assembly_complex }
-	}
 
 icon = "tech_mega_assembly"
 	cost = @tier4cost1
@@ -20506,6 +20059,7 @@ icon = "tech_mega_assembly"
 	weight = @tier4weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_robot_assembly_complex }
 		NOT = { has_ethic = "ethic_gestalt_consciousness" }
 	}
 
@@ -20537,9 +20091,6 @@ icon = "tech_mega_assembly"
 }
 
 tech_robotic_workers = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_robotic_workers }
-	}
 
 cost = @tier1cost3
 	area = engineering
@@ -20553,6 +20104,7 @@ cost = @tier1cost3
 	feature_flags = { robots }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_robotic_workers }
 		NOR = {
 			has_ethic = "ethic_gestalt_consciousness"
 			is_individual_machine = yes
@@ -20604,9 +20156,6 @@ cost = @tier1cost3
 }
 
 tech_sapient_ai = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_sapient_ai }
-	}
 
 area = physics
 	tier = 4
@@ -20636,6 +20185,7 @@ area = physics
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_sapient_ai }
 		NOT = { has_ethic = ethic_gestalt_consciousness }
 	}
 
@@ -20656,9 +20206,6 @@ area = physics
 }
 
 tech_satisfying_insults = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_satisfying_insults }
-	}
 
 cost = @tier2cost3
 	area = society
@@ -20669,6 +20216,7 @@ cost = @tier2cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_satisfying_insults }
 		has_first_contact_dlc = yes
 	}
 
@@ -20692,9 +20240,6 @@ cost = @tier2cost3
 }
 
 tech_science_nexus = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_science_nexus }
-	}
 
 area = physics
 	cost = @tier5cost3
@@ -20706,6 +20251,7 @@ area = physics
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_science_nexus }
 		host_has_dlc = "Utopia"
 	}
 
@@ -20779,9 +20325,6 @@ area = society
 }
 
 tech_secrets_baol = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_secrets_baol }
-	}
 
 cost = @tier4cost3
 	area = society
@@ -20792,14 +20335,12 @@ cost = @tier4cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_secrets_baol }
 		has_ancrel = yes
 	}
 }
 
 tech_secrets_cybrex = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_secrets_cybrex }
-	}
 
 cost = @tier4cost3
 	area = society
@@ -20810,14 +20351,12 @@ cost = @tier4cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_secrets_cybrex }
 		has_ancrel = yes
 	}
 }
 
 tech_secrets_irassian = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_secrets_irassian }
-	}
 
 cost = @tier4cost3
 	area = society
@@ -20828,14 +20367,12 @@ cost = @tier4cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_secrets_irassian }
 		has_ancrel = yes
 	}
 }
 
 tech_secrets_league = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_secrets_league }
-	}
 
 cost = @tier4cost3
 	area = society
@@ -20846,14 +20383,12 @@ cost = @tier4cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_secrets_league }
 		has_ancrel = yes
 	}
 }
 
 tech_secrets_vultaum = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_secrets_vultaum }
-	}
 
 cost = @tier4cost3
 	area = society
@@ -20864,14 +20399,12 @@ cost = @tier4cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_secrets_vultaum }
 		has_ancrel = yes
 	}
 }
 
 tech_secrets_yuht = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_secrets_yuht }
-	}
 
 cost = @tier4cost3
 	area = society
@@ -20882,14 +20415,12 @@ cost = @tier4cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_secrets_yuht }
 		has_ancrel = yes
 	}
 }
 
 tech_secrets_zroni = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_secrets_zroni }
-	}
 
 cost = @tier4cost3
 	area = society
@@ -20900,14 +20431,12 @@ cost = @tier4cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_secrets_zroni }
 		has_ancrel = yes
 	}
 }
 
 tech_selected_lineages = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_selected_lineages }
-	}
 
 cost = @tier3cost2
 	area = society
@@ -20920,6 +20449,7 @@ cost = @tier3cost2
 	# Modifiers from this tech is added through a policy-option
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_selected_lineages }
 		is_machine_empire = no
 	}
 
@@ -20972,9 +20502,6 @@ cost = @tier3cost2
 }
 
 tech_self_assembling_components = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_self_assembling_components }
-	}
 
 cost = @tier3cost3
 	area = engineering
@@ -20988,6 +20515,7 @@ cost = @tier3cost3
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_self_assembling_components }
 		OR = {
 			is_machine_empire = yes
 			is_individual_machine = yes
@@ -21238,9 +20766,6 @@ cost = @tier2cost1
 }
 
 tech_sentry_array = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_sentry_array }
-	}
 
 area = physics
 	cost = @tier5cost3
@@ -21252,6 +20777,7 @@ area = physics
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_sentry_array }
 		host_has_dlc = "Utopia"
 	}
 
@@ -21718,9 +21244,6 @@ area = engineering
 }
 
 tech_ship_hull_storm_breaker_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_ship_hull_storm_breaker_1 }
-	}
 
 cost = {
 		factor = @tier1cost2
@@ -21737,6 +21260,7 @@ cost = {
 	prerequisites = { "tech_storm_prediction_1" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_ship_hull_storm_breaker_1 }
 		has_cosmic_storms_dlc = yes
 	}
 
@@ -21774,9 +21298,6 @@ cost = {
 }
 
 tech_ship_hull_storm_breaker_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_ship_hull_storm_breaker_2 }
-	}
 
 cost = {
 		factor = @tier2cost1
@@ -21793,6 +21314,7 @@ cost = {
 	prerequisites = { "tech_ship_hull_storm_breaker_1" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_ship_hull_storm_breaker_2 }
 		has_cosmic_storms_dlc = yes
 	}
 
@@ -21830,9 +21352,6 @@ cost = {
 }
 
 tech_ship_storm_weapons_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_ship_storm_weapons_1 }
-	}
 
 cost = {
 		factor = @tier1cost2
@@ -21849,6 +21368,7 @@ cost = {
 	prerequisites = { "tech_storm_prediction_1" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_ship_storm_weapons_1 }
 		has_cosmic_storms_dlc = yes
 	}
 
@@ -21886,9 +21406,6 @@ cost = {
 }
 
 tech_ship_storm_weapons_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_ship_storm_weapons_2 }
-	}
 
 cost = {
 		factor = @tier2cost1
@@ -21904,6 +21421,7 @@ cost = {
 	prerequisites = { "tech_ship_storm_weapons_1" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_ship_storm_weapons_2 }
 		has_cosmic_storms_dlc = yes
 	}
 
@@ -21940,9 +21458,6 @@ cost = {
 }
 
 tech_slave_colonies = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_slave_colonies }
-	}
 
 cost = @tier2cost3
 	area = society
@@ -21952,6 +21467,7 @@ cost = @tier2cost3
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_slave_colonies }
 		is_gestalt = no
 	}
 
@@ -21984,9 +21500,6 @@ cost = @tier2cost3
 }
 
 tech_society_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_society_1 }
-	}
 
 area = society
 	category = { biology }
@@ -21996,6 +21509,7 @@ area = society
 	weight = @tier1weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_society_1 }
 		is_wilderness_empire = no
 	}
 
@@ -22037,9 +21551,6 @@ area = society
 }
 
 tech_society_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_society_2 }
-	}
 
 area = society
 	category = { biology }
@@ -22049,6 +21560,7 @@ area = society
 	weight = @tier2weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_society_2 }
 		is_wilderness_empire = no
 	}
 
@@ -22094,9 +21606,6 @@ area = society
 }
 
 tech_society_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_society_3 }
-	}
 
 area = society
 	category = { biology }
@@ -22106,6 +21615,7 @@ area = society
 	weight = @tier3weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_society_3 }
 		is_wilderness_empire = no
 	}
 
@@ -22472,9 +21982,6 @@ cost = @tier3cost1
 }
 
 tech_space_trading = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_space_trading }
-	}
 
 cost = @tier1cost3
 	area = society
@@ -22484,6 +21991,7 @@ cost = @tier1cost3
 	weight = @tier1weight3
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_space_trading }
 		is_regular_empire = yes
 	}
 
@@ -22726,9 +22234,6 @@ cost = @tier4cost2
 }
 
 tech_starfire_cannon = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_starfire_cannon }
-	}
 
 area = physics
 	cost = @tier4cost3
@@ -22740,6 +22245,7 @@ area = physics
 
 	# Note: Weapon has tech requirements in the decision tooltip instead
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_starfire_cannon }
 		has_origin = origin_red_giant
 		has_country_flag = starfire_cannon_unlocked
 	}
@@ -22777,9 +22283,6 @@ area = physics
 }
 
 tech_stinger_build_speed = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_stinger_build_speed }
-	}
 
 tier = 4
 	cost = @tier4cost2
@@ -22789,6 +22292,7 @@ tier = 4
 	prerequisites = { "tech_stingers" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_stinger_build_speed }
 		country_uses_bio_ships = yes
 	}
 
@@ -22812,9 +22316,6 @@ tier = 4
 }
 
 tech_stinger_growth_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_stinger_growth_1 }
-	}
 
 tier = 4
 	cost = @tier4cost2
@@ -22824,6 +22325,7 @@ tier = 4
 	prerequisites = { "tech_stingers" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_stinger_growth_1 }
 		country_uses_bio_ships = yes
 	}
 
@@ -22869,9 +22371,6 @@ tier = 4
 }
 
 tech_stinger_growth_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_stinger_growth_2 }
-	}
 
 tier = 4
 	cost = @tier4cost3
@@ -22881,6 +22380,7 @@ tier = 4
 	prerequisites = { "tech_stinger_growth_1" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_stinger_growth_2 }
 		country_uses_bio_ships = yes
 	}
 
@@ -22926,9 +22426,6 @@ tier = 4
 }
 
 tech_stingers = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_stingers }
-	}
 
 tier = 4
 	cost = @tier4cost1
@@ -22938,6 +22435,7 @@ tier = 4
 	prerequisites = { "tech_harbingers" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_stingers }
 		country_uses_bio_ships = yes
 	}
 
@@ -22987,9 +22485,6 @@ tier = 4
 }
 
 tech_storm_manipulation = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_storm_manipulation }
-	}
 
 cost = {
 		factor = @tier2cost2
@@ -23006,6 +22501,7 @@ cost = {
 	prerequisites = { "tech_industrial_storm_protection" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_storm_manipulation }
 		has_cosmic_storms_dlc = yes
 	}
 
@@ -23039,9 +22535,6 @@ cost = {
 }
 
 tech_storm_prediction_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_storm_prediction_1 }
-	}
 
 cost = {
 		factor = @tier1cost2
@@ -23072,6 +22565,7 @@ cost = {
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_storm_prediction_1 }
 		has_cosmic_storms_dlc = yes
 	}
 
@@ -23107,9 +22601,6 @@ cost = {
 }
 
 tech_storm_prediction_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_storm_prediction_2 }
-	}
 
 cost = {
 		factor = @tier3cost2
@@ -23140,6 +22631,7 @@ cost = {
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_storm_prediction_2 }
 		has_cosmic_storms_dlc = yes
 	}
 
@@ -23170,9 +22662,6 @@ cost = {
 }
 
 tech_strategic_coordination = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_strategic_coordination }
-	}
 
 area = society
 	cost = @tier5cost3
@@ -23184,6 +22673,7 @@ area = society
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_strategic_coordination }
 		host_has_dlc = "Megacorp"
 	}
 
@@ -23374,9 +22864,6 @@ cost = @tier3cost3
 }
 
 tech_strike_craft_skrand = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_strike_craft_skrand }
-	}
 
 cost = @tier4cost3
 	area = engineering
@@ -23403,6 +22890,7 @@ cost = @tier4cost3
 
 	## unlock unique strike craft component from Skrand storyline
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_strike_craft_skrand }
 		has_paragon_dlc = yes
 	}
 
@@ -23415,9 +22903,6 @@ cost = @tier4cost3
 }
 
 tech_subdermal_stimulation = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_subdermal_stimulation }
-	}
 
 cost = @tier2cost2
 	area = society
@@ -23434,6 +22919,7 @@ cost = @tier2cost2
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_subdermal_stimulation }
 		NOR = {
 			has_ethic = ethic_gestalt_consciousness
 			has_civic = civic_dystopian_society
@@ -23470,9 +22956,6 @@ cost = @tier2cost2
 }
 
 tech_supreme_alloy = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_supreme_alloy }
-	}
 
 cost = @tier2cost3
 	area = engineering
@@ -23483,6 +22966,7 @@ cost = @tier2cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_supreme_alloy }
 		has_first_contact_dlc = yes
 	}
 
@@ -23692,9 +23176,6 @@ area = physics
 }
 
 tech_synth_queen_knowledge = {
-    	potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_synth_queen_knowledge }
-	}
 
 area = physics
     tier = 5
@@ -23704,6 +23185,7 @@ area = physics
     weight = @tier5weight1
 
     potential = {
+    	NOT = { has_country_flag = ap_tech_blocked_tech_synth_queen_knowledge }
         has_machine_age_dlc = yes
         has_country_flag = synth_queen_knowledge
     }
@@ -23714,9 +23196,6 @@ area = physics
 }
 
 tech_synthetic_leaders = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_synthetic_leaders }
-	}
 
 cost = @tier4cost3
 	area = engineering
@@ -23730,6 +23209,7 @@ cost = @tier4cost3
 	## unlocks robot-leaders
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_synthetic_leaders }
 		NOR = {
 			has_ethic = "ethic_gestalt_consciousness"
 			is_individual_machine = yes
@@ -23767,9 +23247,6 @@ cost = @tier4cost3
 }
 
 tech_synthetic_thought_patterns = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_synthetic_thought_patterns }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -23783,6 +23260,7 @@ cost = @tier3cost3
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_synthetic_thought_patterns }
 		is_gestalt = no
 	}
 
@@ -23797,9 +23275,6 @@ cost = @tier3cost3
 }
 
 tech_synthetic_workers = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_synthetic_workers }
-	}
 
 cost = @tier4cost2
 	area = engineering
@@ -23819,6 +23294,7 @@ cost = @tier4cost2
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_synthetic_workers }
 		NOR = {
 			has_ethic = "ethic_gestalt_consciousness"
 			is_individual_machine = yes
@@ -23889,9 +23365,6 @@ cost = @tier4cost2
 }
 
 tech_telepathy = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_telepathy }
-	}
 
 cost = @tier3cost3
 	area = society
@@ -23903,6 +23376,7 @@ cost = @tier3cost3
 	is_reverse_engineerable = no
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_telepathy }
 		OR = {
 			has_shroud_dlc = yes
 			NOT = { has_ethic = ethic_gestalt_consciousness }
@@ -23991,9 +23465,6 @@ cost = @tier3cost3
 }
 
 tech_temple_of_transportation = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_temple_of_transportation }
-	}
 
 cost = @tier2cost3
 	area = engineering
@@ -24004,6 +23475,7 @@ cost = @tier2cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_temple_of_transportation }
 		has_first_contact_dlc = yes
 	}
 
@@ -24120,9 +23592,6 @@ cost = @tier2cost3
 }
 
 tech_thought_enforcement = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_thought_enforcement }
-	}
 
 cost = @tier4cost2
 	area = society
@@ -24136,6 +23605,7 @@ cost = @tier4cost2
 	# Unlocks thought enforcement edict
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_thought_enforcement }
 		OR = {
 			has_shroud_dlc = yes
 			NOT = { has_ethic = ethic_gestalt_consciousness }
@@ -24510,9 +23980,6 @@ cost = @tier5cost3
 }
 
 tech_titans = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_titans }
-	}
 
 cost = @tier5cost1
 	area = engineering
@@ -24532,6 +23999,7 @@ cost = @tier5cost1
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_titans }
 		host_has_dlc = "Apocalypse"
 	}
 
@@ -24595,9 +24063,6 @@ cost = @tier5cost1
 }
 
 tech_tomb_world_adaption = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_tomb_world_adaption }
-	}
 
 cost = @tier3cost1
 	area = society
@@ -24608,6 +24073,7 @@ cost = @tier3cost1
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_tomb_world_adaption }
 		is_wilderness_empire = no
 	}
 
@@ -24642,9 +24108,6 @@ cost = @tier3cost1
 }
 
 tech_torpedoes_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_torpedoes_1 }
-	}
 
 area = engineering
 	cost = @tier1cost2
@@ -24655,6 +24118,7 @@ area = engineering
 	weight = @tier1weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_torpedoes_1 }
 		OR = {
 			country_uses_bio_ships = no
 			# Ascension / Crisis ships can equip torpedoes
@@ -24698,9 +24162,6 @@ area = engineering
 }
 
 tech_torpedoes_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_torpedoes_2 }
-	}
 
 area = engineering
 	cost = @tier3cost2
@@ -24711,6 +24172,7 @@ area = engineering
 	weight = @tier3weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_torpedoes_2 }
 		country_uses_bio_ships = no
 	}
 
@@ -24748,9 +24210,6 @@ area = engineering
 }
 
 tech_torpedoes_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_torpedoes_3 }
-	}
 
 area = engineering
 	cost = @tier4cost2
@@ -24761,6 +24220,7 @@ area = engineering
 	weight = @tier4weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_torpedoes_3 }
 		country_uses_bio_ships = no
 	}
 
@@ -24902,9 +24362,6 @@ area = society
 }
 
 tech_transcendent_faith = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_transcendent_faith }
-	}
 
 cost = @tier4cost2
 	area = society
@@ -24914,6 +24371,7 @@ cost = @tier4cost2
 	weight = @tier4weight2
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_transcendent_faith }
 		OR = {
 			is_spiritualist = yes
 			AND = {
@@ -24933,9 +24391,6 @@ cost = @tier4cost2
 }
 
 tech_trinary_computing = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_trinary_computing }
-	}
 
 cost = @tier2cost3
 	area = physics
@@ -24946,6 +24401,7 @@ cost = @tier2cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_trinary_computing }
 		has_first_contact_dlc = yes
 	}
 
@@ -25048,9 +24504,6 @@ cost = @tier3cost1
 }
 
 tech_unity_of_purpose = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_unity_of_purpose }
-	}
 
 cost = @tier2cost3
 	area = society
@@ -25064,6 +24517,7 @@ cost = @tier2cost3
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_unity_of_purpose }
 		is_gestalt = yes
 	}
 
@@ -25097,9 +24551,6 @@ cost = 6000
 }
 
 tech_unusual_senses = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_unusual_senses }
-	}
 
 cost = @tier2cost3
 	area = physics
@@ -25110,6 +24561,7 @@ cost = @tier2cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_unusual_senses }
 		has_first_contact_dlc = yes
 	}
 
@@ -25125,9 +24577,6 @@ cost = @tier2cost3
 }
 
 tech_vitality_boosters = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_vitality_boosters }
-	}
 
 cost = @tier2cost2
 	area = society
@@ -25141,6 +24590,7 @@ cost = @tier2cost2
 	}
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_vitality_boosters }
 		OR = {
 			is_machine_empire = no
 			has_civic = civic_machine_assimilator
@@ -25185,9 +24635,6 @@ cost = @tier2cost2
 }
 
 tech_voidworm_immunity = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_voidworm_immunity }
-	}
 
 cost = @tier3cost1
 	area = society
@@ -25196,6 +24643,7 @@ cost = @tier3cost1
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_voidworm_immunity }
 		has_grand_archive_dlc = yes
 	}
 
@@ -25281,9 +24729,6 @@ cost = @tier2cost1
 }
 
 tech_volcanic_forge = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_volcanic_forge }
-	}
 
 cost = @tier2cost2
 	area = society
@@ -25292,6 +24737,7 @@ cost = @tier2cost2
 	is_rare = yes
 	weight = @tier2weight1
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_volcanic_forge }
 		is_world_forger_empire = yes
 	}
 	weight_modifier = {
@@ -25314,9 +24760,6 @@ cost = @tier2cost2
 }
 
 tech_volcanic_terraforming = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_volcanic_terraforming }
-	}
 
 cost = @tier2cost2
 	area = society
@@ -25328,6 +24771,7 @@ cost = @tier2cost2
 		"tech_volcano"
 	}
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_volcanic_terraforming }
 		has_infernals = yes
 	}
 	prereqfor_desc = {
@@ -25467,9 +24911,6 @@ cost = @tier2cost2
 }
 
 tech_weaver_bio_anti_evasion_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_evasion_2 }
-	}
 
 tier = 2
 	cost = @tier2cost1
@@ -25479,6 +24920,7 @@ tier = 2
 	prerequisites = { "tech_weaver_bio_anti_evasion_1" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_evasion_2 }
 		country_uses_bio_ships = yes
 	}
 
@@ -25504,9 +24946,6 @@ tier = 2
 }
 
 tech_weaver_bio_anti_evasion_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_evasion_3 }
-	}
 
 tier = 3
 	cost = @tier3cost1
@@ -25516,6 +24955,7 @@ tier = 3
 	prerequisites = { "tech_weaver_bio_anti_evasion_2" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_evasion_3 }
 		country_uses_bio_ships = yes
 	}
 
@@ -25541,9 +24981,6 @@ tier = 3
 }
 
 tech_weaver_bio_anti_evasion_4 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_evasion_4 }
-	}
 
 tier = 4
 	cost = @tier4cost1
@@ -25553,6 +24990,7 @@ tier = 4
 	prerequisites = { "tech_weaver_bio_anti_evasion_3" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_evasion_4 }
 		country_uses_bio_ships = yes
 	}
 
@@ -25586,9 +25024,6 @@ tier = 4
 }
 
 tech_weaver_bio_anti_evasion_5 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_evasion_5 }
-	}
 
 tier = 5
 	cost = @tier5cost1
@@ -25598,6 +25033,7 @@ tier = 5
 	prerequisites = { "tech_weaver_bio_anti_evasion_4" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_evasion_5 }
 		country_uses_bio_ships = yes
 	}
 
@@ -25631,9 +25067,6 @@ tier = 5
 }
 
 tech_weaver_bio_anti_evasion_6 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_evasion_6 }
-	}
 
 area = society
 	cost = @fallentechcost
@@ -25645,6 +25078,7 @@ area = society
 	prerequisites = { "tech_weaver_bio_anti_evasion_5" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_evasion_6 }
 		country_uses_bio_ships = yes
 	}
 
@@ -25677,9 +25111,6 @@ area = society
 }
 
 tech_weaver_bio_anti_fire_rate_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_1 }
-	}
 
 tier = 1
 	cost = @tier1cost1
@@ -25689,6 +25120,7 @@ tier = 1
 	prerequisites = { "tech_weavers" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_1 }
 		country_uses_bio_ships = yes
 	}
 
@@ -25711,9 +25143,6 @@ tier = 1
 }
 
 tech_weaver_bio_anti_fire_rate_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_2 }
-	}
 
 tier = 2
 	cost = @tier2cost1
@@ -25723,6 +25152,7 @@ tier = 2
 	prerequisites = { "tech_weaver_bio_anti_fire_rate_1" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_2 }
 		country_uses_bio_ships = yes
 	}
 
@@ -25748,9 +25178,6 @@ tier = 2
 }
 
 tech_weaver_bio_anti_fire_rate_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_3 }
-	}
 
 tier = 3
 	cost = @tier3cost1
@@ -25760,6 +25187,7 @@ tier = 3
 	prerequisites = { "tech_weaver_bio_anti_fire_rate_2" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_3 }
 		country_uses_bio_ships = yes
 	}
 
@@ -25785,9 +25213,6 @@ tier = 3
 }
 
 tech_weaver_bio_anti_fire_rate_4 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_4 }
-	}
 
 tier = 4
 	cost = @tier4cost1
@@ -25797,6 +25222,7 @@ tier = 4
 	prerequisites = { "tech_weaver_bio_anti_fire_rate_3" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_4 }
 		country_uses_bio_ships = yes
 	}
 
@@ -25830,9 +25256,6 @@ tier = 4
 }
 
 tech_weaver_bio_anti_fire_rate_5 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_5 }
-	}
 
 tier = 5
 	cost = @tier5cost1
@@ -25842,6 +25265,7 @@ tier = 5
 	prerequisites = { "tech_weaver_bio_anti_fire_rate_4" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_5 }
 		country_uses_bio_ships = yes
 	}
 
@@ -25875,9 +25299,6 @@ tier = 5
 }
 
 tech_weaver_bio_anti_fire_rate_6 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_6 }
-	}
 
 area = society
 	cost = @fallentechcost
@@ -25889,6 +25310,7 @@ area = society
 	prerequisites = { "tech_weaver_bio_anti_fire_rate_5" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_anti_fire_rate_6 }
 		country_uses_bio_ships = yes
 	}
 
@@ -25921,9 +25343,6 @@ area = society
 }
 
 tech_weaver_bio_confuser_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_1 }
-	}
 
 tier = 1
 	cost = @tier1cost1
@@ -25933,6 +25352,7 @@ tier = 1
 	prerequisites = { "tech_weavers" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_1 }
 		country_uses_bio_ships = yes
 	}
 
@@ -25955,9 +25375,6 @@ tier = 1
 }
 
 tech_weaver_bio_confuser_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_2 }
-	}
 
 tier = 2
 	cost = @tier2cost1
@@ -25967,6 +25384,7 @@ tier = 2
 	prerequisites = { "tech_weaver_bio_confuser_1" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_2 }
 		country_uses_bio_ships = yes
 	}
 
@@ -25992,9 +25410,6 @@ tier = 2
 }
 
 tech_weaver_bio_confuser_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_3 }
-	}
 
 tier = 3
 	cost = @tier3cost1
@@ -26004,6 +25419,7 @@ tier = 3
 	prerequisites = { "tech_weaver_bio_confuser_2" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_3 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26029,9 +25445,6 @@ tier = 3
 }
 
 tech_weaver_bio_confuser_4 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_4 }
-	}
 
 tier = 4
 	cost = @tier4cost1
@@ -26041,6 +25454,7 @@ tier = 4
 	prerequisites = { "tech_weaver_bio_confuser_3" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_4 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26074,9 +25488,6 @@ tier = 4
 }
 
 tech_weaver_bio_confuser_5 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_5 }
-	}
 
 tier = 5
 	cost = @tier5cost1
@@ -26086,6 +25497,7 @@ tier = 5
 	prerequisites = { "tech_weaver_bio_confuser_4" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_5 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26119,9 +25531,6 @@ tier = 5
 }
 
 tech_weaver_bio_confuser_6 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_6 }
-	}
 
 area = society
 	cost = @fallentechcost
@@ -26133,6 +25542,7 @@ area = society
 	prerequisites = { "tech_weaver_bio_confuser_5" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_confuser_6 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26165,9 +25575,6 @@ area = society
 }
 
 tech_weaver_bio_evasion_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_evasion_2 }
-	}
 
 tier = 2
 	cost = @tier2cost1
@@ -26177,6 +25584,7 @@ tier = 2
 	prerequisites = { "tech_weaver_bio_evasion_1" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_evasion_2 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26202,9 +25610,6 @@ tier = 2
 }
 
 tech_weaver_bio_evasion_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_evasion_3 }
-	}
 
 tier = 3
 	cost = @tier3cost1
@@ -26214,6 +25619,7 @@ tier = 3
 	prerequisites = { "tech_weaver_bio_evasion_2" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_evasion_3 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26239,9 +25645,6 @@ tier = 3
 }
 
 tech_weaver_bio_evasion_4 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_evasion_4 }
-	}
 
 tier = 4
 	cost = @tier4cost1
@@ -26251,6 +25654,7 @@ tier = 4
 	prerequisites = { "tech_weaver_bio_evasion_3" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_evasion_4 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26284,9 +25688,6 @@ tier = 4
 }
 
 tech_weaver_bio_evasion_5 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_evasion_5 }
-	}
 
 tier = 5
 	cost = @tier5cost1
@@ -26296,6 +25697,7 @@ tier = 5
 	prerequisites = { "tech_weaver_bio_evasion_4" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_evasion_5 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26329,9 +25731,6 @@ tier = 5
 }
 
 tech_weaver_bio_evasion_6 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_evasion_6 }
-	}
 
 area = society
 	cost = @fallentechcost
@@ -26343,6 +25742,7 @@ area = society
 	prerequisites = { "tech_weaver_bio_evasion_5" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_evasion_6 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26375,9 +25775,6 @@ area = society
 }
 
 tech_weaver_bio_fire_rate_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_1 }
-	}
 
 tier = 1
 	cost = @tier1cost1
@@ -26387,6 +25784,7 @@ tier = 1
 	prerequisites = { "tech_weavers" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_1 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26409,9 +25807,6 @@ tier = 1
 }
 
 tech_weaver_bio_fire_rate_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_2 }
-	}
 
 tier = 2
 	cost = @tier2cost1
@@ -26421,6 +25816,7 @@ tier = 2
 	prerequisites = { "tech_weaver_bio_fire_rate_1" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_2 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26446,9 +25842,6 @@ tier = 2
 }
 
 tech_weaver_bio_fire_rate_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_3 }
-	}
 
 tier = 3
 	cost = @tier3cost1
@@ -26458,6 +25851,7 @@ tier = 3
 	prerequisites = { "tech_weaver_bio_fire_rate_2" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_3 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26483,9 +25877,6 @@ tier = 3
 }
 
 tech_weaver_bio_fire_rate_4 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_4 }
-	}
 
 tier = 4
 	cost = @tier4cost1
@@ -26495,6 +25886,7 @@ tier = 4
 	prerequisites = { "tech_weaver_bio_fire_rate_3" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_4 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26528,9 +25920,6 @@ tier = 4
 }
 
 tech_weaver_bio_fire_rate_5 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_5 }
-	}
 
 tier = 5
 	cost = @tier5cost1
@@ -26540,6 +25929,7 @@ tier = 5
 	prerequisites = { "tech_weaver_bio_fire_rate_4" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_5 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26572,9 +25962,6 @@ tier = 5
 }
 
 tech_weaver_bio_fire_rate_6 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_6 }
-	}
 
 area = society
 	cost = @fallentechcost
@@ -26586,6 +25973,7 @@ area = society
 	prerequisites = { "tech_weaver_bio_fire_rate_5" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_fire_rate_6 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26618,9 +26006,6 @@ area = society
 }
 
 tech_weaver_bio_healing_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_healing_1 }
-	}
 
 tier = 1
 	cost = @tier1cost1
@@ -26630,6 +26015,7 @@ tier = 1
 	prerequisites = { "tech_weavers" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_healing_1 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26652,9 +26038,6 @@ tier = 1
 }
 
 tech_weaver_bio_healing_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_healing_2 }
-	}
 
 tier = 2
 	cost = @tier2cost1
@@ -26664,6 +26047,7 @@ tier = 2
 	prerequisites = { "tech_weaver_bio_healing_1" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_healing_2 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26689,9 +26073,6 @@ tier = 2
 }
 
 tech_weaver_bio_healing_3 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_healing_3 }
-	}
 
 tier = 3
 	cost = @tier3cost1
@@ -26701,6 +26082,7 @@ tier = 3
 	prerequisites = { "tech_weaver_bio_healing_2" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_healing_3 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26726,9 +26108,6 @@ tier = 3
 }
 
 tech_weaver_bio_healing_4 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_healing_4 }
-	}
 
 tier = 4
 	cost = @tier4cost1
@@ -26738,6 +26117,7 @@ tier = 4
 	prerequisites = { "tech_weaver_bio_healing_3" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_healing_4 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26771,9 +26151,6 @@ tier = 4
 }
 
 tech_weaver_bio_healing_5 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_healing_5 }
-	}
 
 tier = 5
 	cost = @tier5cost1
@@ -26783,6 +26160,7 @@ tier = 5
 	prerequisites = { "tech_weaver_bio_healing_4" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_healing_5 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26816,9 +26194,6 @@ tier = 5
 }
 
 tech_weaver_bio_healing_6 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_healing_6 }
-	}
 
 area = society
 	cost = @fallentechcost
@@ -26830,6 +26205,7 @@ area = society
 	prerequisites = { "tech_weaver_bio_healing_5" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_bio_healing_6 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26862,9 +26238,6 @@ area = society
 }
 
 tech_weaver_build_speed = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_build_speed }
-	}
 
 tier = 1
 	cost = @tier1cost2
@@ -26874,6 +26247,7 @@ tier = 1
 	prerequisites = { "tech_weavers" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_build_speed }
 		country_uses_bio_ships = yes
 	}
 
@@ -26897,9 +26271,6 @@ tier = 1
 }
 
 tech_weaver_growth_1 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_growth_1 }
-	}
 
 tier = 2
 	cost = @tier2cost2
@@ -26909,6 +26280,7 @@ tier = 2
 	prerequisites = { "tech_weavers" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_growth_1 }
 		country_uses_bio_ships = yes
 	}
 
@@ -26958,9 +26330,6 @@ tier = 2
 }
 
 tech_weaver_growth_2 = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_growth_2 }
-	}
 
 tier = 2
 	cost = @tier2cost3
@@ -26970,6 +26339,7 @@ tier = 2
 	prerequisites = { "tech_weaver_growth_1" }
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_weaver_growth_2 }
 		country_uses_bio_ships = yes
 	}
 
@@ -27139,9 +26509,6 @@ cost = @tier3cost1
 }
 
 tech_xeno_aesthetics = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_xeno_aesthetics }
-	}
 
 cost = @tier2cost3
 	area = society
@@ -27152,6 +26519,7 @@ cost = @tier2cost3
 	weight = 0
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_xeno_aesthetics }
 		has_first_contact_dlc = yes
 	}
 
@@ -27169,9 +26537,6 @@ cost = @tier2cost3
 }
 
 tech_xeno_diplomacy = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_xeno_diplomacy }
-	}
 
 cost = @tier2cost2
 	area = society
@@ -27181,6 +26546,7 @@ cost = @tier2cost2
 	weight = @tier2weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_xeno_diplomacy }
 		is_regular_empire = yes
 	}
 
@@ -27229,9 +26595,6 @@ cost = @tier2cost2
 }
 
 tech_xeno_linguistics = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_xeno_linguistics }
-	}
 
 cost = @tier1cost2
 	area = society
@@ -27242,6 +26605,7 @@ cost = @tier1cost2
 	is_rare = yes
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_xeno_linguistics }
 		has_paragon_dlc = yes
 		is_regular_empire = yes
 		is_gestalt = no
@@ -27269,9 +26633,6 @@ cost = @tier1cost2
 }
 
 tech_xeno_relations = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_xeno_relations }
-	}
 
 cost = @tier3cost2
 	area = society
@@ -27281,6 +26642,7 @@ cost = @tier3cost2
 	weight = @tier3weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_xeno_relations }
 		is_regular_empire = yes
 	}
 
@@ -27329,9 +26691,6 @@ cost = @tier3cost2
 }
 
 tech_xeno_tourism_agency = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_xeno_tourism_agency }
-	}
 
 cost = @tier3cost1
 	area = society
@@ -27340,6 +26699,7 @@ cost = @tier3cost1
 	weight = @tier3weight1
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_xeno_tourism_agency }
 		is_megacorp = yes
 	}
 
@@ -27413,9 +26773,6 @@ area = physics
 }
 
 tech_zro_launcher = {
-		potential = {
-		NOT = { has_country_flag = ap_tech_blocked_tech_zro_launcher }
-	}
 
 cost = @tier5cost2
 	area = society
@@ -27426,6 +26783,7 @@ cost = @tier5cost2
 	is_reverse_engineerable = no
 
 	potential = {
+		NOT = { has_country_flag = ap_tech_blocked_tech_zro_launcher }
 		has_shroud_dlc = yes
 	}
 

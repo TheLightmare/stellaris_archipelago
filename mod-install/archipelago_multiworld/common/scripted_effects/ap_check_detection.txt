@@ -372,6 +372,142 @@ ap_check_diplomacy_milestones = {
 }
 
 # --------------------------------------------------------------------------
+# Ascension path completion
+# A path counts as complete when its tradition tree is finished.
+# has_tradition on a DLC-gated tree simply evaluates false without the DLC.
+#   bio   → Genetics
+#   synth → Synthetics / Cybernetics / machine paths (Modularity, Nanotech,
+#           Virtuality)
+#   psi   → Psionics (incl. the Shroud variant)
+# These set the ap_sent_ascension_* flags that ap_check_victory_condition
+# (goal 2) reads, and send the matching location checks.
+# --------------------------------------------------------------------------
+ap_check_ascension_milestones = {
+    if = {
+        limit = {
+            has_tradition = tr_genetics_finish
+            NOT = { has_country_flag = ap_sent_ascension_bio }
+        }
+        set_country_flag = ap_sent_ascension_bio
+        ap_send_check_ascension_bio = yes
+    }
+    if = {
+        limit = {
+            OR = {
+                has_tradition = tr_synthetics_finish
+                has_tradition = tr_cybernetics_finish
+                has_tradition = tr_cybernetics_assimilator_finish
+                has_tradition = tr_modularity_finish
+                has_tradition = tr_nanotech_finish
+                has_tradition = tr_virtuality_finish
+            }
+            NOT = { has_country_flag = ap_sent_ascension_synth }
+        }
+        set_country_flag = ap_sent_ascension_synth
+        ap_send_check_ascension_synth = yes
+    }
+    if = {
+        limit = {
+            OR = {
+                has_tradition = tr_psionics_finish
+                has_tradition = tr_psionics_shroud_finish
+            }
+            NOT = { has_country_flag = ap_sent_ascension_psi }
+        }
+        set_country_flag = ap_sent_ascension_psi
+        ap_send_check_ascension_psi = yes
+    }
+}
+
+# --------------------------------------------------------------------------
+# Crisis milestones
+# Defeat: vanilla scripted trigger crisis_happened_and_defeated covers the
+# Prethoryn, Unbidden, Contingency, and Synth Queen crises and sets the
+# ap_sent_crisis_defeat flag that ap_check_victory_condition (goal 1) reads.
+# Survive: counts months (via the monthly scanner) from the first month an
+# endgame crisis is active; fires at 120 months (10 years).
+# Become the Crisis / galaxy control: Nemesis menace levels and the
+# galaxy_percentage trigger. Both evaluate false without the DLC.
+# --------------------------------------------------------------------------
+ap_check_crisis_milestones = {
+    if = {
+        limit = {
+            crisis_happened_and_defeated = yes
+            NOT = { has_country_flag = ap_sent_crisis_defeat }
+        }
+        set_country_flag = ap_sent_crisis_defeat
+        ap_send_check_crisis_defeat = yes
+    }
+
+    # Survive the Crisis 10 Years — tick a monthly counter while any
+    # endgame crisis has begun (change_variable auto-creates at 0).
+    if = {
+        limit = {
+            NOT = { has_country_flag = ap_sent_crisis_survive }
+            OR = {
+                has_global_flag = prethoryn_invasion_happened
+                has_global_flag = extradimensional_invasion_happened
+                has_global_flag = ai_invasion_happened
+                has_global_flag = synth_queen_happened
+            }
+        }
+        change_variable = {
+            which = ap_crisis_months
+            value = 1
+        }
+        if = {
+            limit = {
+                check_variable = { which = ap_crisis_months value >= 120 }
+            }
+            set_country_flag = ap_sent_crisis_survive
+            ap_send_check_crisis_survive = yes
+        }
+    }
+
+    # Become the Crisis (Nemesis)
+    if = {
+        limit = {
+            OR = {
+                has_crisis_level = crisis_level_1
+                has_crisis_level = crisis_level_2
+                has_crisis_level = crisis_level_3
+                has_crisis_level = crisis_level_4
+                has_crisis_level = crisis_level_5
+            }
+            NOT = { has_country_flag = ap_sent_become_crisis_1 }
+        }
+        set_country_flag = ap_sent_become_crisis_1
+        ap_send_check_become_crisis_1 = yes
+    }
+    if = {
+        limit = {
+            has_crisis_level = crisis_level_5
+            NOT = { has_country_flag = ap_sent_become_crisis_5 }
+        }
+        set_country_flag = ap_sent_become_crisis_5
+        ap_send_check_become_crisis_5 = yes
+    }
+
+    # Galaxy control
+    if = {
+        limit = {
+            galaxy_percentage >= 0.4
+            NOT = { has_country_flag = ap_sent_control_40 }
+        }
+        set_country_flag = ap_sent_control_40
+        ap_send_check_control_40 = yes
+    }
+    if = {
+        limit = {
+            galaxy_percentage >= 0.6
+            NOT = { has_country_flag = ap_sent_control_60 }
+        }
+        set_country_flag = ap_sent_control_60
+        ap_send_check_control_60 = yes
+    }
+}
+
+# --------------------------------------------------------------------------
 # Victory condition check
 #
 # The bridge sets one of ap_goal_0..ap_goal_4 when connecting (read from
