@@ -20,6 +20,7 @@ PIPE_NAME = r"\\.\pipe\stellaris_archipelago"
 try:
     import win32file
     import win32pipe
+    import win32event
     import pywintypes
     HAS_WIN32 = True
 except ImportError:
@@ -28,6 +29,11 @@ except ImportError:
 
 class PipeClient:
     """Client for the DLL bridge named pipe."""
+
+    # How long to wait for the DLL to answer a command before giving up.
+    # Without a timeout, a frozen game (or a DLL that accepted the
+    # connection but never responds) blocks the sender thread forever.
+    IO_TIMEOUT_MS = 10_000
 
     def __init__(self):
         self.handle = None
@@ -64,11 +70,12 @@ class PipeClient:
                 win32file.GENERIC_READ | win32file.GENERIC_WRITE,
                 0, None,
                 win32file.OPEN_EXISTING,
-                0, None,
+                win32file.FILE_FLAG_OVERLAPPED,
+                None,
             )
             self.connected = True
             self.last_error = None
-            logger.info("🔌 Connected to DLL bridge pipe!")
+            logger.info("Connected to DLL bridge pipe!")
             return True
         except pywintypes.error as e:
             if e.winerror == 2:  # ERROR_FILE_NOT_FOUND
@@ -114,26 +121,48 @@ class PipeClient:
             self.handle = None
         self.connected = False
 
+    def _overlapped_io(self, op, buf) -> Optional[int]:
+        """Run one overlapped pipe operation (read or write) with a timeout.
+
+        Returns the number of bytes transferred, or None on timeout/error.
+        On timeout the I/O is cancelled and the connection dropped so the
+        caller retries on a fresh connection instead of hanging forever.
+        """
+        overlapped = pywintypes.OVERLAPPED()
+        overlapped.hEvent = win32event.CreateEvent(None, True, False, None)
+        try:
+            op(self.handle, buf, overlapped)
+            rc = win32event.WaitForSingleObject(overlapped.hEvent, self.IO_TIMEOUT_MS)
+            if rc != win32event.WAIT_OBJECT_0:
+                logger.warning(
+                    f"Pipe I/O timed out after {self.IO_TIMEOUT_MS // 1000}s "
+                    "(game frozen or DLL unresponsive)")
+                win32file.CancelIo(self.handle)
+                self.disconnect()
+                return None
+            return win32file.GetOverlappedResult(self.handle, overlapped, False)
+        except pywintypes.error as e:
+            logger.warning(f"Pipe communication error: {e}")
+            self.disconnect()
+            return None
+        finally:
+            win32file.CloseHandle(overlapped.hEvent)
+
     def send_command(self, command: str) -> Optional[str]:
         """Send a command and return the response. Returns None on failure."""
         if not self.connected:
             if not self.connect():
                 return None
 
-        try:
-            # Send
-            message = command + "\n"
-            win32file.WriteFile(self.handle, message.encode("utf-8"))
-
-            # Read response
-            result, data = win32file.ReadFile(self.handle, 4096)
-            response = data.decode("utf-8").strip()
-            return response
-
-        except pywintypes.error as e:
-            logger.warning(f"Pipe communication error: {e}")
-            self.disconnect()
+        message = (command + "\n").encode("utf-8")
+        if self._overlapped_io(win32file.WriteFile, message) is None:
             return None
+
+        buf = win32file.AllocateReadBuffer(4096)
+        n = self._overlapped_io(win32file.ReadFile, buf)
+        if n is None:
+            return None
+        return bytes(buf[:n]).decode("utf-8", errors="replace").strip()
 
     def send_effect(self, effect: str) -> bool:
         """Send a single effect command. Returns True on success."""

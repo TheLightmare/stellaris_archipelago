@@ -113,11 +113,12 @@ def generate_mod_files(
         player_name: This player's name in the AP session
 
     Returns:
-        True if files were generated successfully.
+        List of blocked vanilla tech keys on success (may be empty),
+        None on failure.
     """
     if not slot_data:
         logger.warning("No slot data to generate files from")
-        return False
+        return None
 
     tech_lines = []
     loc_lines = []

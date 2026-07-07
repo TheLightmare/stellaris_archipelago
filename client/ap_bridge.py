@@ -1,9 +1,9 @@
 """Stellaris Archipelago Bridge — threaded, no asyncio.
 
 Three threads:
-  1. WebSocket receiver: reads AP server messages → puts items in a queue
-  2. Pipe sender: takes from queue → sends to DLL pipe (blocking, ~500ms each)
-  3. Log tailer: polls game.log → sends checks to AP server
+  1. WebSocket receiver: reads AP server messages -> puts items in a queue
+  2. Pipe sender: takes from queue -> sends to DLL pipe (blocking, ~500ms each)
+  3. Log tailer: polls game.log -> sends checks to AP server
 
 Usage:
     pip install websocket-client
@@ -47,7 +47,7 @@ _TECH_LOCATION_BASE = 7_481_000  # = 7_471_000 + 10000
 
 
 def _catalog_item_effects() -> Dict[int, str]:
-    """item_id → ap_grant_tech_<key> for every catalog tech (always populated;
+    """item_id -> ap_grant_tech_<key> for every catalog tech (always populated;
     selection-filtering happens via slot_data, not here — the map is a
     superset and only selected items will ever actually be received)."""
     return {
@@ -273,13 +273,27 @@ class StellarisAPBridge:
         self.randomized_techs: List[str] = []
 
         self.stellaris_dir = find_stellaris_dir()
-        self._state_file = self.stellaris_dir / "ap_bridge_state.json"
+        # State is keyed by seed+slot so joining a new multiworld never
+        # replays checks/items from an old one. The real path is set once
+        # RoomInfo tells us the seed; until then state stays empty.
+        self._state_file: Optional[Path] = None
+        self._state_lock = threading.Lock()
         self.mod_dir = self.stellaris_dir / "mod" / "archipelago_multiworld"
         self.log_path = find_game_log(self.stellaris_dir)
         self.running = True
 
-        # Load persisted state (must be after _state_file is set)
-        self._load_state()
+        # Connection-liveness signalling between threads:
+        # the receiver sets _disconnected on socket loss; the main loop
+        # waits on it and reconnects. _session_stop tells the per-session
+        # worker threads to exit so a reconnect never doubles them up.
+        self._disconnected = threading.Event()
+        self._session_stop = threading.Event()
+
+        # Item indices that are queued for pipe delivery but not yet
+        # delivered. Only after a successful pipe write do they move into
+        # processed_indices (and get persisted) — items received while
+        # Stellaris is closed are retried, never dropped.
+        self._pending_indices: Set[int] = set()
 
     def run(self):
         # Determine candidate URL(s) for the connection.
@@ -309,12 +323,15 @@ class StellarisAPBridge:
                 time.sleep(5)
                 continue
 
+            threads = []
             try:
                 # Handshake: receive RoomInfo
                 msg = self.ws.recv()
                 for p in json.loads(msg):
                     if p.get("cmd") == "RoomInfo":
-                        logger.info(f"Room: seed={p.get('seed_name', '?')}")
+                        seed = p.get("seed_name", "")
+                        logger.info(f"Room: seed={seed or '?'}")
+                        self._set_state_file(seed)
 
                 # Send Connect
                 self.ws.send(json.dumps([{
@@ -329,7 +346,9 @@ class StellarisAPBridge:
                     "slot_data": True,
                 }]))
 
-                # Start threads
+                # Start per-session threads
+                self._disconnected.clear()
+                self._session_stop.clear()
                 threads = [
                     threading.Thread(target=self._receiver_thread, name="ws-recv", daemon=True),
                     threading.Thread(target=self._sender_thread, name="pipe-send", daemon=True),
@@ -339,15 +358,21 @@ class StellarisAPBridge:
                     t.start()
 
                 logger.info("Bridge running. Press Ctrl+C to stop.")
-                while self.running:
-                    time.sleep(0.5)
+                # Wake on disconnect (set by the receiver thread) or Ctrl+C.
+                while self.running and not self._disconnected.is_set():
+                    self._disconnected.wait(timeout=0.5)
 
             except KeyboardInterrupt:
                 self.running = False
             except Exception as e:
                 logger.error(f"Session error: {e}")
             finally:
+                # Tear the session down completely before reconnecting so
+                # the next session never runs two tailers or two senders.
+                self._session_stop.set()
                 self.ws.close()
+                for t in threads:
+                    t.join(timeout=5)
 
             if self.running:
                 logger.warning("Connection lost. Reconnecting in 5s...")
@@ -357,31 +382,63 @@ class StellarisAPBridge:
 
     # ---- Thread 1: WebSocket receiver ----
     def _receiver_thread(self):
-        """Reads WebSocket messages, puts items in queue."""
+        """Reads WebSocket messages, puts items in queue.
+
+        Socket-level failures end the session (main loop reconnects).
+        A bad packet is logged and skipped — one malformed message must
+        not kill the connection.
+        """
         logger.info("[recv] Receiver thread started")
-        while self.running:
+        while self.running and not self._session_stop.is_set():
             try:
                 raw = self.ws.recv()
-                packets = json.loads(raw)
-                if not isinstance(packets, list):
-                    packets = [packets]
-
-                for packet in packets:
-                    self._handle_packet(packet)
             except Exception as e:
-                if self.running:
-                    logger.error(f"[recv] Error: {e}")
-                    time.sleep(1)
+                if self.running and not self._session_stop.is_set():
+                    logger.error(f"[recv] Connection lost: {e}")
                 break
 
+            try:
+                packets = json.loads(raw)
+            except (json.JSONDecodeError, TypeError) as e:
+                logger.error(f"[recv] Malformed message skipped: {e}")
+                continue
+            if not isinstance(packets, list):
+                packets = [packets]
+
+            for packet in packets:
+                try:
+                    self._handle_packet(packet)
+                except Exception as e:
+                    logger.error(
+                        f"[recv] Error handling {packet.get('cmd', '?')} packet: {e}",
+                        exc_info=True,
+                    )
+
+        # Signal the main loop that this session is over.
+        self._disconnected.set()
         logger.info("[recv] Receiver thread ended")
+
+    def _set_state_file(self, seed: str):
+        """Bind the state file to this seed+slot and load it.
+
+        Called on RoomInfo. Keying by seed and slot means state from an
+        old multiworld can never leak checks/items into a new one.
+        """
+        safe = re.sub(r"[^A-Za-z0-9_-]", "_", f"{seed}_{self.slot}") or "default"
+        path = self.stellaris_dir / f"ap_bridge_state_{safe}.json"
+        if path == self._state_file:
+            return  # reconnect to the same room — state already loaded
+        self._state_file = path
+        self.sent_checks = set()
+        self.processed_indices = set()
+        self._pending_indices = set()
+        self._load_state()
 
     def _load_state(self):
         """Load persisted checks/items from disk."""
         try:
-            if self._state_file.exists():
-                import json as j
-                data = j.loads(self._state_file.read_text())
+            if self._state_file and self._state_file.exists():
+                data = json.loads(self._state_file.read_text())
                 self.sent_checks = set(data.get("sent_checks", []))
                 self.processed_indices = set(data.get("processed_indices", []))
                 logger.info(f"Loaded state: {len(self.sent_checks)} checks, {len(self.processed_indices)} items")
@@ -389,14 +446,18 @@ class StellarisAPBridge:
             logger.warning(f"Could not load state: {e}")
 
     def _save_state(self):
-        """Persist checks/items to disk."""
+        """Persist checks/items to disk (thread-safe, atomic write)."""
+        if not self._state_file:
+            return
         try:
-            import json as j
-            data = {
-                "sent_checks": list(self.sent_checks),
-                "processed_indices": list(self.processed_indices),
-            }
-            self._state_file.write_text(j.dumps(data))
+            with self._state_lock:
+                data = {
+                    "sent_checks": list(self.sent_checks),
+                    "processed_indices": list(self.processed_indices),
+                }
+                tmp = self._state_file.with_suffix(".json.tmp")
+                tmp.write_text(json.dumps(data))
+                tmp.replace(self._state_file)
         except Exception as e:
             logger.warning(f"Could not save state: {e}")
 
@@ -407,7 +468,25 @@ class StellarisAPBridge:
     def _handle_packet(self, packet: dict):
         cmd = packet.get("cmd", "")
 
-        if cmd == "Connected":
+        if cmd == "ConnectionRefused":
+            errors = packet.get("errors", [])
+            logger.error("=" * 60)
+            logger.error(f"SERVER REFUSED CONNECTION: {', '.join(errors) or 'unknown error'}")
+            hints = {
+                "InvalidSlot": f"No slot named '{self.slot}' in this multiworld — check --slot.",
+                "InvalidGame": "This slot is not a Stellaris slot.",
+                "InvalidPassword": "Wrong room password — check --password.",
+                "IncompatibleVersion": "Client/server version mismatch.",
+            }
+            for err in errors:
+                if err in hints:
+                    logger.error(f"  {hints[err]}")
+            logger.error("=" * 60)
+            # Retrying with the same credentials cannot succeed — stop.
+            self.running = False
+            self._disconnected.set()
+
+        elif cmd == "Connected":
             self.player_id = packet.get("slot", 0)
             self.team = packet.get("team", 0)
             checked = set(packet.get("checked_locations", []))
@@ -499,22 +578,25 @@ class StellarisAPBridge:
             base_index = packet.get("index", 0)
             for i, item in enumerate(packet.get("items", [])):
                 idx = base_index + i
-                if idx in self.processed_indices:
+                # processed = delivered to the game; pending = queued for
+                # the pipe. An index is only persisted as processed after
+                # the pipe write succeeds, so items received while
+                # Stellaris is closed are retried instead of lost.
+                if idx in self.processed_indices or idx in self._pending_indices:
                     continue
-                self.processed_indices.add(idx)
+                self._pending_indices.add(idx)
                 item_id = item.get("item", 0)
                 sender = item.get("player", 0)
                 name = self.item_names.get(item_id, f"Item #{item_id}")
                 sender_name = self.player_names.get(sender, f"Player {sender}")
-                logger.info(f"  ← RECEIVED: {name} (from {sender_name})")
-                self.item_queue.put(item_id)
-                self._save_state()
+                logger.info(f"  <- RECEIVED: {name} (from {sender_name})")
+                self.item_queue.put(("item", idx, item_id))
 
         elif cmd == "PrintJSON":
             parts = packet.get("data", [])
             text = "".join(p.get("text", "") for p in parts if isinstance(p, dict))
             if text:
-                logger.info(f"  💬 {text}")
+                logger.info(f"  [chat] {text}")
 
         elif cmd == "SetReply":
             key = packet.get("key", "")
@@ -522,25 +604,30 @@ class StellarisAPBridge:
                 current = int(packet.get("value", 0))
                 original = int(packet.get("original_value", current))
                 self.energy_link_value = current
-                # If original > current, we successfully withdrew
+                # SetReply is broadcast to every SetNotify subscriber, so
+                # this fires for *other* games' deposits/withdrawals too.
+                # Our own Set requests echo our slot back (extra fields on
+                # Set are returned verbatim); only grant energy for those.
+                is_ours = packet.get("slot") == self.player_id
                 gained = original - current
-                if gained > 0:
-                    logger.info(f"  💰 EnergyLink: withdrew {gained} EC (pool: {current})")
+                if gained > 0 and is_ours:
+                    logger.info(f"  [energy] EnergyLink: withdrew {gained} EC (pool: {current})")
                     self._grant_energy(gained)
+                elif gained > 0:
+                    logger.info(f"  [energy] EnergyLink: another game withdrew {gained} EC (pool: {current})")
                 elif original < current:
-                    # A deposit was confirmed
-                    logger.info(f"  💰 EnergyLink: deposit confirmed (pool: {current})")
+                    logger.info(f"  [energy] EnergyLink: deposit confirmed (pool: {current})")
 
         elif cmd == "Retrieved":
             keys = packet.get("keys", {})
             for key, value in keys.items():
                 if key.startswith("EnergyLink"):
                     self.energy_link_value = int(value) if value else 0
-                    logger.info(f"  💰 EnergyLink pool: {self.energy_link_value} EC")
+                    logger.info(f"  [energy] EnergyLink pool: {self.energy_link_value} EC")
 
     def _generate_dynamic_techs(self, scouted_locations: list):
         """Build slot data from scouted locations and generate mod files."""
-        # AP flags → classification
+        # AP flags -> classification
         flag_to_class = {1: "progression", 2: "useful", 4: "trap"}
 
         slot_data = []
@@ -581,7 +668,9 @@ class StellarisAPBridge:
         milestone_count = sum(1 for s in slot_data if s["location_type"] == "milestone")
 
         blocked_techs = generate_mod_files(slot_data, self.mod_dir)
-        if blocked_techs is not None:
+        # generate_mod_files returns a list of blocked tech keys on
+        # success (possibly empty) and None on failure.
+        if isinstance(blocked_techs, list):
             logger.info(f"Generated {tech_count} AP techs ({milestone_count} milestones auto-detected)")
             logger.info(f"Blocking {len(blocked_techs)} vanilla techs (sent to other worlds)")
 
@@ -603,62 +692,98 @@ class StellarisAPBridge:
 
     # ---- Thread 2: Pipe sender ----
     def _sender_thread(self):
-        """Takes items from queue, batches them, sends to DLL pipe."""
-        logger.info("[send] Sender thread started")
-        while self.running:
-            # Collect first item (blocking)
-            try:
-                msg = self.item_queue.get(timeout=1)
-            except queue.Empty:
-                continue
+        """Takes items from queue, batches them, sends to DLL pipe.
 
-            # Collect any additional queued items (non-blocking batch)
-            batch = [msg]
+        A batch that can't be delivered (Stellaris closed, DLL not
+        loaded) is kept and retried — item indices only become
+        "processed" (and are persisted) after a successful pipe write.
+        """
+        logger.info("[send] Sender thread started")
+        pending: list = []  # undelivered (kind, ...) messages carried over
+        retry_count = 0
+
+        while self.running and not self._session_stop.is_set():
+            # Collect new messages; block briefly only if nothing is pending.
+            try:
+                pending.append(self.item_queue.get(timeout=1 if not pending else 0.01))
+            except queue.Empty:
+                pass
             while not self.item_queue.empty():
                 try:
-                    batch.append(self.item_queue.get_nowait())
+                    pending.append(self.item_queue.get_nowait())
                 except queue.Empty:
                     break
+            if not pending:
+                continue
 
             # Convert to effect commands
             effects = []
-            for msg in batch:
+            delivered_indices = []
+            for msg in pending:
                 if isinstance(msg, tuple) and msg[0] == "raw_effect":
                     effects.append(msg[1])
-                elif isinstance(msg, int):
-                    item_id = msg
+                elif isinstance(msg, tuple) and msg[0] == "item":
+                    _, idx, item_id = msg
+                    delivered_indices.append(idx)
                     effect = ITEM_EFFECT_MAP.get(item_id)
                     if effect:
                         effects.append(f"{effect} = yes")
                     else:
                         effects.append(f"set_country_flag = ap_item_{item_id}")
 
-            # Send entire batch in one pipe session
-            if effects:
-                self._send_batch_to_pipe(effects)
+            if self._send_batch_to_pipe(effects):
+                for idx in delivered_indices:
+                    self._pending_indices.discard(idx)
+                    self.processed_indices.add(idx)
+                if delivered_indices:
+                    self._save_state()
+                pending = []
+                retry_count = 0
+            else:
+                # Keep the batch; log the first failure loudly, then
+                # once a minute so a closed game doesn't spam the log.
+                if retry_count % 12 == 0:
+                    logger.warning(
+                        f"  -> PIPE unavailable: {len(effects)} effect(s) queued, "
+                        f"retrying every 5s (is Stellaris running?)")
+                retry_count += 1
+                self._session_stop.wait(timeout=5)
 
+        # Undelivered items go back to "unqueued" so the server's resend
+        # on reconnect re-queues them instead of being deduped away.
+        for msg in pending:
+            if isinstance(msg, tuple) and msg[0] == "item":
+                self._pending_indices.discard(msg[1])
         logger.info("[send] Sender thread ended")
 
-    def _send_batch_to_pipe(self, effects: list):
-        """Send a batch of effects in a single pipe connection."""
+    def _send_batch_to_pipe(self, effects: list) -> bool:
+        """Send a batch of effects in a single pipe connection.
+
+        Returns True only if every effect was written to the pipe.
+        """
+        if not effects:
+            return True
         if sys.platform != "win32":
             for e in effects:
-                logger.warning(f"  → NO PIPE (non-Windows): {e}")
-            return
+                logger.warning(f"  -> NO PIPE (non-Windows): {e}")
+            return True  # nothing to deliver to on this platform
 
         from pipe_client import create_pipe_client
         pipe = create_pipe_client()
-        if pipe.connect():
+        if not pipe.connect():
+            return False
+        try:
             for effect_cmd in effects:
-                pipe.send_effect(effect_cmd)
+                if not pipe.send_effect(effect_cmd):
+                    logger.warning(f"  -> PIPE: write failed at '{effect_cmd}', will retry batch")
+                    return False
             flushed = pipe.flush_commands()
-            pipe.disconnect()
-            logger.info(f"  → PIPE: {len(effects)} effect(s) sent, {flushed} flushed")
+            logger.info(f"  -> PIPE: {len(effects)} effect(s) sent, {flushed} flushed")
             for e in effects:
                 logger.info(f"    {e}")
-        else:
-            reason = getattr(pipe, "last_error", None) or "pipe connect failed"
-            logger.warning(f"  → NO PIPE: {len(effects)} effect(s) lost — {reason}")
+            return True
+        finally:
+            pipe.disconnect()
 
     def _grant_energy(self, amount: int):
         """Grant energy credits in-game from EnergyLink withdrawal."""
@@ -675,7 +800,7 @@ class StellarisAPBridge:
 
         pos = self.log_path.stat().st_size if self.log_path.exists() else 0
 
-        while self.running:
+        while self.running and not self._session_stop.is_set():
             try:
                 if not self.log_path.exists():
                     time.sleep(1)
@@ -699,12 +824,17 @@ class StellarisAPBridge:
                             loc_id = int(m.group(1))
                             loc_name = m.group(2).strip()
                             if loc_id not in self.sent_checks:
-                                self.sent_checks.add(loc_id)
-                                logger.info(f"  → CHECK: {loc_name} (ID={loc_id})")
+                                logger.info(f"  -> CHECK: {loc_name} (ID={loc_id})")
+                                # Send first, record after: if the send
+                                # throws, pos is never advanced past this
+                                # line, so it's re-read and re-sent on the
+                                # next pass / after reconnect instead of
+                                # being marked sent-but-lost.
                                 self.ws.send(json.dumps([{
                                     "cmd": "LocationChecks",
                                     "locations": [loc_id],
                                 }]))
+                                self.sent_checks.add(loc_id)
                                 self._save_state()
 
                                 # Goal 4 (All Checks): if every location is now sent,
@@ -714,13 +844,13 @@ class StellarisAPBridge:
                                     and self.all_locations
                                     and set(self.all_locations).issubset(self.sent_checks)
                                 ):
-                                    logger.info("  🏆 ALL CHECKS COMPLETE — goal satisfied!")
+                                    logger.info("  [goal] ALL CHECKS COMPLETE — goal satisfied!")
                                     self.ws.send(json.dumps([{
                                         "cmd": "StatusUpdate",
                                         "status": 30,
                                     }]))
                         if RE_GOAL.search(line):
-                            logger.info("  🏆 GOAL COMPLETE!")
+                            logger.info("  [goal] GOAL COMPLETE!")
                             self.ws.send(json.dumps([{
                                 "cmd": "StatusUpdate",
                                 "status": 30,
@@ -728,7 +858,7 @@ class StellarisAPBridge:
                         md = RE_DEPOSIT.search(line)
                         if md:
                             amount = int(md.group(1))
-                            logger.info(f"  💰 EnergyLink deposit: {amount} EC")
+                            logger.info(f"  [energy] EnergyLink deposit: {amount} EC")
                             # 1 Stellaris EC = 1 AP EnergyLink unit (1:1 with Factorio)
                             self.ws.send(json.dumps([{
                                 "cmd": "Set",
@@ -744,16 +874,19 @@ class StellarisAPBridge:
                             amount = int(mw.group(1))
                             pool = self.energy_link_value or 0
                             if pool <= 0:
-                                logger.info(f"  💰 EnergyLink: pool empty, cannot withdraw")
+                                logger.info(f"  [energy] EnergyLink: pool empty, cannot withdraw")
                                 continue
                             # Withdraw up to what's available
                             withdraw = min(amount, pool)
-                            logger.info(f"  💰 EnergyLink withdraw: requesting {withdraw} EC (pool: {pool})")
+                            logger.info(f"  [energy] EnergyLink withdraw: requesting {withdraw} EC (pool: {pool})")
                             self.ws.send(json.dumps([{
                                 "cmd": "Set",
                                 "key": self.energylink_key,
                                 "default": 0,
                                 "want_reply": True,
+                                # Echoed back in SetReply so we can tell our
+                                # own withdrawal apart from other games'.
+                                "slot": self.player_id,
                                 "operations": [
                                     {"operation": "add", "value": -withdraw},
                                     {"operation": "max", "value": 0},
