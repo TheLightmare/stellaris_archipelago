@@ -132,6 +132,32 @@ class DlcOverlord(Toggle):
     display_name = "DLC: Overlord"
 
 
+class DlcFirstContact(Toggle):
+    """Enable First Contact DLC content (cloaking, pre-FTL techs)."""
+    display_name = "DLC: First Contact"
+
+
+class DlcAncientRelics(Toggle):
+    """Enable Ancient Relics DLC content (archaeotech, relics)."""
+    display_name = "DLC: Ancient Relics"
+
+
+class DlcMachineAge(Toggle):
+    """Enable The Machine Age DLC content (machine ascension paths,
+    synthetic queen techs)."""
+    display_name = "DLC: The Machine Age"
+
+
+class DlcDistantStars(Toggle):
+    """Enable Distant Stars DLC content (L-Cluster techs)."""
+    display_name = "DLC: Distant Stars"
+
+
+class DlcAstralPlanes(Toggle):
+    """Enable Astral Planes DLC content (astral techs)."""
+    display_name = "DLC: Astral Planes"
+
+
 # --- Tech Randomization ---
 
 class RandomizedTechs(OptionSet):
@@ -143,8 +169,9 @@ class RandomizedTechs(OptionSet):
       - Has a matching 'Tech: <Tech>' item placed in the multiworld; the
         only way to get the vanilla effects is to receive that item.
 
-    Default is every base-game tech in the catalog. Edit (or use the
-    Tech Config dashboard tab) to customize."""
+    Default is empty (no vanilla techs randomized). Pick techs here or
+    via the Tech Config dashboard tab. Techs belonging to a DLC whose
+    toggle is off are ignored."""
     display_name = "Randomized Techs"
     valid_keys = frozenset(_all_tech_keys())
     default = frozenset(_default_tech_selection())
@@ -169,4 +196,35 @@ class StellarisOptions(PerGameCommonOptions):
     dlc_apocalypse: DlcApocalypse
     dlc_megacorp: DlcMegaCorp
     dlc_overlord: DlcOverlord
+    dlc_first_contact: DlcFirstContact
+    dlc_ancient_relics: DlcAncientRelics
+    dlc_machine_age: DlcMachineAge
+    dlc_distant_stars: DlcDistantStars
+    dlc_astral_planes: DlcAstralPlanes
     randomized_techs: RandomizedTechs
+
+
+def enabled_dlcs(options: "StellarisOptions") -> frozenset:
+    """The set of DLC flag strings enabled by this options set.
+
+    ``None`` (base game) is always included. Keys match the ``dlc``
+    field used in items.py, locations.py, and data/tech_catalog.py.
+    """
+    flags = {None}
+    for flag, opt in (
+        ("utopia", options.dlc_utopia),
+        ("federations", options.dlc_federations),
+        ("nemesis", options.dlc_nemesis),
+        ("leviathans", options.dlc_leviathans),
+        ("apocalypse", options.dlc_apocalypse),
+        ("megacorp", options.dlc_megacorp),
+        ("overlord", options.dlc_overlord),
+        ("first_contact", options.dlc_first_contact),
+        ("ancient_relics", options.dlc_ancient_relics),
+        ("machine_age", options.dlc_machine_age),
+        ("distant_stars", options.dlc_distant_stars),
+        ("astral_planes", options.dlc_astral_planes),
+    ):
+        if opt:
+            flags.add(flag)
+    return frozenset(flags)

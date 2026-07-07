@@ -92,10 +92,16 @@ class TestLocationAccess(StellarisTestBase):
         self.assertFalse(self.can_reach_location("Achieve 100k Fleet Power"))
 
     def test_fleet_power_100k_accessible(self) -> None:
-        """100k fleet power is reachable with required items."""
-        items = self.get_items_by_name("Progressive Ship Class")[:2]
-        items += self.get_items_by_name("Progressive Starbase")[:1]
-        items += self.get_items_by_name("Progressive Weapons")[:2]
+        """100k fleet power is reachable with required items.
+
+        The location sits in the Late Game region, so the collection
+        must satisfy the Late region gate (Ship 3 / Starbase 3 /
+        Weapons 3 / Defenses 2), which also covers the location's own
+        rule (Ship 2 / Weapons 2)."""
+        items = self.get_items_by_name("Progressive Ship Class")[:3]
+        items += self.get_items_by_name("Progressive Starbase")[:3]
+        items += self.get_items_by_name("Progressive Weapons")[:3]
+        items += self.get_items_by_name("Progressive Defenses")[:2]
         self.collect(items)
         self.assertTrue(self.can_reach_location("Achieve 100k Fleet Power"))
 
@@ -105,13 +111,12 @@ class TestCrisisAccess(StellarisTestBase):
 
     def test_defeat_crisis_requires_top_tier(self) -> None:
         """Defeating the crisis requires top-tier military items."""
-        # Give enough for endgame region access but not crisis-specific requirements
+        # One Progressive Weapons short of the requirement (needs 4)
         items = self.get_items_by_name("Progressive Ship Class")[:4]
         items += self.get_items_by_name("Progressive Starbase")[:3]
-        items += self.get_items_by_name("Progressive Weapons")[:4]
+        items += self.get_items_by_name("Progressive Weapons")[:3]
         items += self.get_items_by_name("Progressive Defenses")[:3]
         self.collect(items)
-        # Need Weapons 5 for crisis, only have 4
         self.assertFalse(self.can_reach_location("Defeat the Endgame Crisis"))
 
     def test_defeat_crisis_accessible(self) -> None:

@@ -36,7 +36,9 @@ def create_regions(world) -> Dict[str, Region]:
     player: int = world.player
     options = world.options
 
-    # Determine which locations are active
+    # Determine which locations are active. Uses the DLC-filtered tech
+    # selection computed in generate_early so locations, items, and
+    # slot_data always agree.
     active_locations = get_locations_for_options(
         include_exploration=bool(options.include_exploration),
         include_diplomacy=bool(options.include_diplomacy),
@@ -49,7 +51,12 @@ def create_regions(world) -> Dict[str, Region]:
         dlc_apocalypse=bool(options.dlc_apocalypse),
         dlc_megacorp=bool(options.dlc_megacorp),
         dlc_overlord=bool(options.dlc_overlord),
-        randomized_techs=set(options.randomized_techs.value),
+        dlc_first_contact=bool(options.dlc_first_contact),
+        dlc_ancient_relics=bool(options.dlc_ancient_relics),
+        dlc_machine_age=bool(options.dlc_machine_age),
+        dlc_distant_stars=bool(options.dlc_distant_stars),
+        dlc_astral_planes=bool(options.dlc_astral_planes),
+        randomized_techs=set(world.effective_randomized_techs),
     )
 
     # Create regions

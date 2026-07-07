@@ -61,7 +61,8 @@ class TestNoDlcGeneration(StellarisTestBase):
         location_count = sum(
             1 for region in self.multiworld.regions
             if region.player == self.player
-            for _ in region.locations
+            for loc in region.locations
+            if loc.address is not None
         )
         item_count = sum(
             1 for item in self.multiworld.itempool
@@ -121,7 +122,8 @@ class TestNoDiplomacy(StellarisTestBase):
         location_count = sum(
             1 for region in self.multiworld.regions
             if region.player == self.player
-            for _ in region.locations
+            for loc in region.locations
+            if loc.address is not None
         )
         item_count = sum(
             1 for item in self.multiworld.itempool

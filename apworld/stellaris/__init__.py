@@ -8,9 +8,10 @@ checks, and receive progressive unlocks from the multiworld.
 from typing import Any, Dict, List
 
 from BaseClasses import ItemClassification, Tutorial
-from Options import OptionGroup
+from Options import OptionError, OptionGroup
 from worlds.AutoWorld import WebWorld, World
 
+from .data.tech_catalog import TECH_CATALOG
 from .items import (
     ALL_ITEMS,
     FILLER_ITEMS,
@@ -22,9 +23,14 @@ from .items import (
 from .locations import ALL_LOCATIONS, StellarisLocation, get_locations_for_options
 from .options import (
     StellarisOptions,
+    DlcAncientRelics,
     DlcApocalypse,
+    DlcAstralPlanes,
+    DlcDistantStars,
     DlcFederations,
+    DlcFirstContact,
     DlcLeviathans,
+    DlcMachineAge,
     DlcMegaCorp,
     DlcNemesis,
     DlcOverlord,
@@ -39,6 +45,7 @@ from .options import (
     IncludeWarfare,
     TrapPercentage,
     TrapsEnabled,
+    enabled_dlcs,
 )
 from .regions import create_regions
 from .rules import set_rules
@@ -115,6 +122,11 @@ class StellarisWebWorld(WebWorld):
             DlcApocalypse,
             DlcMegaCorp,
             DlcOverlord,
+            DlcFirstContact,
+            DlcAncientRelics,
+            DlcMachineAge,
+            DlcDistantStars,
+            DlcAstralPlanes,
         ]),
     ]
 
@@ -204,15 +216,43 @@ class StellarisWorld(World):
 
     def generate_early(self) -> None:
         """Validate options and configure the world."""
+        player_name = self.multiworld.get_player_name(self.player)
+
         if self.options.goal == 2 and not self.options.dlc_utopia:
-            raise Exception(
-                "Goal 'Ascension' requires Utopia DLC to be enabled."
+            raise OptionError(
+                f"Stellaris ({player_name}): Goal 'Ascension' requires "
+                "dlc_utopia to be enabled."
             )
         if self.options.goal == 3 and not self.options.dlc_federations:
-            raise Exception(
-                "Goal 'Galactic Emperor' requires Federations DLC to be enabled."
+            raise OptionError(
+                f"Stellaris ({player_name}): Goal 'Galactic Emperor' requires "
+                "dlc_federations to be enabled."
+            )
+        if self.options.goal == 3 and not self.options.include_diplomacy:
+            raise OptionError(
+                f"Stellaris ({player_name}): Goal 'Galactic Emperor' requires "
+                "include_diplomacy - it needs the Progressive Diplomacy items "
+                "that this toggle removes."
             )
         self.energy_link_enabled = bool(self.options.energy_link_enabled)
+
+        # Resolve the effective randomized-tech selection once: techs whose
+        # DLC toggle is off get no location and no item, so they must also
+        # be excluded from slot_data — otherwise the client blocks the
+        # vanilla tech and the player can never obtain it at all.
+        dlcs = enabled_dlcs(self.options)
+        selected = set(self.options.randomized_techs.value)
+        self.effective_randomized_techs = sorted(
+            t.key for t in TECH_CATALOG if t.key in selected and t.dlc in dlcs
+        )
+        dropped = selected - set(self.effective_randomized_techs)
+        if dropped:
+            import logging
+            logging.getLogger("Stellaris").warning(
+                f"Stellaris ({player_name}): ignoring {len(dropped)} "
+                f"randomized techs from disabled DLCs: {sorted(dropped)[:5]}"
+                f"{'...' if len(dropped) > 5 else ''}"
+            )
 
     def create_regions(self) -> None:
         """Create the region graph and populate with locations."""
@@ -221,6 +261,7 @@ class StellarisWorld(World):
     def create_items(self) -> None:
         """Create the item pool, balanced to match location count."""
         active_items = get_items_for_options(
+            include_exploration=bool(self.options.include_exploration),
             include_diplomacy=bool(self.options.include_diplomacy),
             include_warfare=bool(self.options.include_warfare),
             include_crisis=bool(self.options.include_crisis),
@@ -232,7 +273,12 @@ class StellarisWorld(World):
             dlc_apocalypse=bool(self.options.dlc_apocalypse),
             dlc_megacorp=bool(self.options.dlc_megacorp),
             dlc_overlord=bool(self.options.dlc_overlord),
-            randomized_techs=set(self.options.randomized_techs.value),
+            dlc_first_contact=bool(self.options.dlc_first_contact),
+            dlc_ancient_relics=bool(self.options.dlc_ancient_relics),
+            dlc_machine_age=bool(self.options.dlc_machine_age),
+            dlc_distant_stars=bool(self.options.dlc_distant_stars),
+            dlc_astral_planes=bool(self.options.dlc_astral_planes),
+            randomized_techs=set(self.effective_randomized_techs),
         )
 
         # Count locations
@@ -242,10 +288,15 @@ class StellarisWorld(World):
             for _ in region.locations
         )
 
-        # Add non-filler items
+        # Add progression/useful items. Traps are NOT mandatory pool
+        # entries — they only enter via trap_percentage below, so
+        # trap_percentage: 0 really means zero traps.
         item_pool: List[StellarisItem] = []
         for name, data in active_items.items():
-            if data.classification != ItemClassification.filler:
+            if data.classification in (
+                ItemClassification.progression,
+                ItemClassification.useful,
+            ):
                 for _ in range(data.count):
                     item_pool.append(
                         StellarisItem(name, data.classification, data.code, self.player)
@@ -254,13 +305,26 @@ class StellarisWorld(World):
         # If we have more non-filler items than locations, trim useful items
         if len(item_pool) > total_locations:
             excess = len(item_pool) - total_locations
-            # Remove useful items first (keep progression)
+            # Remove a seeded-random selection of useful items (keep progression)
             useful_indices = [
                 i for i, item in enumerate(item_pool)
                 if item.classification == ItemClassification.useful
             ]
-            for idx in reversed(useful_indices[:excess]):
+            self.random.shuffle(useful_indices)
+            for idx in sorted(useful_indices[:excess], reverse=True):
                 item_pool.pop(idx)
+
+        # Progression items alone must fit — if they don't, fill would
+        # crash with an opaque FillError deep in generation. Fail here
+        # with an actionable message instead.
+        if len(item_pool) > total_locations:
+            raise OptionError(
+                f"Stellaris ({self.multiworld.get_player_name(self.player)}): "
+                f"{len(item_pool)} progression items but only "
+                f"{total_locations} locations. Enable more location "
+                "categories (include_exploration/diplomacy/warfare/crisis), "
+                "more DLC toggles, or randomize more techs."
+            )
 
         # Fill remaining with filler (+ traps if enabled)
         remaining = total_locations - len(item_pool)
@@ -373,9 +437,11 @@ class StellarisWorld(World):
             "energy_link_enabled": self.energy_link_enabled,
             "energy_link_rate": self.options.energy_link_rate.value,
             "galaxy_size": self.options.galaxy_size.value,
-            # Catalog tech keys the player chose to randomize. The bridge
+            # Catalog tech keys the player chose to randomize, minus any
+            # from disabled DLCs (those have no location/item, so blocking
+            # their vanilla tech would make it unobtainable). The bridge
             # uses this to (a) send tech-blocking flags at connect time,
             # (b) build the dynamic ITEM_EFFECT_MAP for "Tech: <X>" items,
             # (c) compute TECH_LOCATION_IDS for the slot.
-            "randomized_techs": sorted(self.options.randomized_techs.value),
+            "randomized_techs": list(self.effective_randomized_techs),
         }

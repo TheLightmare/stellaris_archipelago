@@ -17,19 +17,22 @@ class TestDefaultGeneration(StellarisTestBase):
 
     def test_regions_connected(self) -> None:
         """Regions are connected in the expected linear chain."""
-        menu = self.get_region("Menu")
+        def get_region(name):
+            return self.multiworld.get_region(name, self.player)
+
+        menu = get_region("Menu")
         exit_names = [e.name for e in menu.exits]
         self.assertTrue(len(exit_names) > 0, "Menu must have at least one exit")
 
-        early = self.get_region("Early Game")
+        early = get_region("Early Game")
         early_exit_names = [e.name for e in early.exits]
         self.assertIn("Early to Mid", early_exit_names)
 
-        mid = self.get_region("Mid Game")
+        mid = get_region("Mid Game")
         mid_exit_names = [e.name for e in mid.exits]
         self.assertIn("Mid to Late", mid_exit_names)
 
-        late = self.get_region("Late Game")
+        late = get_region("Late Game")
         late_exit_names = [e.name for e in late.exits]
         self.assertIn("Late to Endgame", late_exit_names)
 
@@ -43,11 +46,13 @@ class TestDefaultGeneration(StellarisTestBase):
         self.assertGreater(location_count, 0)
 
     def test_items_equal_locations(self) -> None:
-        """Item pool count matches location count."""
+        """Item pool count matches location count (excluding event
+        locations — their items are locked in place, not in the pool)."""
         location_count = sum(
             1 for region in self.multiworld.regions
             if region.player == self.player
-            for _ in region.locations
+            for loc in region.locations
+            if loc.address is not None
         )
         item_count = sum(
             1 for item in self.multiworld.itempool

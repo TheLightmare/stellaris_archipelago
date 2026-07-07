@@ -401,6 +401,11 @@ def get_locations_for_options(
     dlc_apocalypse: bool = False,
     dlc_megacorp: bool = False,
     dlc_overlord: bool = False,
+    dlc_first_contact: bool = False,
+    dlc_ancient_relics: bool = False,
+    dlc_machine_age: bool = False,
+    dlc_distant_stars: bool = False,
+    dlc_astral_planes: bool = False,
     randomized_techs: Optional[Iterable[str]] = None,
 ) -> Dict[str, LocationData]:
     """Return the location pool filtered by the player's YAML options.
@@ -424,6 +429,16 @@ def get_locations_for_options(
         enabled_dlcs.add("megacorp")
     if dlc_overlord:
         enabled_dlcs.add("overlord")
+    if dlc_first_contact:
+        enabled_dlcs.add("first_contact")
+    if dlc_ancient_relics:
+        enabled_dlcs.add("ancient_relics")
+    if dlc_machine_age:
+        enabled_dlcs.add("machine_age")
+    if dlc_distant_stars:
+        enabled_dlcs.add("distant_stars")
+    if dlc_astral_planes:
+        enabled_dlcs.add("astral_planes")
 
     # Build the set of catalog Research-X names the player picked.
     if randomized_techs is None:

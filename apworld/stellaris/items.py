@@ -267,6 +267,7 @@ ALL_ITEMS: Dict[str, ItemData] = {
 
 
 def get_items_for_options(
+    include_exploration: bool = True,
     include_diplomacy: bool = True,
     include_warfare: bool = True,
     include_crisis: bool = True,
@@ -278,9 +279,20 @@ def get_items_for_options(
     dlc_apocalypse: bool = False,
     dlc_megacorp: bool = False,
     dlc_overlord: bool = False,
+    dlc_first_contact: bool = False,
+    dlc_ancient_relics: bool = False,
+    dlc_machine_age: bool = False,
+    dlc_distant_stars: bool = False,
+    dlc_astral_planes: bool = False,
     randomized_techs=None,
 ) -> Dict[str, ItemData]:
     """Return the item pool filtered by the player's YAML options.
+
+    Category filtering must mirror get_locations_for_options: every item
+    dropped here must only gate locations that the same toggle drops.
+    Military items (ships/weapons/defenses) are deliberately NEVER
+    filtered — they gate the Early→Mid→Late→Endgame region entrances,
+    so removing them would strand every location regardless of toggles.
 
     ``randomized_techs`` is the set of Stellaris tech keys the player chose
     to randomize. Catalog Tech: items are kept only for those techs; the
@@ -301,6 +313,16 @@ def get_items_for_options(
         enabled_dlcs.add("megacorp")
     if dlc_overlord:
         enabled_dlcs.add("overlord")
+    if dlc_first_contact:
+        enabled_dlcs.add("first_contact")
+    if dlc_ancient_relics:
+        enabled_dlcs.add("ancient_relics")
+    if dlc_machine_age:
+        enabled_dlcs.add("machine_age")
+    if dlc_distant_stars:
+        enabled_dlcs.add("distant_stars")
+    if dlc_astral_planes:
+        enabled_dlcs.add("astral_planes")
 
     if randomized_techs is None:
         selected_tech_items: Optional[Set[str]] = None
@@ -315,13 +337,17 @@ def get_items_for_options(
         # Filter by DLC
         if data.dlc not in enabled_dlcs:
             continue
-        # Filter by category toggles (must match location filtering)
-        if data.group == "diplomacy" and not include_diplomacy:
+        # Filter by category toggles (must match location filtering).
+        # Exploration items (L-Gate Insight, Precursor Unlock,
+        # Progressive FTL) only gate exploration locations.
+        if data.group == "exploration" and not include_exploration:
             continue
-        if data.group == "warfare" and not include_warfare:
+        if data.group == "diplomacy" and not include_diplomacy:
             continue
         if data.group == "crisis" and not include_crisis:
             continue
+        # NOTE: no warfare item filter on purpose — "military"-group items
+        # gate region entrances and crisis rules, not just warfare checks.
         # Traps
         if data.category == ItemCategory.TRAP and not traps_enabled:
             continue
