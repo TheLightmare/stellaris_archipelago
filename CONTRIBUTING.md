@@ -45,6 +45,30 @@ For end-to-end testing, `client/mock_ap_server.py` runs a fake AP server you can
 - [ ] Paradox script files (`*.txt` in `mod-install/`) have balanced braces
 - [ ] No hardcoded paths or personal info in committed files
 
+## CI and Releases
+
+Every push and pull request runs `.github/workflows/ci.yml`: the DLL is
+compiled with MSVC (and checked for accidental dynamic CRT linkage), all
+Python sources are syntax-checked, and the apworld test suite runs
+against a fresh Archipelago checkout.
+
+To cut a release:
+
+```sh
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+`.github/workflows/release.yml` builds the DLL from source, packages
+`stellaris.apworld` and the full player zip via
+`scripts/make_release.py`, and attaches both to an auto-generated
+GitHub release. You can dry-run the packaging locally with
+`python scripts/make_release.py --version vX.Y.Z`.
+
+The committed `dll/prebuilt/version.dll` is for people installing from
+a git clone; refresh it manually after changing `dll/src/`. Release
+zips always contain a freshly CI-built DLL regardless.
+
 ## Reporting Issues
 
 When opening an issue please include:

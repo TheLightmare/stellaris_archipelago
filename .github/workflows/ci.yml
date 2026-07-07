@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+permissions: {}
+
+jobs:
+  build-dll:
+    name: Build bridge DLL (MSVC)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -B dll/build -S dll -A x64
+
+      - name: Build (Release)
+        run: cmake --build dll/build --config Release
+
+      - name: Verify static CRT (no VC++ redistributable dependency)
+        shell: python
+        run: |
+          from pathlib import Path
+          data = Path("dll/build/Release/version.dll").read_bytes().lower()
+          bad = [n for n in (b"vcruntime140", b"msvcp140", b"api-ms-win-crt") if n in data]
+          if bad:
+              raise SystemExit(f"DLL dynamically links the CRT: {bad} — CMAKE_MSVC_RUNTIME_LIBRARY regressed")
+          print("static CRT OK")
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: version.dll
+          path: dll/build/Release/version.dll
+
+  python-syntax:
+    name: Python syntax check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile all Python sources
+        run: |
+          python -m compileall -q client dashboard.py setup.py scripts apworld/stellaris
+
+  apworld-tests:
+    name: apworld unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: repo
+
+      - name: Checkout Archipelago
+        uses: actions/checkout@v4
+        with:
+          repository: ArchipelagoMW/Archipelago
+          ref: main
+          path: Archipelago
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install world into Archipelago
+        run: cp -r repo/apworld/stellaris Archipelago/worlds/stellaris
+
+      - name: Install Archipelago dependencies
+        working-directory: Archipelago
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-xdist
+          python ModuleUpdate.py --yes --force
+          python Launcher.py --update_settings
+
+      - name: Run Stellaris world tests
+        working-directory: Archipelago
+        run: pytest worlds/stellaris/test -n auto
