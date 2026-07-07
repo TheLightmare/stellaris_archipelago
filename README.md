@@ -51,22 +51,23 @@ The apworld exposes the following player options (all configurable per-slot in y
 
 ## Quick Start
 
+One command — installs Python dependencies, the mod, and the bridge DLL
+(a prebuilt binary ships in `dll/prebuilt/`, so no compiler is needed):
+
 ```powershell
-# 1. Install Python dependencies
-pip install websocket-client
-
-# 2. Install the mod
 python setup.py install
-
-# 3. Build and install the DLL (requires CMake + Visual Studio)
-python setup.py build-dll
-python setup.py install-dll
-
-# 4. Check everything is in place
-python setup.py status
 ```
 
-Then launch Stellaris with `-logall` in Steam launch options, enable the mod, and start a new non-ironman game.
+Then:
+
+1. In Steam: right-click Stellaris → Properties → Launch Options: `-logall`
+2. In the Paradox launcher: enable the **Archipelago Multiworld** mod
+3. Start a new non-ironman game
+
+`python setup.py status` shows what's installed at any time. To rebuild
+the DLL from source instead of using the prebuilt one (requires CMake +
+Visual Studio 2022): `python setup.py build-dll && python setup.py install-dll`
+— a fresh local build always takes priority over the prebuilt binary.
 
 ## Dashboard
 
@@ -208,10 +209,11 @@ The suite checks ID stability, item/location counts, region connectivity, fill s
 ## Requirements
 
 - Stellaris (non-ironman, `-logall` launch option)
-- Python 3.10+ with `websocket-client` (`pip install websocket-client`)
+- Python 3.10+ (`setup.py install` fetches the pip dependencies automatically)
 - Windows (for DLL + named pipe)
-- Visual Studio 2022 / MSVC Build Tools (for DLL compilation)
 - Archipelago server (for real multiworld sessions)
+- *Optional:* Visual Studio 2022 / MSVC Build Tools — only needed to
+  rebuild the DLL from source; a prebuilt binary is included
 
 ## Troubleshooting
 

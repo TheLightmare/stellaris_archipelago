@@ -2,14 +2,16 @@
 
 One script to install, build, test, and play.
 
-Usage:
-    python setup.py install         Install the Stellaris mod
-    python setup.py build-dll       Build the DLL (requires MSVC)
-    python setup.py install-dll     Copy built DLL to Stellaris game folder
+Quick start (no compiler needed — uses the prebuilt DLL):
+    python setup.py install         Install everything: deps, mod, DLL
+    python setup.py play --server HOST:PORT --slot YourName
+
+Other commands:
+    python setup.py build-dll       Rebuild the DLL from source (requires MSVC)
+    python setup.py install-dll     Copy the DLL to the Stellaris game folder
     python setup.py check-errors    Check error.log for mod issues
     python setup.py test            Send test items via DLL pipe
     python setup.py mock            Start mock AP server + bridge
-    python setup.py play            Connect to a real AP server
     python setup.py status          Show what's installed and working
 """
 
@@ -51,43 +53,95 @@ def find_stellaris_game_dir() -> Path:
     return _find_game_dir(require="exe")
 
 
+def _ensure_python_deps() -> bool:
+    """Install missing Python dependencies via pip. Returns True if all
+    dependencies are present afterwards."""
+    missing = []
+    try:
+        import websocket  # noqa: F401
+    except ImportError:
+        try:
+            import websockets  # noqa: F401
+        except ImportError:
+            missing.append("websocket-client")
+    if sys.platform == "win32":
+        try:
+            import win32file  # noqa: F401
+        except ImportError:
+            missing.append("pywin32")
+
+    if not missing:
+        print("  Python deps: all installed")
+        return True
+
+    print(f"  Python deps: installing {', '.join(missing)} ...")
+    r = subprocess.run([sys.executable, "-m", "pip", "install", *missing])
+    if r.returncode != 0:
+        print(f"  Python deps: pip failed — install manually: "
+              f"pip install {' '.join(missing)}")
+        return False
+    print("  Python deps: installed")
+    return True
+
+
+def _install_dll_step() -> bool:
+    """Copy the bridge DLL next to stellaris.exe. Prefers a fresh local
+    build, falls back to the prebuilt binary shipped in dll/prebuilt/.
+    Returns True if the DLL is in place."""
+    from ap_paths import find_bridge_dll
+    game_dir = find_stellaris_game_dir()
+    if not game_dir:
+        print("  DLL: Stellaris game directory (with stellaris.exe) not found.")
+        print("       Set STELLARIS_GAME_DIR, or copy dll/prebuilt/version.dll")
+        print("       into the game folder manually.")
+        return False
+
+    dll, source = find_bridge_dll(PROJECT_DIR)
+    if not dll:
+        print("  DLL: no binary found (dll/prebuilt/version.dll missing and none built)")
+        print("       Run: python setup.py build-dll")
+        return False
+
+    dest = game_dir / "version.dll"
+    try:
+        if dest.exists() and dest.read_bytes() == dll.read_bytes():
+            print(f"  DLL: already up to date at {dest}")
+            return True
+        shutil.copy2(dll, dest)
+        print(f"  DLL: installed ({source}) -> {dest}")
+        return True
+    except PermissionError:
+        print(f"  DLL: cannot write {dest} — close Stellaris and re-run")
+        return False
+
+
 def cmd_install():
-    """Install the Stellaris mod."""
+    """One-shot install: Python deps, mod files, and the bridge DLL."""
     stellaris = find_stellaris_user_dir()
     mod_dir = stellaris / "mod" / "archipelago_multiworld"
 
-    print(f"Installing mod to: {mod_dir}")
+    print("=== Stellaris x Archipelago install ===\n")
 
+    deps_ok = _ensure_python_deps()
+
+    print(f"  Mod: installing to {mod_dir}")
     # Copies static mod files, keeping any generated ap_dynamic_* content
     # so a reinstall mid-campaign doesn't wipe the AP techs.
     file_count = install_mod(MOD_SRC, stellaris)
-    print(f"  Copied {file_count} mod files (generated AP techs preserved)")
+    print(f"  Mod: {file_count} files (generated AP techs preserved)")
 
-    # Check DLL
-    game_dir = find_stellaris_game_dir()
-    if game_dir and (game_dir / "version.dll").exists():
-        print(f"  DLL: found at {game_dir / 'version.dll'}")
-    elif game_dir:
-        print(f"  DLL: NOT found at {game_dir}")
-        print(f"       Run: python setup.py build-dll && python setup.py install-dll")
-    else:
-        print(f"  DLL: Stellaris game directory not found automatically")
-        print(f"       Copy dll/build/Release/version.dll to the Stellaris game folder")
+    dll_ok = _install_dll_step()
 
-    # Check Python deps
-    try:
-        import websocket
-        print(f"  websocket-client: installed")
-    except ImportError:
-        try:
-            import websockets
-            print(f"  websockets: installed (sync mode)")
-        except ImportError:
-            print(f"  WebSocket library: NOT installed")
-            print(f"       Run: pip install websocket-client")
-
-    print(f"\nDone! Enable 'Archipelago Multiworld' in the Stellaris launcher.")
-    print(f"Launch Stellaris with: -logall")
+    print("\n=== Next steps ===")
+    step = 1
+    if not deps_ok:
+        print(f"  {step}. Install Python deps: pip install -r requirements.txt"); step += 1
+    if not dll_ok:
+        print(f"  {step}. Get version.dll into the Stellaris game folder (see above)"); step += 1
+    print(f"  {step}. In Steam: right-click Stellaris > Properties > Launch Options: -logall"); step += 1
+    print(f"  {step}. In the Paradox launcher: enable the 'Archipelago Multiworld' mod"); step += 1
+    print(f"  {step}. Play: python setup.py play --server HOST:PORT --slot YourName")
+    print("\n(Or run 'python dashboard.py' for a point-and-click UI.)")
 
 
 def cmd_build_dll():
@@ -125,20 +179,12 @@ def cmd_build_dll():
 
 
 def cmd_install_dll():
-    """Copy built DLL to Stellaris game folder."""
-    dll_path = DLL_DIR / "build" / "Release" / "version.dll"
-    if not dll_path.exists():
-        print(f"DLL not found at {dll_path}")
-        print(f"Run: python setup.py build-dll"); return
+    """Copy the bridge DLL to the Stellaris game folder.
 
-    game_dir = find_stellaris_game_dir()
-    if not game_dir:
-        print("Stellaris game directory not found automatically.")
-        print(f"Copy {dll_path} to your Stellaris game folder manually."); return
-
-    dest = game_dir / "version.dll"
-    shutil.copy2(dll_path, dest)
-    print(f"  Installed: {dest}")
+    Prefers a fresh local build (dll/build/Release), falls back to the
+    prebuilt binary in dll/prebuilt/ so no compiler is required.
+    """
+    _install_dll_step()
 
 
 def cmd_configure(game_dir=None):
@@ -366,12 +412,13 @@ def cmd_status():
     else:
         print(f"  Game dir:  not found automatically")
 
-    # DLL built?
-    built_dll = DLL_DIR / "build" / "Release" / "version.dll"
-    if built_dll.exists():
-        print(f"  DLL build: {built_dll}")
+    # DLL source (local build or shipped prebuilt)?
+    from ap_paths import find_bridge_dll
+    dll_src, source = find_bridge_dll(PROJECT_DIR)
+    if dll_src:
+        print(f"  DLL source: {dll_src} ({source})")
     else:
-        print(f"  DLL build: not built yet")
+        print(f"  DLL source: none (dll/prebuilt/version.dll missing and none built)")
 
     # Python deps
     deps = {"websocket-client": "websocket", "websockets": "websockets", "pywin32": "win32api"}

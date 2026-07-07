@@ -81,9 +81,58 @@ def find_stellaris_user_dir(fallback: bool = False) -> Optional[Path]:
     return best
 
 
+def _steam_library_dirs() -> List[Path]:
+    """Every Steam library on this machine, discovered via the registry.
+
+    Reads Steam's install path from the registry, then parses
+    steamapps/libraryfolders.vdf for additional libraries — this finds
+    installs on any drive without hardcoding paths.
+    """
+    libraries: List[Path] = []
+    steam_root: Optional[Path] = None
+    try:
+        import winreg
+        for hive, key in (
+            (winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam"),
+            (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\Valve\Steam"),
+        ):
+            try:
+                with winreg.OpenKey(hive, key) as k:
+                    value_name = "SteamPath" if hive == winreg.HKEY_CURRENT_USER else "InstallPath"
+                    path, _ = winreg.QueryValueEx(k, value_name)
+                    if path and Path(path).exists():
+                        steam_root = Path(path)
+                        break
+            except OSError:
+                continue
+    except ImportError:
+        pass  # non-Windows
+
+    if steam_root:
+        libraries.append(steam_root)
+        vdf = steam_root / "steamapps" / "libraryfolders.vdf"
+        if vdf.exists():
+            try:
+                import re
+                text = vdf.read_text(encoding="utf-8", errors="replace")
+                for m in re.finditer(r'"path"\s+"([^"]+)"', text):
+                    p = Path(m.group(1).replace("\\\\", "\\"))
+                    if p.exists() and p not in libraries:
+                        libraries.append(p)
+            except Exception as e:
+                logger.debug(f"Could not parse libraryfolders.vdf: {e}")
+    return libraries
+
+
 def _game_dir_candidates() -> List[Path]:
     home = Path.home()
-    return [
+    # Registry-discovered Steam libraries first (authoritative), then the
+    # historical hardcoded fallbacks for non-standard setups.
+    candidates = [
+        lib / "steamapps" / "common" / "Stellaris"
+        for lib in _steam_library_dirs()
+    ]
+    candidates += [
         Path("C:/Program Files (x86)/Steam/steamapps/common/Stellaris"),
         Path("C:/Program Files/Steam/steamapps/common/Stellaris"),
         Path("C:/SteamLibrary/steamapps/common/Stellaris"),
@@ -93,6 +142,15 @@ def _game_dir_candidates() -> List[Path]:
         home / "Steam" / "steamapps" / "common" / "Stellaris",
         home / ".steam" / "steam" / "steamapps" / "common" / "Stellaris",
     ]
+    # De-dup, preserving order.
+    seen = set()
+    unique = []
+    for c in candidates:
+        key = str(c).lower()
+        if key not in seen:
+            seen.add(key)
+            unique.append(c)
+    return unique
 
 
 def find_stellaris_game_dir(require: str = "any") -> Optional[Path]:
@@ -128,3 +186,19 @@ def find_stellaris_game_dir(require: str = "any") -> Optional[Path]:
         if ok(p):
             return p
     return None
+
+
+def find_bridge_dll(repo_root: Path):
+    """Locate the version.dll to install: a fresh local build if the
+    player compiled one, else the prebuilt binary shipped in the repo.
+
+    Returns (path, source) where source is "built" or "prebuilt",
+    or (None, None) if neither exists.
+    """
+    built = repo_root / "dll" / "build" / "Release" / "version.dll"
+    prebuilt = repo_root / "dll" / "prebuilt" / "version.dll"
+    if built.exists():
+        return built, "built"
+    if prebuilt.exists():
+        return prebuilt, "prebuilt"
+    return None, None

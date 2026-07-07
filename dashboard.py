@@ -652,18 +652,27 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
             self._json_response({"error": str(e)}, 500)
 
     def _api_install_dll(self):
-        dll = DLL_DIR / "build" / "Release" / "version.dll"
-        if not dll.exists():
-            self._json_response({"error": "DLL not built yet. Click Build DLL first."}, 400)
+        # A fresh local build takes priority; otherwise fall back to the
+        # prebuilt binary shipped in dll/prebuilt/ so players without
+        # CMake/Visual Studio can still install.
+        from ap_paths import find_bridge_dll
+        dll, source = find_bridge_dll(SCRIPT_DIR)
+        if not dll:
+            self._json_response({"error": "No DLL found (dll/prebuilt/version.dll missing "
+                                          "and nothing built). Click Build DLL first."}, 400)
             return
-        game_dir = find_stellaris_game_dir()
+        # The DLL loads next to stellaris.exe, so require the exe here —
+        # a data-only directory would accept a dump folder the game
+        # never launches from.
+        game_dir = _find_game_dir(require="exe")
         if not game_dir:
-            self._json_response({"error": "Stellaris game directory not found"}, 404)
+            self._json_response({"error": "Stellaris game directory (with stellaris.exe) not found. "
+                                          "Set STELLARIS_GAME_DIR and restart the dashboard."}, 404)
             return
         try:
             dest = game_dir / "version.dll"
             shutil.copy2(dll, dest)
-            self._json_response({"success": True, "path": str(dest)})
+            self._json_response({"success": True, "path": str(dest), "source": source})
         except PermissionError:
             self._json_response({"error": "Permission denied - close Stellaris first"}, 500)
         except Exception as e:

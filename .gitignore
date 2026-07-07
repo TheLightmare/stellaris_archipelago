@@ -35,6 +35,9 @@ dll/Makefile
 dll/*.vcxproj*
 dll/*.sln
 *.dll
+# The one intentionally shipped binary: lets players install without
+# CMake/Visual Studio. Refresh it after changing dll/src/.
+!dll/prebuilt/version.dll
 *.lib
 *.exp
 *.pdb

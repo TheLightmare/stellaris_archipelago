@@ -1,0 +1,4 @@
+# Runtime dependencies for the Stellaris Archipelago client.
+# `python setup.py install` installs these automatically if missing.
+websocket-client>=1.6
+pywin32>=306; sys_platform == "win32"
