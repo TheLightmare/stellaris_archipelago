@@ -2,14 +2,19 @@
 #include "console.h"
 #include "logging.h"
 #include <windows.h>
-#include <thread>
 #include <atomic>
 #include <string>
 #include <sstream>
 
 static const char* PIPE_NAME = "\\\\.\\pipe\\stellaris_archipelago";
 static const DWORD PIPE_BUFFER_SIZE = 4096;
-static std::thread g_serverThread;
+static const DWORD FLUSH_DISPATCH_TIMEOUT_MS = 5000;
+// A raw Win32 handle, deliberately not std::thread: a static std::thread
+// that is still joinable when the CRT runs static destructors at process
+// exit calls std::terminate — i.e. the game would abort on every normal
+// exit while the pipe thread sits in ConnectNamedPipe. A HANDLE has no
+// destructor; the OS reclaims it.
+static HANDLE g_serverThread = nullptr;
 static std::atomic<bool> g_running{false};
 static HANDLE g_pipe = INVALID_HANDLE_VALUE;
 
@@ -43,12 +48,16 @@ static void handle_message(HANDLE pipe, const std::string& message) {
         // Calling it from this thread reliably crashes the game on the
         // first effect. dispatch_flush_on_game_thread() uses SendMessage
         // to marshal the work onto the game thread synchronously.
-        int flushed = dispatch_flush_on_game_thread();
+        // 5s is well under the client's 10s pipe timeout: a busy game
+        // thread yields "OK FLUSHED -1" (queued) rather than a client-side
+        // timeout that looks like a dead pipe.
+        int flushed = dispatch_flush_on_game_thread(FLUSH_DISPATCH_TIMEOUT_MS);
         send_response(pipe, "OK FLUSHED " + std::to_string(flushed));
     } else if (message == "PING") {
         send_response(pipe, console_is_ready() ? "PONG READY" : "PONG NOT_READY");
     } else if (message == "STATUS") {
-        send_response(pipe, console_is_ready() ? "STATUS CONSOLE_READY" : "STATUS CONSOLE_NOT_FOUND");
+        // e.g. "STATUS mode=phase2 ready=1 queued=0 executed=12 failed=0"
+        send_response(pipe, "STATUS " + console_status());
     } else {
         ap_log("Bridge: unknown message: %s", message.c_str());
         send_response(pipe, "ERROR unknown command");
@@ -103,33 +112,42 @@ static void server_loop() {
         // the FLUSH handler above — must marshal to the game thread.
         // If the game window is gone (game shutting down), this returns
         // -1 and we just skip the log.
-        int flushed = dispatch_flush_on_game_thread();
+        int flushed = dispatch_flush_on_game_thread(FLUSH_DISPATCH_TIMEOUT_MS);
         if (flushed > 0) ap_log("Bridge: flushed %d command(s) after client session", flushed);
         if (g_running) { ap_log("Bridge: ready for next client"); }
     }
     ap_log("Bridge: server thread exiting");
 }
 
-bool bridge_start() { if (g_running) return true; g_running = true; g_serverThread = std::thread(server_loop); return true; }
+static DWORD WINAPI server_thread_proc(LPVOID) { server_loop(); return 0; }
+
+bool bridge_start() {
+    if (g_running) return true;
+    g_running = true;
+    g_serverThread = CreateThread(nullptr, 0, server_thread_proc, nullptr, 0, nullptr);
+    if (!g_serverThread) {
+        g_running = false;
+        ap_log("Bridge: CreateThread failed (%lu)", GetLastError());
+        return false;
+    }
+    return true;
+}
 void bridge_stop() {
     g_running = false;
     // Wake a thread blocked in ConnectNamedPipe (waiting for a client).
     HANDLE dummy = CreateFileA(PIPE_NAME, GENERIC_READ|GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, 0, nullptr);
     if (dummy != INVALID_HANDLE_VALUE) CloseHandle(dummy);
-    if (g_serverThread.joinable()) {
+    if (g_serverThread) {
         // Wake a thread blocked in ReadFile (client connected but idle) —
         // the dummy-connect above can't reach it (single-instance pipe
         // reports ERROR_PIPE_BUSY while a client is attached).
-        HANDLE th = (HANDLE)g_serverThread.native_handle();
-        CancelSynchronousIo(th);
-        // Bounded wait: joining without a timeout can deadlock if the
+        CancelSynchronousIo(g_serverThread);
+        // Bounded wait: waiting without a timeout can deadlock if the
         // thread cannot exit (e.g. loader lock held by our caller).
-        if (WaitForSingleObject(th, 3000) == WAIT_OBJECT_0) {
-            g_serverThread.join();
-        } else {
-            ap_log("Bridge: server thread did not exit in 3s — detaching");
-            g_serverThread.detach();
-        }
+        if (WaitForSingleObject(g_serverThread, 3000) != WAIT_OBJECT_0)
+            ap_log("Bridge: server thread did not exit in 3s — abandoning it");
+        CloseHandle(g_serverThread);
+        g_serverThread = nullptr;
     }
     if (g_pipe != INVALID_HANDLE_VALUE) { CloseHandle(g_pipe); g_pipe = INVALID_HANDLE_VALUE; }
     ap_log("Bridge: stopped");

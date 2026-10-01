@@ -1,21 +1,30 @@
 """Stellaris Archipelago Bridge — threaded, no asyncio.
 
-Three threads:
+Three threads per server session:
   1. WebSocket receiver: reads AP server messages -> puts items in a queue
   2. Pipe sender: takes from queue -> sends to DLL pipe (blocking, ~500ms each)
   3. Log tailer: polls game.log -> sends checks to AP server
 
+Delivery model
+--------------
+Console effects only work while a save is loaded. The DLL pipe exists as
+soon as stellaris.exe starts (main menu included), and an effect executed
+at the main menu is silently lost. So the sender only talks to the pipe
+once the mod has *reported in* for the current game process — any AP_*
+line in game.log (the monthly AP_HEARTBEAT, AP_CONNECTED when the player
+accepts the connection popup, or a check). When game.log is recreated
+(Stellaris restarted) the bridge goes back to waiting, and the first
+report from the new process triggers a resync of all persistent state
+(goal flag, tech-blocking flags, EnergyLink flag) before any items.
+
 Usage:
     pip install websocket-client
-    python ap_bridge.py --server localhost:38281 --slot Stellaris
-
-Or with the async websockets lib:
-    pip install websockets
     python ap_bridge.py --server localhost:38281 --slot Stellaris
 """
 
 import json
 import logging
+import math
 import re
 import sys
 import time
@@ -44,6 +53,15 @@ logger = logging.getLogger("APBridge")
 # lives in mod-install/.../ap_item_effects.txt.
 _TECH_ITEM_BASE = 7_491_000  # = 7_471_000 + 20000
 _TECH_LOCATION_BASE = 7_481_000  # = 7_471_000 + 10000
+
+# The "Victory" location. The mod sends it when the player's chosen goal
+# is reached in-game (goals 0-3). For goal 4 (All Checks) the bridge
+# sends it itself once every other location has been checked.
+VICTORY_LOCATION_ID = 7_472_900
+GOAL_ALL_CHECKS = 4
+
+# AP client status codes
+CLIENT_GOAL = 30
 
 
 def _catalog_item_effects() -> Dict[int, str]:
@@ -126,7 +144,6 @@ _STATIC_TECH_LOCATION_IDS: Set[int] = {
     7_472_040,  # Complete a Precursor Chain
     7_472_050,  # Explore the L-Cluster
     7_472_110,  # Research a Rare Tech
-    7_472_120,  # Research Mega-Engineering
     7_472_130,  # Research a Repeatable Tech
     7_472_240,  # Build a Megastructure
     7_472_241,  # Complete a Megastructure
@@ -193,12 +210,12 @@ class WSConnection:
         try:
             import websocket
             lib = "websocket-client"
-            create = lambda: websocket.create_connection(self.url)
+            create = lambda: websocket.create_connection(self.url, timeout=15)
         except ImportError:
             try:
                 import websockets.sync.client
                 lib = "websockets-sync"
-                create = lambda: websockets.sync.client.connect(self.url)
+                create = lambda: websockets.sync.client.connect(self.url, open_timeout=15)
             except (ImportError, AttributeError):
                 logger.error("No WebSocket library found!")
                 logger.error("Install one: pip install websocket-client")
@@ -220,12 +237,20 @@ class WSConnection:
         with self._lock:
             self._ws.send(data)
 
-    def recv(self) -> str:
+    def recv(self, timeout: Optional[float] = None) -> str:
+        """Receive one message. timeout=None blocks until data or close."""
+        if self._lib == "websockets-sync":
+            return self._ws.recv(timeout=timeout)
+        # websocket-client: the timeout lives on the socket.
+        self._ws.settimeout(timeout)
         return self._ws.recv()
 
     def close(self):
         if self._ws:
-            self._ws.close()
+            try:
+                self._ws.close()
+            except Exception:
+                pass
 
 
 # =========================================================================
@@ -248,9 +273,11 @@ class StellarisAPBridge:
         self.player_games: Dict[int, str] = {}
         self.player_id: int = 0
         self.all_locations: list = []
+        self.room_games: List[str] = []
         self.scouted = False
 
-        # EnergyLink
+        # EnergyLink. The pool is stored in EnergyLink units; the YAML
+        # option energy_link_rate is "energy credits per unit".
         self.energy_link_value: Optional[int] = None
         self.energy_link_enabled: bool = False
         self.energy_link_rate: int = 100
@@ -259,6 +286,7 @@ class StellarisAPBridge:
         # Goal selected by the player (from slot_data) — 0=Victory, 1=Crisis Averted,
         # 2=Ascension, 3=Galactic Emperor, 4=All Checks. Defaults to 0 until Connected.
         self.goal: int = 0
+        self._goal_sent = False
 
         # Set of location IDs that should be treated as researchable AP techs.
         # Starts with the static event-style locations (Find Anomalies, etc.)
@@ -291,6 +319,26 @@ class StellarisAPBridge:
         # Stellaris is closed are retried, never dropped.
         self._pending_indices: Set[int] = set()
 
+        # --- Game-session tracking (see module docstring) ---
+        # Set once the mod has written an AP_* line to game.log for the
+        # current Stellaris process; cleared when game.log is recreated.
+        self._game_active = threading.Event()
+        # Persistent country flags that must exist in every save of this
+        # seed: goal, tech blocking, EnergyLink. Re-sent whenever a game
+        # session becomes active, and whenever they change.
+        self._state_effects: List[str] = []
+        self._resync_needed = threading.Event()
+
+        # Logged once per game session: which delivery mode the DLL is in.
+        self._dll_status_logged = False
+
+        # Log tailer position. Lives on the bridge (not the thread) so a
+        # server reconnect never skips lines written during the outage.
+        # None = not initialised; the first pass starts at end-of-file so
+        # a stale log from an earlier campaign is never replayed.
+        self._log_pos: Optional[int] = None
+        self._log_ident = None  # (creation time, inode) of the tailed file
+
     def run(self):
         # Determine candidate URL(s) for the connection.
         # If the user provided a scheme, respect it exactly. Otherwise
@@ -304,6 +352,14 @@ class StellarisAPBridge:
             url_candidates = [f"wss://{self.server}", f"ws://{self.server}"]
 
         working_url: Optional[str] = None
+
+        logger.info(f"Stellaris user dir: {self.stellaris_dir}")
+        logger.info(f"Tailing: {self.log_path}")
+        if not (self.mod_dir / "descriptor.mod").exists():
+            logger.warning(
+                f"The Archipelago mod is not installed at {self.mod_dir} — "
+                "run 'python setup.py install' (or use the dashboard) "
+                "before starting Stellaris.")
 
         while self.running:
             urls = [working_url] if working_url else url_candidates
@@ -321,11 +377,13 @@ class StellarisAPBridge:
 
             threads = []
             try:
-                # Handshake: receive RoomInfo
-                msg = self.ws.recv()
+                # Handshake: receive RoomInfo. A server that accepts the
+                # socket but never speaks must not hang us forever.
+                msg = self.ws.recv(timeout=30)
                 for p in json.loads(msg):
                     if p.get("cmd") == "RoomInfo":
                         seed = p.get("seed_name", "")
+                        self.room_games = list(p.get("games", []) or [])
                         logger.info(f"Room: seed={seed or '?'}")
                         self._set_state_file(seed)
 
@@ -428,6 +486,7 @@ class StellarisAPBridge:
         self.sent_checks = set()
         self.processed_indices = set()
         self._pending_indices = set()
+        self._goal_sent = False
         self._load_state()
 
     def _load_state(self):
@@ -448,8 +507,8 @@ class StellarisAPBridge:
         try:
             with self._state_lock:
                 data = {
-                    "sent_checks": list(self.sent_checks),
-                    "processed_indices": list(self.processed_indices),
+                    "sent_checks": sorted(self.sent_checks),
+                    "processed_indices": sorted(self.processed_indices),
                 }
                 tmp = self._state_file.with_suffix(".json.tmp")
                 tmp.write_text(json.dumps(data))
@@ -493,7 +552,7 @@ class StellarisAPBridge:
             slot_data = packet.get("slot_data", {}) or {}
             self.goal = int(slot_data.get("goal", 0))
             self.energy_link_enabled = bool(slot_data.get("energy_link_enabled", False))
-            self.energy_link_rate = int(slot_data.get("energy_link_rate", 100))
+            self.energy_link_rate = max(1, int(slot_data.get("energy_link_rate", 100)))
 
             # Catalog tech selection — drives Research-X locations and
             # the vanilla-tech blocking flags this slot needs.
@@ -512,18 +571,14 @@ class StellarisAPBridge:
             logger.info(f"Connected as player {self.player_id}")
             logger.info(f"Players: {self.player_names}")
             logger.info(f"Locations: {len(self.all_locations)} ({len(checked)} already checked)")
-            logger.info(f"Goal: {self.goal} | EnergyLink: {self.energy_link_enabled}")
+            logger.info(f"Goal: {self.goal} | EnergyLink: {self.energy_link_enabled} "
+                        f"(rate {self.energy_link_rate} EC/unit)")
             logger.info(f"Randomized techs: {len(self.randomized_techs)} "
                         f"({len(catalog_loc_ids)} catalog Research-X locations)")
 
-            # Push the chosen goal into the mod as a country flag so the mod
-            # can detect the right victory condition for this seed.
-            self.item_queue.put(("raw_effect", f"set_country_flag = ap_goal_{self.goal}"))
-
-            # Push tech-blocking flags so 00_aaa_ap_tech_blocks.txt hides
-            # randomized vanilla techs from the player's research pool.
-            for flag in _catalog_block_flags_for(selected):
-                self.item_queue.put(("raw_effect", f"set_country_flag = {flag}"))
+            # Persistent per-save state. Delivered (and re-delivered on
+            # every new game session) by the sender thread.
+            self._set_state_effects(selected)
 
             # Re-send any checks we have locally that the server doesn't know about
             unsent = self.sent_checks - checked
@@ -531,21 +586,26 @@ class StellarisAPBridge:
                 logger.info(f"Re-sending {len(unsent)} locally-stored checks...")
                 self.ws.send(json.dumps([{
                     "cmd": "LocationChecks",
-                    "locations": list(unsent),
+                    "locations": sorted(unsent),
                 }]))
+            self._check_all_checks_goal()
 
-            # Subscribe to EnergyLink updates
-            self.ws.send(json.dumps([{
-                "cmd": "SetNotify", "keys": [self.energylink_key]
-            }]))
-            # Get current EnergyLink value
-            self.ws.send(json.dumps([{
-                "cmd": "Get", "keys": [self.energylink_key]
-            }]))
-            logger.info(f"EnergyLink: subscribed to {self.energylink_key}")
+            if self.energy_link_enabled:
+                # Subscribe to EnergyLink updates and fetch the current pool
+                self.ws.send(json.dumps([{
+                    "cmd": "SetNotify", "keys": [self.energylink_key]
+                }]))
+                self.ws.send(json.dumps([{
+                    "cmd": "Get", "keys": [self.energylink_key]
+                }]))
+                logger.info(f"EnergyLink: subscribed to {self.energylink_key}")
 
-            # Request DataPackage
-            self.ws.send(json.dumps([{"cmd": "GetDataPackage"}]))
+            # Request the DataPackage — only for games present in this
+            # room; the full package can be tens of MB on big servers.
+            req = {"cmd": "GetDataPackage"}
+            if self.room_games:
+                req["games"] = self.room_games
+            self.ws.send(json.dumps([req]))
 
         elif cmd == "DataPackage":
             for game, gdata in packet.get("data", {}).get("games", {}).items():
@@ -597,8 +657,8 @@ class StellarisAPBridge:
         elif cmd == "SetReply":
             key = packet.get("key", "")
             if key.startswith("EnergyLink"):
-                current = int(packet.get("value", 0))
-                original = int(packet.get("original_value", current))
+                current = int(packet.get("value", 0) or 0)
+                original = int(packet.get("original_value", current) or 0)
                 self.energy_link_value = current
                 # SetReply is broadcast to every SetNotify subscriber, so
                 # this fires for *other* games' deposits/withdrawals too.
@@ -607,10 +667,13 @@ class StellarisAPBridge:
                 is_ours = packet.get("slot") == self.player_id
                 gained = original - current
                 if gained > 0 and is_ours:
-                    logger.info(f"  [energy] EnergyLink: withdrew {gained} EC (pool: {current})")
-                    self._grant_energy(gained)
+                    ec = gained * self.energy_link_rate
+                    logger.info(f"  [energy] EnergyLink: withdrew {gained} unit(s) = {ec} EC (pool: {current})")
+                    self._grant_energy(ec)
+                elif is_ours:
+                    logger.info(f"  [energy] EnergyLink: pool was empty, nothing withdrawn (pool: {current})")
                 elif gained > 0:
-                    logger.info(f"  [energy] EnergyLink: another game withdrew {gained} EC (pool: {current})")
+                    logger.info(f"  [energy] EnergyLink: another game withdrew {gained} unit(s) (pool: {current})")
                 elif original < current:
                     logger.info(f"  [energy] EnergyLink: deposit confirmed (pool: {current})")
 
@@ -619,7 +682,26 @@ class StellarisAPBridge:
             for key, value in keys.items():
                 if key.startswith("EnergyLink"):
                     self.energy_link_value = int(value) if value else 0
-                    logger.info(f"  [energy] EnergyLink pool: {self.energy_link_value} EC")
+                    logger.info(f"  [energy] EnergyLink pool: {self.energy_link_value} unit(s)")
+
+    # ---- Persistent save-state flags ----
+    def _set_state_effects(self, selected: Set[str]):
+        """Compute the country flags every save of this seed must carry
+        and schedule their delivery."""
+        effects = []
+        for g in range(5):
+            if g == self.goal:
+                effects.append(f"set_country_flag = ap_goal_{g}")
+            else:
+                effects.append(f"remove_country_flag = ap_goal_{g}")
+        if self.energy_link_enabled:
+            effects.append("set_country_flag = ap_energy_link")
+        else:
+            effects.append("remove_country_flag = ap_energy_link")
+        # Hide randomized vanilla techs (read by 00_aaa_ap_tech_blocks.txt).
+        effects += [f"set_country_flag = {f}" for f in _catalog_block_flags_for(selected)]
+        self._state_effects = effects
+        self._resync_needed.set()
 
     def _generate_dynamic_techs(self, scouted_locations: list):
         """Build slot data from scouted locations and generate mod files."""
@@ -656,6 +738,12 @@ class StellarisAPBridge:
                 "location_type": loc_type,
             })
 
+        if not (self.mod_dir / "descriptor.mod").exists():
+            logger.error(
+                f"Mod not installed at {self.mod_dir} — generating AP techs "
+                "anyway, but Stellaris won't see them until you run "
+                "'python setup.py install' and enable the mod in the launcher.")
+
         # Generate mod files
         from slot_generator import generate_mod_files, clear_dynamic_files
         clear_dynamic_files(self.mod_dir)
@@ -670,17 +758,20 @@ class StellarisAPBridge:
             logger.info(f"Generated {tech_count} AP techs ({milestone_count} milestones auto-detected)")
             logger.info(f"Blocking {len(blocked_techs)} vanilla techs (sent to other worlds)")
 
-            # Queue blocking flags — these will be sent via pipe when the game runs
-            # Each flag hides the corresponding vanilla tech from the research pool
-            for tech_key in blocked_techs:
-                self.item_queue.put(("raw_effect", f"set_country_flag = ap_tech_blocked_{tech_key}"))
+            # The blocking flags are part of the persistent save state;
+            # make sure anything the generator found is included.
+            extra = set(blocked_techs) - set(self.randomized_techs)
+            if extra:
+                logger.warning(f"Generator blocked {len(extra)} techs missing from slot_data: {sorted(extra)[:5]}")
+                self.randomized_techs = sorted(set(self.randomized_techs) | extra)
+                self._set_state_effects(set(self.randomized_techs))
 
             logger.info("")
             logger.info("=" * 60)
             logger.info("DYNAMIC TECHS GENERATED!")
-            logger.info("Restart Stellaris for the AP techs to appear in-game.")
-            logger.info("After loading, the bridge will send blocking flags to hide")
-            logger.info("vanilla techs that were sent to other worlds.")
+            logger.info("If Stellaris is already running, restart it so the AP techs")
+            logger.info("appear in-game. Keep this bridge running: once you load a")
+            logger.info("save and the mod reports in, it syncs flags and delivers items.")
             logger.info("=" * 60)
             logger.info("")
         else:
@@ -690,13 +781,16 @@ class StellarisAPBridge:
     def _sender_thread(self):
         """Takes items from queue, batches them, sends to DLL pipe.
 
-        A batch that can't be delivered (Stellaris closed, DLL not
-        loaded) is kept and retried — item indices only become
-        "processed" (and are persisted) after a successful pipe write.
+        Nothing is sent until the mod has reported in for the current
+        game process (see module docstring). A batch that can't be
+        delivered (Stellaris closed, DLL not loaded) is kept and
+        retried — item indices only become "processed" (and are
+        persisted) after a successful pipe write.
         """
         logger.info("[send] Sender thread started")
         pending: list = []  # undelivered (kind, ...) messages carried over
         retry_count = 0
+        waiting_logged = False
 
         while self.running and not self._session_stop.is_set():
             # Collect new messages; block briefly only if nothing is pending.
@@ -709,6 +803,32 @@ class StellarisAPBridge:
                     pending.append(self.item_queue.get_nowait())
                 except queue.Empty:
                     break
+
+            if not self._game_active.is_set():
+                if (pending or self._resync_needed.is_set()) and not waiting_logged:
+                    logger.info(
+                        f"[send] {len(pending)} item(s)/effect(s) queued — waiting for "
+                        "Stellaris to report in (load a save with the mod enabled "
+                        "and unpause; the mod checks in at the next monthly tick)")
+                    waiting_logged = True
+                continue
+            waiting_logged = False
+
+            # Persistent flags first, so a fresh save is configured
+            # before any item lands in it.
+            if self._resync_needed.is_set():
+                self._resync_needed.clear()
+                if self._send_batch_to_pipe(self._state_effects, quiet=True):
+                    logger.info(f"[send] Save state synced ({len(self._state_effects)} flag(s))")
+                else:
+                    self._resync_needed.set()
+                    if retry_count % 12 == 0:
+                        logger.warning("  -> PIPE unavailable for state sync, retrying every 5s "
+                                       "(is Stellaris running with version.dll?)")
+                    retry_count += 1
+                    self._session_stop.wait(timeout=5)
+                    continue
+
             if not pending:
                 continue
 
@@ -725,6 +845,7 @@ class StellarisAPBridge:
                     if effect:
                         effects.append(f"{effect} = yes")
                     else:
+                        logger.warning(f"  -> Unknown item id {item_id}; setting flag ap_item_{item_id}")
                         effects.append(f"set_country_flag = ap_item_{item_id}")
 
             if self._send_batch_to_pipe(effects):
@@ -752,7 +873,7 @@ class StellarisAPBridge:
                 self._pending_indices.discard(msg[1])
         logger.info("[send] Sender thread ended")
 
-    def _send_batch_to_pipe(self, effects: list) -> bool:
+    def _send_batch_to_pipe(self, effects: list, quiet: bool = False) -> bool:
         """Send a batch of effects in a single pipe connection.
 
         Returns True only if every effect was written to the pipe.
@@ -769,132 +890,231 @@ class StellarisAPBridge:
         if not pipe.connect():
             return False
         try:
+            if not self._dll_status_logged:
+                self._log_dll_status(pipe.status())
             for effect_cmd in effects:
                 if not pipe.send_effect(effect_cmd):
                     logger.warning(f"  -> PIPE: write failed at '{effect_cmd}', will retry batch")
                     return False
             flushed = pipe.flush_commands()
-            logger.info(f"  -> PIPE: {len(effects)} effect(s) sent, {flushed} flushed")
-            for e in effects:
-                logger.info(f"    {e}")
+            if flushed < 0:
+                # Queued in the DLL but not executed yet (game thread busy
+                # or window not hooked). The DLL's timer drains it; count
+                # the batch as delivered.
+                logger.info(f"  -> PIPE: {len(effects)} effect(s) queued in DLL (deferred execution)")
+            else:
+                logger.info(f"  -> PIPE: {len(effects)} effect(s) sent, {flushed} flushed")
+            if not quiet:
+                for e in effects:
+                    logger.info(f"    {e}")
             return True
         finally:
             pipe.disconnect()
+
+    def _log_dll_status(self, status):
+        """Tell the player which delivery mode the DLL ended up in."""
+        self._dll_status_logged = True
+        if not status:
+            logger.warning("  -> DLL did not answer STATUS (old build?) — delivery may still work")
+            return
+        mode = status.get("mode")
+        summary = " ".join(f"{k}={v}" for k, v in status.items())
+        if mode == "phase2":
+            logger.info(f"  -> DLL: direct engine calls active ({summary})")
+        elif mode == "phase1":
+            logger.warning(f"  -> DLL: engine patterns did not match this Stellaris build; "
+                           f"using the SendInput fallback, which types into the game console "
+                           f"({summary}). Items still arrive but the game window may flicker. "
+                           f"A DLL update for this game version is needed.")
+        else:
+            logger.warning(f"  -> DLL: console not ready ({summary}); check archipelago_dll.log "
+                           f"next to stellaris.exe")
+
+    def _on_game_log_reset(self):
+        self._dll_status_logged = False
+        self._on_game_log_reset_impl()
 
     def _grant_energy(self, amount: int):
         """Grant energy credits in-game from EnergyLink withdrawal."""
         self.item_queue.put(("raw_effect", f"add_resource = {{ energy = {amount} }}"))
 
     # ---- Thread 3: Log tailer ----
-    def _log_thread(self):
-        """Polls game.log for AP_CHECK lines."""
-        logger.info(f"[log] Tailer started: {self.log_path}")
-        RE_CHECK = re.compile(r"AP_CHECK\|(\d+)\|(.+)")
-        RE_GOAL = re.compile(r"AP_GOAL_COMPLETE")
-        RE_DEPOSIT = re.compile(r"AP_ENERGY_DEPOSIT\|(\d+)")
-        RE_WITHDRAW = re.compile(r"AP_ENERGY_WITHDRAW\|(\d+)")
+    # Only lines the mod writes count. The prefix must stand alone —
+    # engine lines like "MAP_..." must never be mistaken for the mod.
+    RE_AP_LINE = re.compile(
+        rb"(?<![A-Za-z0-9_])AP_(?:CHECK|GOAL_COMPLETE|ENERGY_DEPOSIT|"
+        rb"ENERGY_WITHDRAW|HEARTBEAT|CONNECTED|DEBUG)(?![A-Za-z0-9])")
+    RE_CHECK = re.compile(r"(?<![A-Za-z0-9_])AP_CHECK\|(\d+)\|(.+)")
+    RE_GOAL = re.compile(r"(?<![A-Za-z0-9_])AP_GOAL_COMPLETE")
+    RE_DEPOSIT = re.compile(r"(?<![A-Za-z0-9_])AP_ENERGY_DEPOSIT\|(\d+)")
+    RE_WITHDRAW = re.compile(r"(?<![A-Za-z0-9_])AP_ENERGY_WITHDRAW\|(\d+)")
 
-        pos = self.log_path.stat().st_size if self.log_path.exists() else 0
+    @staticmethod
+    def _file_identity(st):
+        # On Windows st_ctime is the creation time (st_birthtime from 3.12).
+        return (getattr(st, "st_birthtime", st.st_ctime), st.st_ino)
+
+    def _on_game_log_reset_impl(self):
+        """game.log was recreated: Stellaris was restarted."""
+        if self._game_active.is_set():
+            logger.info("[log] game.log reset — Stellaris restarted; waiting for the mod to report in")
+        self._game_active.clear()
+
+    def _mark_game_active(self):
+        """The mod wrote something: a save with the mod is loaded."""
+        if not self._game_active.is_set():
+            self._game_active.set()
+            self._resync_needed.set()
+            logger.info("[log] Stellaris is in-game (mod reported in) — syncing flags and delivering items")
+
+    def _log_thread(self):
+        """Polls game.log for AP_* lines written by the mod."""
+        logger.info(f"[log] Tailer started: {self.log_path}")
 
         while self.running and not self._session_stop.is_set():
             try:
                 if not self.log_path.exists():
-                    time.sleep(1)
+                    if self._log_pos is None:
+                        self._log_pos = 0
+                    self._session_stop.wait(timeout=1)
                     continue
 
-                size = self.log_path.stat().st_size
-                if size < pos:
-                    logger.info("[log] File reset")
-                    pos = 0
-                if size <= pos:
-                    time.sleep(0.5)
+                st = self.log_path.stat()
+                ident = self._file_identity(st)
+                if self._log_pos is None:
+                    # First look: skip whatever an earlier campaign logged.
+                    self._log_pos = st.st_size
+                    self._log_ident = ident
+                elif st.st_size < self._log_pos or ident != self._log_ident:
+                    self._log_pos = 0
+                    self._log_ident = ident
+                    self._on_game_log_reset()
+
+                if st.st_size <= self._log_pos:
+                    self._session_stop.wait(timeout=0.5)
                     continue
 
-                with open(self.log_path, "r", encoding="utf-8", errors="replace") as f:
-                    f.seek(pos)
-                    for line in f:
-                        if "AP_" not in line:
-                            continue
-                        m = RE_CHECK.search(line)
-                        if m:
-                            loc_id = int(m.group(1))
-                            loc_name = m.group(2).strip()
-                            if loc_id not in self.sent_checks:
-                                logger.info(f"  -> CHECK: {loc_name} (ID={loc_id})")
-                                # Send first, record after: if the send
-                                # throws, pos is never advanced past this
-                                # line, so it's re-read and re-sent on the
-                                # next pass / after reconnect instead of
-                                # being marked sent-but-lost.
-                                self.ws.send(json.dumps([{
-                                    "cmd": "LocationChecks",
-                                    "locations": [loc_id],
-                                }]))
-                                self.sent_checks.add(loc_id)
-                                self._save_state()
-
-                                # Goal 4 (All Checks): if every location is now sent,
-                                # the player has completed their goal.
-                                if (
-                                    self.goal == 4
-                                    and self.all_locations
-                                    and set(self.all_locations).issubset(self.sent_checks)
-                                ):
-                                    logger.info("  [goal] ALL CHECKS COMPLETE — goal satisfied!")
-                                    self.ws.send(json.dumps([{
-                                        "cmd": "StatusUpdate",
-                                        "status": 30,
-                                    }]))
-                        if RE_GOAL.search(line):
-                            logger.info("  [goal] GOAL COMPLETE!")
-                            self.ws.send(json.dumps([{
-                                "cmd": "StatusUpdate",
-                                "status": 30,
-                            }]))
-                        md = RE_DEPOSIT.search(line)
-                        if md:
-                            amount = int(md.group(1))
-                            logger.info(f"  [energy] EnergyLink deposit: {amount} EC")
-                            # 1 Stellaris EC = 1 AP EnergyLink unit (1:1 with Factorio)
-                            self.ws.send(json.dumps([{
-                                "cmd": "Set",
-                                "key": self.energylink_key,
-                                "default": 0,
-                                "want_reply": False,
-                                "operations": [
-                                    {"operation": "add", "value": amount}
-                                ]
-                            }]))
-                        mw = RE_WITHDRAW.search(line)
-                        if mw:
-                            amount = int(mw.group(1))
-                            pool = self.energy_link_value or 0
-                            if pool <= 0:
-                                logger.info(f"  [energy] EnergyLink: pool empty, cannot withdraw")
-                                continue
-                            # Withdraw up to what's available
-                            withdraw = min(amount, pool)
-                            logger.info(f"  [energy] EnergyLink withdraw: requesting {withdraw} EC (pool: {pool})")
-                            self.ws.send(json.dumps([{
-                                "cmd": "Set",
-                                "key": self.energylink_key,
-                                "default": 0,
-                                "want_reply": True,
-                                # Echoed back in SetReply so we can tell our
-                                # own withdrawal apart from other games'.
-                                "slot": self.player_id,
-                                "operations": [
-                                    {"operation": "add", "value": -withdraw},
-                                    {"operation": "max", "value": 0},
-                                ],
-                            }]))
-                    pos = f.tell()
+                with open(self.log_path, "rb") as f:
+                    f.seek(self._log_pos)
+                    while self.running and not self._session_stop.is_set():
+                        raw = f.readline()
+                        if not raw or not raw.endswith(b"\n"):
+                            break  # EOF, or a line Stellaris is still writing
+                        if self.RE_AP_LINE.search(raw):
+                            line = raw.decode("utf-8", errors="replace")
+                            # Handled before advancing: if a send raises,
+                            # the line is re-read after reconnect.
+                            self._handle_log_line(line)
+                        self._log_pos += len(raw)
 
             except Exception as e:
                 logger.error(f"[log] Error: {e}")
-                time.sleep(1)
+                self._session_stop.wait(timeout=1)
 
         logger.info("[log] Tailer ended")
+
+    def _handle_log_line(self, line: str):
+        self._mark_game_active()
+
+        m = self.RE_CHECK.search(line)
+        if m:
+            loc_id = int(m.group(1))
+            loc_name = m.group(2).strip()
+            if loc_id not in self.sent_checks:
+                logger.info(f"  -> CHECK: {loc_name} (ID={loc_id})")
+                self._send_checks([loc_id])
+                self._check_all_checks_goal()
+            return
+
+        if self.RE_GOAL.search(line):
+            self._send_goal_complete()
+            return
+
+        md = self.RE_DEPOSIT.search(line)
+        if md:
+            self._energy_deposit(int(md.group(1)))
+            return
+
+        mw = self.RE_WITHDRAW.search(line)
+        if mw:
+            self._energy_withdraw(int(mw.group(1)))
+            return
+
+    def _send_checks(self, loc_ids: List[int]):
+        """Send location checks; record them only once the send succeeded."""
+        self.ws.send(json.dumps([{
+            "cmd": "LocationChecks",
+            "locations": list(loc_ids),
+        }]))
+        self.sent_checks.update(loc_ids)
+        self._save_state()
+
+    def _send_goal_complete(self):
+        if self._goal_sent:
+            return
+        logger.info("  [goal] GOAL COMPLETE!")
+        self.ws.send(json.dumps([{"cmd": "StatusUpdate", "status": CLIENT_GOAL}]))
+        self._goal_sent = True
+
+    def _check_all_checks_goal(self):
+        """Goal 4 (All Checks): the mod can't know the location pool, so the
+        bridge decides. Once every location except Victory is checked, the
+        bridge sends Victory itself and reports the goal."""
+        if self.goal != GOAL_ALL_CHECKS or not self.all_locations or self._goal_sent:
+            return
+        required = set(self.all_locations) - {VICTORY_LOCATION_ID}
+        if not required.issubset(self.sent_checks):
+            return
+        logger.info("  [goal] ALL CHECKS COMPLETE — goal satisfied!")
+        if VICTORY_LOCATION_ID in self.all_locations and VICTORY_LOCATION_ID not in self.sent_checks:
+            self._send_checks([VICTORY_LOCATION_ID])
+        self._send_goal_complete()
+
+    def _energy_deposit(self, amount_ec: int):
+        if not self.energy_link_enabled:
+            logger.warning(f"  [energy] EnergyLink is disabled for this slot — refunding {amount_ec} EC")
+            self._grant_energy(amount_ec)
+            return
+        units = amount_ec // self.energy_link_rate
+        if units <= 0:
+            logger.warning(f"  [energy] Deposit of {amount_ec} EC is below one unit "
+                           f"({self.energy_link_rate} EC) — refunding")
+            self._grant_energy(amount_ec)
+            return
+        logger.info(f"  [energy] EnergyLink deposit: {amount_ec} EC = {units} unit(s)")
+        self.ws.send(json.dumps([{
+            "cmd": "Set",
+            "key": self.energylink_key,
+            "default": 0,
+            "want_reply": False,
+            "operations": [{"operation": "add", "value": units}],
+        }]))
+
+    def _energy_withdraw(self, amount_ec: int):
+        if not self.energy_link_enabled:
+            logger.warning("  [energy] EnergyLink is disabled for this slot — withdraw ignored")
+            return
+        # Always ask the server: the "max 0" operation below clamps the
+        # pool at zero, and the SetReply reports how much was actually
+        # taken. Our cached pool value is only a hint (it can be stale).
+        pool = self.energy_link_value
+        withdraw = max(1, math.ceil(amount_ec / self.energy_link_rate))
+        logger.info(f"  [energy] EnergyLink withdraw: requesting {withdraw} unit(s) "
+                    f"= {withdraw * self.energy_link_rate} EC "
+                    f"(pool: {'unknown' if pool is None else pool})")
+        self.ws.send(json.dumps([{
+            "cmd": "Set",
+            "key": self.energylink_key,
+            "default": 0,
+            "want_reply": True,
+            # Echoed back in SetReply so we can tell our own withdrawal
+            # apart from other games'.
+            "slot": self.player_id,
+            "operations": [
+                {"operation": "add", "value": -withdraw},
+                {"operation": "max", "value": 0},
+            ],
+        }]))
 
 
 def main():

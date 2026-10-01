@@ -103,10 +103,42 @@ def find_top_level_potential(block: str) -> Optional[re.Match]:
     return None
 
 
+def load_global_vars(game_dir: Path) -> Dict[str, str]:
+    """@variables from common/scripted_variables (visible to every file)."""
+    out: Dict[str, str] = {}
+    sv_dir = game_dir / "common" / "scripted_variables"
+    if sv_dir.exists():
+        for sv_file in sorted(sv_dir.glob("*.txt")):
+            try:
+                out.update(extract_local_vars(
+                    sv_file.read_text(encoding="utf-8-sig", errors="replace")))
+            except Exception:
+                pass
+    return out
+
+
+def resolve_number(value: str, local_vars: Dict[str, str],
+                   global_vars: Dict[str, str], depth: int = 0) -> Optional[int]:
+    """Resolve a literal or @variable (possibly chained) to an int."""
+    value = value.strip().strip('"')
+    if depth > 8:
+        return None
+    if value.startswith("@"):
+        ref = local_vars.get(value, global_vars.get(value))
+        if ref is None:
+            return None
+        return resolve_number(ref, local_vars, global_vars, depth + 1)
+    try:
+        return int(float(value))
+    except ValueError:
+        return None
+
+
 def parse_tech_files(game_dir: Path) -> Dict[str, dict]:
     """Parse all technology files and extract metadata."""
     tech_dir = game_dir / "common" / "technology"
     techs = {}
+    global_vars = load_global_vars(game_dir)
 
     for tech_file in sorted(tech_dir.glob("*.txt")):
         # Skip repeatable techs (infinite, not suitable for randomization)
@@ -118,6 +150,7 @@ def parse_tech_files(game_dir: Path) -> Dict[str, dict]:
         except Exception as e:
             logger.warning(f"Could not read {tech_file.name}: {e}")
             continue
+        local_vars = extract_local_vars(content)
 
         # Determine DLC from filename
         dlc = None
@@ -157,17 +190,19 @@ def parse_tech_files(game_dir: Path) -> Dict[str, dict]:
             # Parse metadata
             tier_m = re.search(r'\btier\s*=\s*(\d+)', block)
             area_m = re.search(r'\barea\s*=\s*(\w+)', block)
-            cost_m = re.search(r'\bcost\s*=\s*(\d+)', block)
-            cost_var_m = re.search(r'\bcost\s*=\s*@tier(\d+)cost', block)
+            cost_m = re.search(r'\bcost\s*=\s*(@?[\w.]+)', block)
 
-            if cost_m:
-                cost = int(cost_m.group(1))
-            elif cost_var_m:
-                # Approximate cost from tier variable: @tier1cost ≈ 500, etc.
-                tier_ref = int(cost_var_m.group(1))
-                cost = max(500, tier_ref * 600)
-            else:
-                cost = 0
+            # Vanilla writes "cost = @tier2cost3"; the value lives in
+            # common/scripted_variables (or the file itself). Resolve it
+            # so generated AP techs cost exactly what the vanilla tech did.
+            cost = resolve_number(cost_m.group(1), local_vars, global_vars) if cost_m else None
+            if cost is None:
+                cost_var_m = re.search(r'\bcost\s*=\s*@tier(\d+)cost', block)
+                if cost_var_m:
+                    tier_ref = int(cost_var_m.group(1))
+                    cost = max(500, tier_ref * 600)
+                else:
+                    cost = 0
             cat_m = re.search(r'\bcategory\s*=\s*\{\s*(\w+)', block)
             prereq_m = re.search(r'prerequisites\s*=\s*\{([^}]*)\}', block)
             start_m = re.search(r'\bstart_tech\s*=\s*yes', block)
@@ -325,15 +360,7 @@ def generate_overrides(techs: Dict[str, dict], game_dir: Path, mod_dir: Path):
         file_contents[tech_file.name] = content
         file_vars[tech_file.name] = extract_local_vars(content)
 
-    global_vars: Dict[str, str] = {}
-    sv_dir = game_dir / "common" / "scripted_variables"
-    if sv_dir.exists():
-        for sv_file in sv_dir.glob("*.txt"):
-            try:
-                global_vars.update(extract_local_vars(
-                    sv_file.read_text(encoding="utf-8-sig", errors="replace")))
-            except Exception:
-                pass
+    global_vars = load_global_vars(game_dir)
 
     output_lines = [
         "# ==========================================================================",

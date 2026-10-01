@@ -4,6 +4,8 @@
 #include "logging.h"
 #include <windows.h>
 
+static const char* BRIDGE_VERSION = "0.5";
+
 static volatile LONG g_init_started = 0;
 static HWND g_gameWindow = nullptr;
 static WNDPROC g_originalWndProc = nullptr;
@@ -38,10 +40,6 @@ static LRESULT CALLBACK AP_WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         return 0;
     }
     if (msg == WM_AP_FLUSH) {
-        // Marker so the DLL log proves this code path is live. If you
-        // ever stop seeing this line when the bridge sends FLUSH, either
-        // the DLL wasn't rebuilt or the game window hook was lost.
-        ap_log("Bridge: WM_AP_FLUSH received on game thread");
         return (LRESULT)console_process_queue();
     }
     return g_windowIsUnicode
@@ -49,11 +47,7 @@ static LRESULT CALLBACK AP_WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         : CallWindowProcA(g_originalWndProc, hwnd, msg, wp, lp);
 }
 
-// Public entry point used by bridge.cpp's FLUSH handler.
-// Returns the number of commands flushed, or -1 if the game window
-// hasn't been hooked yet (commands stay queued; the timer will pick
-// them up once the window is found).
-int dispatch_flush_on_game_thread() {
+int dispatch_flush_on_game_thread(DWORD timeout_ms) {
     HWND hwnd = g_gameWindow;
     if (!hwnd) {
         ap_log("Bridge: dispatch_flush requested but no game window yet — "
@@ -63,45 +57,84 @@ int dispatch_flush_on_game_thread() {
     // Bounded dispatch: a plain SendMessage blocks this (pipe) thread
     // forever if the game thread isn't pumping messages (loading screen,
     // autosave stall, shutdown). On timeout the commands stay queued and
-    // the WM_TIMER tick drains them later.
+    // the WM_TIMER tick drains them later. The timeout is deliberately
+    // shorter than the Python client's pipe I/O timeout so the client
+    // gets a definite "queued" answer instead of giving up on the pipe.
     DWORD_PTR result = 0;
     LRESULT ok = g_windowIsUnicode
-        ? SendMessageTimeoutW(hwnd, WM_AP_FLUSH, 0, 0, SMTO_ABORTIFHUNG | SMTO_NORMAL, 10000, &result)
-        : SendMessageTimeoutA(hwnd, WM_AP_FLUSH, 0, 0, SMTO_ABORTIFHUNG | SMTO_NORMAL, 10000, &result);
+        ? SendMessageTimeoutW(hwnd, WM_AP_FLUSH, 0, 0, SMTO_ABORTIFHUNG | SMTO_NORMAL, timeout_ms, &result)
+        : SendMessageTimeoutA(hwnd, WM_AP_FLUSH, 0, 0, SMTO_ABORTIFHUNG | SMTO_NORMAL, timeout_ms, &result);
     if (!ok) {
-        ap_log("Bridge: flush dispatch timed out — game thread busy; "
-               "commands stay queued for the timer tick");
+        ap_log("Bridge: flush dispatch timed out after %lu ms — game thread busy; "
+               "commands stay queued for the timer tick", timeout_ms);
         return -1;
     }
     return (int)result;
 }
+
+// ---------------------------------------------------------------------
+// Game window discovery
+// ---------------------------------------------------------------------
+
+struct WindowSearch {
+    HWND titled = nullptr;   // visible window of this process with "Stellaris" in the title
+    HWND fallback = nullptr; // any visible, non-console top-level window of this process
+};
+
 static BOOL CALLBACK find_game_window(HWND hwnd, LPARAM lParam) {
+    auto* search = reinterpret_cast<WindowSearch*>(lParam);
     DWORD pid; GetWindowThreadProcessId(hwnd, &pid);
     if (pid != GetCurrentProcessId() || !IsWindowVisible(hwnd)) return TRUE;
+    if (GetWindow(hwnd, GW_OWNER) != nullptr) return TRUE; // owned popups/tooltips
+    char cls[256]; GetClassNameA(hwnd, cls, sizeof(cls));
+    if (strcmp(cls, "ConsoleWindowClass") == 0) return TRUE;
     char title[256]; GetWindowTextA(hwnd, title, sizeof(title));
-    if (strstr(title, "Stellaris")) {
-        char cls[256]; GetClassNameA(hwnd, cls, sizeof(cls));
-        if (strcmp(cls, "ConsoleWindowClass") != 0) { *reinterpret_cast<HWND*>(lParam) = hwnd; return FALSE; }
-    }
+    if (strstr(title, "Stellaris")) { search->titled = hwnd; return FALSE; }
+    if (!search->fallback) search->fallback = hwnd;
     return TRUE;
 }
 
-static DWORD WINAPI deferred_init_thread(LPVOID) {
+static HWND wait_for_game_window() {
+    // Prefer the window titled "Stellaris". If the title ever changes
+    // (localisation, a version suffix the strstr still catches, a rename)
+    // accept any visible top-level window of ours after a grace period
+    // rather than never hooking at all.
+    const int TOTAL_WAIT_MS = 120000, FALLBACK_AFTER_MS = 20000, STEP_MS = 500;
+    for (int waited = 0; waited < TOTAL_WAIT_MS; waited += STEP_MS) {
+        WindowSearch s;
+        EnumWindows(find_game_window, (LPARAM)&s);
+        if (s.titled) return s.titled;
+        if (s.fallback && waited >= FALLBACK_AFTER_MS) {
+            char title[256] = {}; GetWindowTextA(s.fallback, title, sizeof(title));
+            ap_log("Deferred init: no window titled 'Stellaris' after %ds; using '%s'",
+                   waited / 1000, title);
+            return s.fallback;
+        }
+        Sleep(STEP_MS);
+    }
+    return nullptr;
+}
+
+// ---------------------------------------------------------------------
+// Deferred initialisation (runs on its own thread, outside the loader lock)
+// ---------------------------------------------------------------------
+
+static DWORD deferred_init_body() {
     Sleep(3000);
     ap_log("Deferred init: starting...");
     if (!console_init()) ap_log("Deferred init: console_init failed");
     bridge_start();
     ap_log("Deferred init: waiting for game window...");
-    HWND hwnd = nullptr;
-    for (int i = 0; i < 120; i++) { EnumWindows(find_game_window, (LPARAM)&hwnd); if (hwnd) break; Sleep(500); }
-    if (!hwnd) { ap_log("Deferred init: game window not found after 60s"); return 1; }
+    HWND hwnd = wait_for_game_window();
+    if (!hwnd) { ap_log("Deferred init: game window not found after 120s"); return 1; }
     g_gameWindow = hwnd;
-    // Log whether the window is Unicode or ANSI — we need to use the
-    // matching SetWindowLongPtrW/A variant to subclass it cleanly.
+
+    char cls[256] = {}; GetClassNameA(hwnd, cls, sizeof(cls));
+    char title[256] = {}; GetWindowTextA(hwnd, title, sizeof(title));
     BOOL isUnicode = IsWindowUnicode(hwnd);
     g_windowIsUnicode = (isUnicode != FALSE);
-    ap_log("Deferred init: found game window %p (%s)",
-           (void*)hwnd, isUnicode ? "Unicode" : "ANSI");
+    ap_log("Deferred init: found game window %p '%s' class '%s' (%s)",
+           (void*)hwnd, title, cls, isUnicode ? "Unicode" : "ANSI");
 
     // Subclass the WndProc. Use SetLastError(0) before so we can
     // distinguish "previous WndProc was 0" (impossible for a normal
@@ -123,12 +156,10 @@ static DWORD WINAPI deferred_init_thread(LPVOID) {
                "GetLastError=%lu (0x%08lX)", err, err);
         ap_log("Deferred init: queue draining is BROKEN — bridge effects "
                "will be queued but never executed");
+        g_gameWindow = nullptr;
         return 2;
     }
     if (!prev) {
-        // Returned 0, GetLastError 0. Theoretically possible if the
-        // previous WndProc literally was 0, but that doesn't happen in
-        // practice for a real window. Treat as suspect.
         ap_log("Deferred init: WARNING — SetWindowLongPtr returned 0 with "
                "no error. Subclass may not be fully installed.");
     }
@@ -143,8 +174,19 @@ static DWORD WINAPI deferred_init_thread(LPVOID) {
         ap_log("Deferred init: WndProc subclassed and %dms timer armed",
                AP_TICK_MS);
     }
-    ap_log("Deferred init: complete — bridge is operational");
+    ap_log("Deferred init: complete — bridge is operational (%s)", console_status().c_str());
     return 0;
+}
+
+// SEH wrapper (no C++ objects here): an unexpected fault during init must
+// show up in the log, not as an unexplained game crash a few seconds in.
+static DWORD WINAPI deferred_init_thread(LPVOID) {
+    __try {
+        return deferred_init_body();
+    } __except (EXCEPTION_EXECUTE_HANDLER) {
+        ap_log("Deferred init: CRASHED with exception 0x%08lX — bridge disabled", GetExceptionCode());
+        return 3;
+    }
 }
 
 void trigger_deferred_init() {
@@ -152,6 +194,7 @@ void trigger_deferred_init() {
         ap_log("Triggering deferred init (first proxy call)...");
         HANDLE h = CreateThread(nullptr, 0, deferred_init_thread, nullptr, 0, nullptr);
         if (h) CloseHandle(h);
+        else ap_log("ERROR: CreateThread for deferred init failed (%lu)", GetLastError());
     }
 }
 
@@ -159,20 +202,15 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
     switch (reason) {
     case DLL_PROCESS_ATTACH:
         DisableThreadLibraryCalls(hModule);
-        ap_log_init();
-        ap_log("=== Stellaris Archipelago Bridge DLL v0.4 (FLUSH-marshal + diagnostics) ===");
-        if (!proxy_init()) { ap_log("FATAL: proxy_init failed"); return FALSE; }
-        ap_log("DllMain complete (init will trigger on first proxy call)");
-        // NOTE: do NOT call trigger_deferred_init() from here. CreateThread
-        // from inside DllMain is technically permitted but causes the new
-        // thread's DLL_THREAD_ATTACH notifications to fire while Stellaris's
-        // loader is still mid-initialization for us, which can crash the
-        // process with STATUS_STACK_BUFFER_OVERRUN (0xC0000409). The proxy
-        // exports below all trigger init on first call, which is the safe
-        // path — by then DllMain has long since returned and the loader
-        // lock is fully released. Every proxied export in proxy.cpp must
-        // call trigger_deferred_init() so we don't depend on Stellaris
-        // calling any one specific export first.
+        ap_log_init(hModule);
+        ap_log("=== Stellaris Archipelago Bridge DLL v%s ===", BRIDGE_VERSION);
+        ap_log("DllMain complete (real version.dll loads lazily; init triggers on first proxy call)");
+        // NOTE: nothing else happens here on purpose. LoadLibrary and
+        // CreateThread are both unsafe under the loader lock. The real
+        // version.dll is loaded on the first proxied call (proxy.cpp), and
+        // that same call starts the deferred init thread. Every proxied
+        // export does both, so we don't depend on Stellaris calling any
+        // one specific function first.
         break;
     case DLL_PROCESS_DETACH:
         // reserved != nullptr means the process is terminating: every

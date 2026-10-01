@@ -101,11 +101,8 @@ ap_send_check_rare_tech = {
     set_country_flag = ap_check_cat_tech
     country_event = { id = ap_check.100 }
 }
-ap_send_check_mega_engineering = {
-    log = "AP_CHECK|7472120|Research Mega-Engineering"
-    set_country_flag = ap_check_cat_tech
-    country_event = { id = ap_check.100 }
-}
+# (removed) ap_send_check_mega_engineering — "Research Mega-Engineering" is
+# now a catalog Research-X location generated per seed by slot_generator.
 ap_send_check_repeatable = {
     log = "AP_CHECK|7472130|Research a Repeatable Tech"
     set_country_flag = ap_check_cat_tech

@@ -69,6 +69,12 @@ def _ensure_python_deps() -> bool:
             import win32file  # noqa: F401
         except ImportError:
             missing.append("pywin32")
+    # Only the local mock server needs this one; it's tiny, so install it
+    # up front rather than failing the first time someone clicks Start Mock.
+    try:
+        import websockets  # noqa: F401
+    except ImportError:
+        missing.append("websockets")
 
     if not missing:
         print("  Python deps: all installed")
@@ -132,16 +138,38 @@ def cmd_install():
 
     dll_ok = _install_dll_step()
 
+    # Steam launch option and launcher playset: automatic when the
+    # owning program is closed, otherwise print the manual steps.
+    import game_setup
+    lo = game_setup.launch_options_status()
+    if lo.get("configured"):
+        print(f"  Steam:     -logall launch option already set")
+        logall_ok = True
+    else:
+        r = game_setup.set_launch_option()
+        logall_ok = bool(r.get("success"))
+        print(f"  Steam:     {'-logall launch option set' if logall_ok else r.get('error')}")
+    ls = game_setup.launcher_status(stellaris)
+    if ls.get("enabled"):
+        print(f"  Launcher:  mod enabled in playset '{ls.get('playset')}'")
+        launcher_ok = True
+    else:
+        r = game_setup.enable_mod_in_launcher(stellaris)
+        launcher_ok = bool(r.get("success"))
+        print(f"  Launcher:  {'mod enabled in playset ' + repr(r.get('playset')) if launcher_ok else r.get('error')}")
+
     print("\n=== Next steps ===")
     step = 1
     if not deps_ok:
         print(f"  {step}. Install Python deps: pip install -r requirements.txt"); step += 1
     if not dll_ok:
         print(f"  {step}. Get version.dll into the Stellaris game folder (see above)"); step += 1
-    print(f"  {step}. In Steam: right-click Stellaris > Properties > Launch Options: -logall"); step += 1
-    print(f"  {step}. In the Paradox launcher: enable the 'Archipelago Multiworld' mod"); step += 1
+    if not logall_ok:
+        print(f"  {step}. {game_setup.MANUAL_LAUNCH_OPTION_STEPS}"); step += 1
+    if not launcher_ok:
+        print(f"  {step}. {game_setup.MANUAL_ENABLE_MOD_STEPS}"); step += 1
     print(f"  {step}. Play: python setup.py play --server HOST:PORT --slot YourName")
-    print("\n(Or run 'python dashboard.py' for a point-and-click UI.)")
+    print("\n(Or double-click 'Stellaris Archipelago.bat' for a point-and-click UI.)")
 
 
 def cmd_build_dll():
@@ -250,7 +278,12 @@ def cmd_test():
     if not p.connect():
         print("Could not connect to DLL pipe. Is Stellaris running with the DLL?"); return
 
-    print(f"Connected: {p.ping()}\n")
+    print(f"Connected: {p.ping()}")
+    status = p.status() or {}
+    print(f"DLL status: {' '.join(f'{k}={v}' for k, v in status.items()) or 'unknown'}")
+    if status.get("mode") == "phase1":
+        print("  (SendInput fallback: engine signatures don't match this game build)")
+    print()
     tests = [
         ("Energy +1000", "add_resource = { energy = 1000 }"),
         ("Minerals +500", "add_resource = { minerals = 500 }"),
@@ -277,16 +310,17 @@ def cmd_mock():
     stellaris = find_stellaris_user_dir()
     mod_dir = stellaris / "mod" / "archipelago_multiworld"
 
+    # Catalog Research-X IDs: 7_481_000 + offset (see tech_catalog.py)
     test_slots = [
         {"location_id": 7472000, "location_name": "Survey 5 Systems",
          "item_name": "Mothwing Cloak", "player_name": "Alice",
          "game": "Hollow Knight", "classification": "progression",
          "is_own_item": False, "location_type": "milestone"},
-        {"location_id": 7474010, "location_name": "Research Robotic Workers",
+        {"location_id": 7481437, "location_name": "Research Robotic Workers",
          "item_name": "Mantis Claw", "player_name": "Alice",
          "game": "Hollow Knight", "classification": "progression",
          "is_own_item": False, "location_type": "tech"},
-        {"location_id": 7474020, "location_name": "Research Droids",
+        {"location_id": 7481170, "location_name": "Research Droids",
          "item_name": "Crystal Heart", "player_name": "Alice",
          "game": "Hollow Knight", "classification": "progression",
          "is_own_item": False, "location_type": "tech"},
@@ -321,7 +355,8 @@ def cmd_play(server: str, slot: str, password: str = ""):
 
     print(f"\nConnecting to {server} as '{slot}'...")
     print(f"The bridge will auto-generate AP techs on connect.")
-    print(f"After it says 'DYNAMIC TECHS GENERATED', restart Stellaris.\n")
+    print(f"After it says 'DYNAMIC TECHS GENERATED', (re)start Stellaris and load")
+    print(f"your save. Items are delivered once the mod reports in (next monthly tick).\n")
 
     # Run the bridge
     os.chdir(CLIENT_DIR)
@@ -348,11 +383,14 @@ def cmd_uninstall():
         mod_file.unlink()
         print(f"  Removed: {mod_file}")
 
-    for name in ["ap_tech_config.json", "ap_tech_data.py", "ap_bridge_state.json", "ap_bridge_commands.txt"]:
-        f = stellaris / name
+    leftovers = [stellaris / n for n in
+                 ["ap_tech_config.json", "ap_tech_data.py", "ap_tech_selection.json",
+                  "ap_bridge_commands.txt"]]
+    leftovers += sorted(stellaris.glob("ap_bridge_state*.json*"))
+    for f in leftovers:
         if f.exists():
             f.unlink()
-            print(f"  Removed: {name}")
+            print(f"  Removed: {f.name}")
 
     if game_dir:
         dll = game_dir / "version.dll"
@@ -429,14 +467,27 @@ def cmd_status():
         except ImportError:
             print(f"  {name}: NOT installed")
 
-    # State file
-    state = stellaris / "ap_bridge_state.json"
-    if state.exists():
-        import json
-        data = json.loads(state.read_text())
-        print(f"  AP state:  {len(data.get('sent_checks', []))} checks, {len(data.get('processed_indices', []))} items")
+    # State files (one per seed+slot the bridge has joined)
+    import json
+    states = sorted(stellaris.glob("ap_bridge_state*.json"))
+    if states:
+        for state in states:
+            try:
+                data = json.loads(state.read_text())
+                print(f"  AP state:  {state.name}: {len(data.get('sent_checks', []))} checks, "
+                      f"{len(data.get('processed_indices', []))} items")
+            except Exception as e:
+                print(f"  AP state:  {state.name}: unreadable ({e})")
     else:
         print(f"  AP state:  no saved state")
+
+    # Is the game currently writing a log the bridge can tail?
+    game_log = stellaris / "logs" / "game.log"
+    if game_log.exists():
+        age = time.time() - game_log.stat().st_mtime
+        print(f"  game.log:  {game_log.stat().st_size:,} bytes, last written {int(age)}s ago")
+    else:
+        print(f"  game.log:  not found (start Stellaris once with -logall)")
 
     # Error log
     error_log = stellaris / "logs" / "error.log"
@@ -460,19 +511,26 @@ Commands:
   check-errors    Check error.log for mod issues
   test            Send test items via DLL pipe
   mock            Set up for local testing with mock server
-  play            Connect to a real AP server
+  play            Connect to a real AP server (--server HOST:PORT --slot NAME)
   status          Show installation status
   uninstall       Remove all installed files
+  check           Verify apworld/client/mod ID and name coherence (developers)
         """
     )
     parser.add_argument("command",
         choices=["install", "build-dll", "install-dll", "configure", "apply-config",
-                 "check-errors", "test", "mock", "play", "status", "uninstall"])
-    parser.add_argument("--server", default="localhost:38281", help="AP server address")
-    parser.add_argument("--slot", default="Stellaris", help="Slot name")
+                 "check-errors", "test", "mock", "play", "status", "uninstall", "check"])
+    parser.add_argument("--server", default=None, help="AP server address (host:port)")
+    parser.add_argument("--slot", default=None, help="Slot name")
     parser.add_argument("--password", default="", help="Room password")
     parser.add_argument("--game-dir", type=Path, default=None, help="Stellaris game directory (for tech scanning)")
     args = parser.parse_args()
+
+    if args.command == "play":
+        # Silently connecting to localhost with slot "Stellaris" is the
+        # most confusing possible failure for a real session — insist.
+        if not args.server or not args.slot:
+            parser.error("play requires --server HOST:PORT and --slot YourSlotName")
 
     if args.command == "install":
         cmd_install()
@@ -496,6 +554,9 @@ Commands:
         cmd_status()
     elif args.command == "uninstall":
         cmd_uninstall()
+    elif args.command == "check":
+        r = subprocess.run([sys.executable, str(PROJECT_DIR / "scripts" / "check_coherence.py")])
+        sys.exit(r.returncode)
 
 
 if __name__ == "__main__":

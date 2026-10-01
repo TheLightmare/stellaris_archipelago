@@ -97,6 +97,33 @@ LOCATION_TO_VANILLA_TECH = {
 TIMING_TO_TIER = {"early": 1, "mid": 2, "late": 3, "endgame": 4}
 
 
+def tech_key_for(location_id: int) -> str:
+    """The generated tech key for an AP location.
+
+    Derived from the location ID rather than a list index so it is
+    stable across reconnects: the server returns scouted locations in a
+    different order once some are checked, and the per-tech sent flags
+    and researched-tech entries live in the player's save file.
+    """
+    return f"ap_slot_{int(location_id)}"
+
+
+def loc_text(text: str) -> str:
+    """Make arbitrary multiworld text safe inside a Stellaris loc string.
+
+    Item and player names come from other games and can contain
+    characters the Clausewitz loc parser treats as markup: §/£ colour
+    codes, [bracket] commands, $variables$ and quotes.
+    """
+    out = str(text)
+    for bad, good in (
+        ('"', "'"), ("§", ""), ("£", ""), ("[", "("), ("]", ")"),
+        ("$", ""), ("\\", "/"), ("\n", " "), ("\r", ""), ("\t", " "),
+    ):
+        out = out.replace(bad, good)
+    return out
+
+
 def generate_mod_files(
     slot_data: List[Dict],
     mod_dir: Path,
@@ -120,6 +147,18 @@ def generate_mod_files(
         logger.warning("No slot data to generate files from")
         return None
 
+    # Clausewitz tech keys/filenames can't carry two slots for one
+    # location; the server never sends duplicates, but be defensive.
+    seen_ids = set()
+    deduped = []
+    for s in slot_data:
+        lid = int(s["location_id"])
+        if lid in seen_ids:
+            continue
+        seen_ids.add(lid)
+        deduped.append(s)
+    slot_data = deduped
+
     tech_lines = []
     loc_lines = []
     effect_lines = []
@@ -142,8 +181,10 @@ def generate_mod_files(
 
     # Filter to only "tech" type locations - milestones are handled
     # by ap_check_detection.txt and fire automatically during gameplay
-    tech_slots = [s for s in slot_data
-                  if s.get("location_type", "tech") == "tech"]
+    tech_slots = sorted(
+        (s for s in slot_data if s.get("location_type", "tech") == "tech"),
+        key=lambda s: int(s["location_id"]),
+    )
     milestone_slots = [s for s in slot_data
                        if s.get("location_type", "tech") == "milestone"]
 
@@ -154,15 +195,16 @@ def generate_mod_files(
         )
 
     for i, slot in enumerate(tech_slots):
-        loc_id = slot["location_id"]
+        loc_id = int(slot["location_id"])
         loc_name = slot["location_name"]
-        item_name = slot["item_name"]
-        recipient = slot.get("player_name", "Someone")
-        game = slot.get("game", "Unknown Game")
+        item_name = loc_text(slot["item_name"])
+        recipient = loc_text(slot.get("player_name", "Someone"))
+        game = loc_text(slot.get("game", "Unknown Game"))
         classification = slot.get("classification", "filler")
         is_own = slot.get("is_own_item", False)
 
-        tech_key = f"ap_slot_{i}"
+        tech_key = tech_key_for(loc_id)
+        sent_flag = f"{tech_key}_sent"
 
         # Look up vanilla tech data for this location
         vanilla_key = LOCATION_TO_VANILLA_TECH.get(loc_name)
@@ -218,7 +260,7 @@ def generate_mod_files(
         tech_lines.append(f"")
         tech_lines.append(f"\tpotential = {{")
         tech_lines.append(f"\t\thas_country_flag = ap_connected")
-        tech_lines.append(f"\t\tNOT = {{ has_country_flag = ap_slot_{i}_sent }}")
+        tech_lines.append(f"\t\tNOT = {{ has_country_flag = {sent_flag} }}")
         tech_lines.append(f"\t}}")
         tech_lines.append(f"")
         tech_lines.append(f"\tweight_modifier = {{")
@@ -261,18 +303,18 @@ def generate_mod_files(
                 f"The results have been §Ytransmitted§! across the dimensional barrier.\\n\\n"
                 f"Sent: {item_color}{item_name}§! to §Y{recipient}§! ({game})"
             )
-        loc_lines.append(f' ap_slot_check.{i}.name:0 "Discovery Transmitted!"')
-        loc_lines.append(f' ap_slot_check.{i}.desc:0 "{check_desc}"')
-        loc_lines.append(f' ap_slot_check.{i}.a:0 "For the multiverse!"')
+        loc_lines.append(f' ap_slot_check.{loc_id}.name:0 "Discovery Transmitted!"')
+        loc_lines.append(f' ap_slot_check.{loc_id}.desc:0 "{check_desc}"')
+        loc_lines.append(f' ap_slot_check.{loc_id}.a:0 "For the multiverse!"')
 
         # --- Per-slot check event ---
         event_lines.append(f"country_event = {{")
-        event_lines.append(f"    id = ap_slot_check.{i}")
+        event_lines.append(f"    id = ap_slot_check.{loc_id}")
         event_lines.append(f"    is_triggered_only = yes")
-        event_lines.append(f"    title = ap_slot_check.{i}.name")
-        event_lines.append(f"    desc = ap_slot_check.{i}.desc")
+        event_lines.append(f"    title = ap_slot_check.{loc_id}.name")
+        event_lines.append(f"    desc = ap_slot_check.{loc_id}.desc")
         event_lines.append(f"    picture = GFX_evt_satellite_in_orbit")
-        event_lines.append(f"    option = {{ name = ap_slot_check.{i}.a }}")
+        event_lines.append(f"    option = {{ name = ap_slot_check.{loc_id}.a }}")
         event_lines.append(f"}}")
         event_lines.append(f"")
 
@@ -280,9 +322,9 @@ def generate_mod_files(
         # NOTE: Does NOT grant the vanilla tech - that tech was "sent to
         # another world" and must come from another player's progress.
         effect_lines.append(f"ap_on_research_{tech_key} = {{")
-        effect_lines.append(f'\tset_country_flag = ap_slot_{i}_sent')
+        effect_lines.append(f'\tset_country_flag = {sent_flag}')
         effect_lines.append(f'\tlog = "AP_CHECK|{loc_id}|{loc_name}"')
-        effect_lines.append(f"\tcountry_event = {{ id = ap_slot_check.{i} }}")
+        effect_lines.append(f"\tcountry_event = {{ id = ap_slot_check.{loc_id} }}")
         effect_lines.append(f"}}")
         effect_lines.append(f"")
 
@@ -290,6 +332,11 @@ def generate_mod_files(
     # Uses has_technology instead of last_increased_tech because dynamic
     # tech keys may not be recognized at event parse time.
     # Runs monthly - catches any tech completion reliably.
+    #
+    # It also re-logs every check already sent from this save. The bridge
+    # deduplicates, so this costs nothing — but it means a check made
+    # while the bridge was down (or before it was started) is picked up
+    # at the next monthly tick instead of being lost forever.
     event_lines.append("# Monthly: detect completed AP slot techs and send checks")
     event_lines.append("country_event = {")
     event_lines.append("    id = ap_slot.1")
@@ -302,14 +349,20 @@ def generate_mod_files(
     event_lines.append("    }")
     event_lines.append("")
     event_lines.append("    immediate = {")
-    for i, slot in enumerate(tech_slots):
-        tech_key = f"ap_slot_{i}"
+    for slot in tech_slots:
+        loc_id = int(slot["location_id"])
+        tech_key = tech_key_for(loc_id)
+        sent_flag = f"{tech_key}_sent"
         event_lines.append(f"        if = {{")
         event_lines.append(f"            limit = {{")
         event_lines.append(f"                has_technology = {tech_key}")
-        event_lines.append(f"                NOT = {{ has_country_flag = ap_slot_{i}_sent }}")
+        event_lines.append(f"                NOT = {{ has_country_flag = {sent_flag} }}")
         event_lines.append(f"            }}")
         event_lines.append(f"            ap_on_research_{tech_key} = yes")
+        event_lines.append(f"        }}")
+        event_lines.append(f"        if = {{")
+        event_lines.append(f"            limit = {{ has_country_flag = {sent_flag} }}")
+        event_lines.append(f'            log = "AP_CHECK|{loc_id}|{slot["location_name"]}"')
         event_lines.append(f"        }}")
     event_lines.append("    }")
     event_lines.append("}")
@@ -348,8 +401,8 @@ def generate_mod_files(
         source_icon = icon_dir / "ap_slot_tech.dds"
         if source_icon.exists():
             import shutil
-            for i in range(len(tech_slots)):
-                dest = icon_dir / f"ap_slot_{i}.dds"
+            for slot in tech_slots:
+                dest = icon_dir / f"{tech_key_for(slot['location_id'])}.dds"
                 shutil.copy2(source_icon, dest)
             logger.info(f"Copied tech icon for {len(tech_slots)} slot techs")
         else:

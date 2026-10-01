@@ -11,7 +11,7 @@ from BaseClasses import ItemClassification, Tutorial
 from Options import OptionError, OptionGroup
 from worlds.AutoWorld import WebWorld, World
 
-from .data.tech_catalog import TECH_CATALOG
+from .data.tech_catalog import TECH_CATALOG, item_name as _tech_item_name
 from .items import (
     ALL_ITEMS,
     FILLER_ITEMS,
@@ -48,7 +48,7 @@ from .options import (
     enabled_dlcs,
 )
 from .regions import create_regions
-from .rules import set_rules
+from .rules import gating_tech_keys, set_rules
 
 
 class StellarisWebWorld(WebWorld):
@@ -213,6 +213,8 @@ class StellarisWorld(World):
     # Internal state
     _regions: Dict = {}
     energy_link_enabled: bool = False
+    effective_randomized_techs: List[str] = []
+    progression_tech_items: set = set()
 
     def generate_early(self) -> None:
         """Validate options and configure the world."""
@@ -253,6 +255,15 @@ class StellarisWorld(World):
                 f"randomized techs from disabled DLCs: {sorted(dropped)[:5]}"
                 f"{'...' if len(dropped) > 5 else ''}"
             )
+
+        # A randomized tech that is a vanilla prerequisite of another
+        # randomized tech gates that tech's location, so its "Tech: X"
+        # item must be progression for fill to guarantee reachability.
+        by_key = {t.key: t for t in TECH_CATALOG}
+        self.progression_tech_items = {
+            _tech_item_name(by_key[k])
+            for k in gating_tech_keys(self.effective_randomized_techs)
+        }
 
     def create_regions(self) -> None:
         """Create the region graph and populate with locations."""
@@ -298,17 +309,18 @@ class StellarisWorld(World):
                 ItemClassification.useful,
             ):
                 for _ in range(data.count):
-                    item_pool.append(
-                        StellarisItem(name, data.classification, data.code, self.player)
-                    )
+                    item_pool.append(self.create_item(name))
 
-        # If we have more non-filler items than locations, trim useful items
+        # If we have more non-filler items than locations, trim useful
+        # items. Never trim a "Tech: X" item: its vanilla tech is blocked
+        # in-game and the item is the only way to ever obtain it, so
+        # dropping it would make that tech permanently unobtainable.
         if len(item_pool) > total_locations:
             excess = len(item_pool) - total_locations
-            # Remove a seeded-random selection of useful items (keep progression)
             useful_indices = [
                 i for i, item in enumerate(item_pool)
                 if item.classification == ItemClassification.useful
+                and ALL_ITEMS[item.name].group != "randomized_techs"
             ]
             self.random.shuffle(useful_indices)
             for idx in sorted(useful_indices[:excess], reverse=True):
@@ -355,7 +367,8 @@ class StellarisWorld(World):
 
     def set_rules(self) -> None:
         """Set access rules and completion condition using events."""
-        set_rules(self._regions, self.player, self.options)
+        set_rules(self._regions, self.player, self.options,
+                  self.effective_randomized_techs)
 
         goal = self.options.goal.value
 
@@ -424,7 +437,10 @@ class StellarisWorld(World):
         """Create an item by name. Required by AP framework."""
         item_data = ALL_ITEMS.get(name)
         if item_data:
-            return StellarisItem(name, item_data.classification, item_data.code, self.player)
+            classification = item_data.classification
+            if name in getattr(self, "progression_tech_items", ()):
+                classification = ItemClassification.progression
+            return StellarisItem(name, classification, item_data.code, self.player)
         raise KeyError(f"No item named '{name}' in Stellaris")
 
     def get_filler_item_name(self) -> str:

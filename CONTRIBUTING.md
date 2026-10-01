@@ -22,9 +22,11 @@ The four layers have to agree on ID and name boundaries:
 - **Item IDs** in `apworld/stellaris/items.py` must match `ITEM_EFFECT_MAP` in `client/ap_bridge.py`, and every effect name in that map must be defined in `mod-install/.../scripted_effects/ap_item_effects.txt`.
 - **Location IDs and names** in `apworld/stellaris/locations.py` must match the `AP_CHECK|<id>|<name>` lines in `mod-install/.../scripted_effects/ap_bridge_log.txt`. The name on both sides has to be byte-identical.
 - **Tech-type locations** (the ones the bridge turns into AP-tech research entries) are listed in `TECH_LOCATION_IDS` in `client/ap_bridge.py`. Anything not in that set is treated as a milestone and detected by the static mod files.
-- **Goal flags** (`ap_goal_0` through `ap_goal_4`) are pushed by the bridge based on `slot_data["goal"]`. The mod's `ap_check_victory_condition` keys off these.
+- **Goal flags** (`ap_goal_0` through `ap_goal_4`) are pushed by the bridge based on `slot_data["goal"]`. The mod's `ap_check_victory_condition` keys off these, and every goal branch must call `ap_send_check_victory` so the Victory location is sent.
+- **Catalog techs** live in `apworld/stellaris/data/tech_catalog.py`; `client/tech_catalog.py` must be a byte-identical mirror (apart from its header). Offsets are permanent — never renumber.
+- **Resync**: `mod-install/.../scripted_effects/ap_resync.txt` is generated from the detection/sender tables. After editing `ap_check_detection.txt` or `ap_bridge_log.txt`, run `python scripts/check_coherence.py --write`.
 
-When making a change, run the apworld's test suite *and* the cross-reference checks under `apworld/stellaris/test/` to catch ID/name drift early.
+When making a change, run the apworld's test suite *and* `python scripts/check_coherence.py` (also `python setup.py check`). The script verifies every one of the rules above without needing an Archipelago checkout, and CI runs it on every push.
 
 ## Testing
 
@@ -39,7 +41,7 @@ For end-to-end testing, `client/mock_ap_server.py` runs a fake AP server you can
 ## Pull Request Checklist
 
 - [ ] All tests under `apworld/stellaris/test/` pass
-- [ ] No new ID/name mismatches between layers (the apworld tests catch most)
+- [ ] `python scripts/check_coherence.py` passes (no ID/name drift between layers)
 - [ ] If you added or changed locations/items, the mod's senders/effects were updated to match
 - [ ] If you added a goal type, the bridge sets the right `ap_goal_N` flag and the mod has a matching detection branch
 - [ ] Paradox script files (`*.txt` in `mod-install/`) have balanced braces
@@ -49,8 +51,8 @@ For end-to-end testing, `client/mock_ap_server.py` runs a fake AP server you can
 
 Every push and pull request runs `.github/workflows/ci.yml`: the DLL is
 compiled with MSVC (and checked for accidental dynamic CRT linkage), all
-Python sources are syntax-checked, and the apworld test suite runs
-against a fresh Archipelago checkout.
+Python sources are syntax-checked, the cross-layer coherence script runs,
+and the apworld test suite runs against a fresh Archipelago checkout.
 
 To cut a release:
 

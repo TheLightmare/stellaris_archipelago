@@ -189,6 +189,27 @@ class PipeClient:
         """Check if the bridge is alive. Returns status string or None."""
         return self.send_command("PING")
 
+    def status(self) -> Optional[dict]:
+        """DLL state: {"mode": "phase2"|"phase1"|"none", "ready": "1",
+        "queued": "0", "executed": "12", "failed": "0"}. None on failure.
+
+        mode=phase2 is the direct engine call; phase1 means the DLL fell
+        back to SendInput (patterns didn't match — usually a game update).
+        """
+        response = self.send_command("STATUS")
+        if not response or not response.startswith("STATUS"):
+            return None
+        out = {}
+        for token in response.split()[1:]:
+            if "=" in token:
+                k, v = token.split("=", 1)
+                out[k] = v
+            else:
+                # Older DLL builds: "STATUS CONSOLE_READY"
+                out.setdefault("mode", "unknown")
+                out["legacy"] = token
+        return out
+
     def set_flag(self, flag_name: str) -> bool:
         """Set a country flag on the player's empire."""
         return self.send_effect(f"set_country_flag = {flag_name}")
@@ -246,6 +267,9 @@ class FallbackPipeClient:
         return False
 
     def ping(self):
+        return None
+
+    def status(self):
         return None
 
     def set_flag(self, flag_name: str) -> bool:

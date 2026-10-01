@@ -14,7 +14,7 @@ Trade discoveries with players in other games. Your milestones and tech research
 
 ## Goals
 
-Pick how you want to "win" the seed. The bridge reads your choice from `slot_data` and pushes it to the mod as a country flag at connection time, and the mod fires `AP_GOAL_COMPLETE` when the matching condition is met:
+Pick how you want to "win" the seed. The bridge reads your choice from `slot_data` and pushes it to the mod as a country flag, and the mod fires `AP_GOAL_COMPLETE` when the matching condition is met. Whichever goal you pick, reaching it also sends the **Victory** location (it exists in every seed):
 
 | Option | Completion Condition | Notes |
 |---|---|---|
@@ -22,7 +22,17 @@ Pick how you want to "win" the seed. The bridge reads your choice from `slot_dat
 | `crisis_averted` | Defeat the endgame crisis | Requires Progressive Ship Class ×4, Progressive Weapons ×4, Progressive Defenses ×3 |
 | `ascension` | Complete any ascension path (Bio / Synth / Psi) | Requires Utopia DLC |
 | `galactic_emperor` | Form the Galactic Imperium | Requires Federations DLC |
-| `all_checks` | Send every location in the pool | Detected client-side by the bridge |
+| `all_checks` | Send every other location in the pool | Detected client-side; the bridge then sends Victory itself |
+
+## Tech Randomization
+
+Beyond the fixed milestones, any vanilla technology from the catalog (598 techs) can be randomized via the `randomized_techs` YAML option (pick them in the dashboard's **Tech Config** tab). Each selected tech:
+
+- is hidden from your research pool and replaced by an AP tech that sits at the same spot in the tree (same tier, area, prerequisites and cost);
+- becomes a `Research <Tech>` location — researching the AP tech sends the check;
+- becomes a `Tech: <Tech>` item somewhere in the multiworld — receiving it is the only way to get the vanilla tech's effects.
+
+If a randomized tech is a prerequisite of another randomized tech, the generator's logic knows the `Tech:` item for the prerequisite must come first, so seeds are never left uncompletable.
 
 ## Options
 
@@ -42,48 +52,48 @@ The apworld exposes the following player options (all configurable per-slot in y
 - `traps_enabled` — Whether trap items appear in the pool
 - `trap_percentage` — Share of filler slots filled with traps (0–100)
 - `energy_link_enabled` — Shared energy pool with other connected games
-- `energy_link_rate` — Stellaris-EC ↔ EnergyLink-unit conversion rate
+- `energy_link_rate` — Energy credits per EnergyLink unit (default 100)
+- `randomized_techs` — Vanilla techs to randomize (see Tech Randomization)
 
 **DLC** (each toggles whether DLC-specific content appears)
 - `dlc_utopia` (on by default — base game content as of 4.0)
 - `dlc_federations`, `dlc_nemesis`, `dlc_leviathans`
 - `dlc_apocalypse`, `dlc_megacorp`, `dlc_overlord`
 
-## Quick Start
+## Quick Start (no terminal needed)
 
-One command — installs Python dependencies, the mod, and the bridge DLL
-(a prebuilt binary ships in `dll/prebuilt/`, so no compiler is needed):
+1. Install [Python 3](https://www.python.org/downloads/windows/) if you don't have it — tick **"Add python.exe to PATH"** in the installer.
+2. Unzip the player package and double-click **`Stellaris Archipelago.bat`**. A dashboard opens in your browser.
+3. On the **Setup** tab click **Set up everything**. It installs the Python packages, the mod, and the bridge DLL (prebuilt, no compiler needed), adds the `-logall` launch option in Steam, and enables the mod in your Paradox launcher playset. The two Steam/launcher steps need those programs closed; if one is open the checklist tells you, with the manual steps as a fallback.
+4. **Tech Config** (optional) → **YAML Wizard** → download your YAML and send it to the host together with `stellaris.apworld`.
+5. When the host's multiworld is up: **Bridge** tab → server, slot, password → **Start Bridge**. Wait for *DYNAMIC TECHS GENERATED*, click **Launch Stellaris**, press Play in the launcher, start a new non-ironman game (or load your save) and accept the Archipelago popup.
+
+The dashboard remembers your connection settings, shows whether the bridge is connected and in-game, and keeps running the bridge while you play.
+
+### Command line
+
+Everything the dashboard does is also available from a terminal:
 
 ```powershell
-python setup.py install
+python setup.py install       # deps, mod, DLL, Steam launch option, launcher playset
+python setup.py status        # what's installed
+python setup.py play --server archipelago.gg:12345 --slot YourName
 ```
 
-Then:
-
-1. In Steam: right-click Stellaris → Properties → Launch Options: `-logall`
-2. In the Paradox launcher: enable the **Archipelago Multiworld** mod
-3. Start a new non-ironman game
-
-`python setup.py status` shows what's installed at any time. To rebuild
-the DLL from source instead of using the prebuilt one (requires CMake +
+To rebuild the DLL from source instead of using the prebuilt one (requires CMake +
 Visual Studio 2022): `python setup.py build-dll && python setup.py install-dll`
 — a fresh local build always takes priority over the prebuilt binary.
 
 ## Dashboard
 
-If you'd rather not run `setup.py` commands by hand, the project ships with a self-contained web dashboard:
+`Stellaris Archipelago.bat` (or `python dashboard.py`) serves a local page on `localhost:19472` with:
 
-```powershell
-python dashboard.py
-```
+- **Setup** — the checklist above with one-click fixes, plus uninstall and tech-override rebuilding
+- **Bridge** — start/stop the bridge, launch Stellaris, live bridge log with plain-language status
+- **Tech Config / YAML Wizard** — choose randomized techs and build the YAML for your host
+- **Errors** — AP-related lines from Stellaris' error.log
 
-This opens a browser tab on `localhost:19472` with controls for:
-
-- **Setup** — install/uninstall the mod, build and install the DLL, scan vanilla tech files
-- **Status** — check what's installed, inspect Stellaris error logs, test the pipe end-to-end
-- **Run** — start and stop the bridge or the mock AP server, tail their logs live in the browser
-
-It uses Python's stdlib `http.server` so there's no extra dependency. Useful when you're iterating on a session and don't want to keep two or three terminals open.
+It uses Python's stdlib `http.server`; the page itself loads React from a CDN, so it needs the same internet connection the bridge needs anyway.
 
 ## Testing Locally
 
@@ -107,20 +117,26 @@ cd client && python ap_bridge.py --server localhost:38281 --slot Stellaris
 python setup.py play --server archipelago.gg:12345 --slot YourName
 ```
 
-The bridge auto-generates AP techs from the multiworld seed, then tells you to restart Stellaris. After restarting, the AP techs appear in your research pool and vanilla techs that were sent to other worlds are hidden.
+The bridge auto-generates AP techs from the multiworld seed, then tells you to (re)start Stellaris. After restarting, the AP techs appear in your research pool and vanilla techs that were sent to other worlds are hidden.
+
+**When do items arrive?** Console effects only work inside a loaded save, so the bridge waits until the mod *reports in* for the current game process — that happens when you accept the connection popup in a new game, and at every monthly tick after that. Once it does, the bridge first syncs the save's flags (goal, tech blocking, EnergyLink) and then delivers every queued item. If you see `waiting for Stellaris to report in` in the bridge log, load your save and unpause for a moment.
+
+**What if the bridge wasn't running when I completed something?** Nothing is lost: every month the mod re-logs all checks the save has already sent, and the bridge picks up anything it hasn't forwarded yet.
 
 ## Project Structure
 
 ```
 README.md / LICENSE / CONTRIBUTING.md
+Stellaris Archipelago.bat           Double-click entry point (opens the dashboard)
 setup.py                            One script to install, build, test, run
-dashboard.py                        Optional local web UI for managing the bridge
+dashboard.py                        Local web UI: setup checklist, bridge, YAML
 
 mod-install/                        Stellaris mod (copy to Paradox/Stellaris/mod/)
   archipelago_multiworld.mod        Launcher descriptor
   archipelago_multiworld/           Mod content
     common/technology/              Vanilla tech overrides (FIOS blocking)
-    common/scripted_effects/        Item grants, check detection, log senders
+    common/scripted_effects/        Item grants, check detection, log senders,
+                                    monthly check resync (ap_resync.txt, generated)
     common/scripted_triggers/       Item-tier checks
     common/edicts/                  EnergyLink deposit/withdraw
     common/static_modifiers/        Filler-item modifier definitions
@@ -135,7 +151,14 @@ client/                             Python AP client
   pipe_client.py                    Named pipe client for DLL communication
   slot_generator.py                 Generates AP tech cards from multiworld seed
   tech_scanner.py                   Vanilla tech file scanner
+  tech_catalog.py                   Mirror of the apworld tech catalog (IDs)
+  game_setup.py                     Steam launch option + launcher playset automation
   mock_ap_server.py                 Fake AP server for local testing
+
+scripts/
+  check_coherence.py                Cross-checks IDs/names across all layers;
+                                    --write regenerates the mod's ap_resync.txt
+  make_release.py                   Builds release zips
 
 dll/                                C++ DLL (version.dll proxy)
   src/                              Proxy, bridge, console injection, logging
@@ -167,7 +190,7 @@ Stellaris Game <-> DLL (version.dll proxy) <-> Named Pipe <-> ap_bridge.py <-> A
 - **Phase 2 (primary) — direct engine call.** At injection time, the DLL AOB-scans `stellaris.exe` to locate three internal engine functions: `StringConstruct` (builds the engine's internal string object), `ExecuteCommand` (parses and runs a console command), and `StringDestruct`. It then invokes them in sequence — the same path the game's own TweakerGUI debug panel uses. No console window flicker, no input contention with the player, no file I/O on the hot path.
 - **Phase 1 (fallback) — SendInput.** If pattern scanning fails (e.g. after a Stellaris update shifts the byte signatures), the DLL automatically falls back to writing commands into `ap_bridge_commands.txt` and triggering Stellaris's built-in `run` console command via `SendInput`. Slower and more visible, but resilient to engine updates.
 
-**Outbound (game → server):** Mod writes `AP_CHECK|id|name` lines to game.log via Paradox-script `log` effects. The bridge tails the log and forwards each as a `LocationChecks` packet to the AP server. Goal completion fires an `AP_GOAL_COMPLETE` line that becomes a `StatusUpdate(30)` packet.
+**Outbound (game → server):** Mod writes `AP_CHECK|id|name` lines to game.log via Paradox-script `log` effects. The bridge tails the log and forwards each as a `LocationChecks` packet to the AP server. Goal completion fires an `AP_GOAL_COMPLETE` line that becomes a `StatusUpdate(30)` packet. The monthly `AP_HEARTBEAT` line is also how the bridge knows a save is loaded (and therefore that effects can be delivered); when game.log is recreated by a game restart the bridge waits for the next heartbeat and re-syncs the save's flags before delivering anything.
 
 ## 120 Locations
 
@@ -191,9 +214,9 @@ Stellaris Game <-> DLL (version.dll proxy) <-> Named Pipe <-> ap_bridge.py <-> A
 
 ## EnergyLink
 
-Shared energy pool across all connected games. Exchange rate: **1 Stellaris EC = 1 Factorio Joule** (1:1).
+Shared energy pool across all connected games. The exchange rate is the `energy_link_rate` YAML option: energy credits per EnergyLink unit (default 100, so a 500 EC deposit adds 5 units and a 2,000 EC withdrawal asks for 20).
 
-Use the EnergyLink edicts in-game to deposit or withdraw energy credits. The bridge handles the AP protocol (`Set`/`Get` data storage).
+Use the EnergyLink edicts in-game to deposit or withdraw energy credits; they only appear when the slot has EnergyLink enabled. The bridge handles the AP protocol (`Set`/`Get` data storage). Withdrawals are clamped to what the pool actually holds.
 
 ## Tests
 
@@ -204,7 +227,13 @@ The apworld ships with a unit test suite that runs under Archipelago's standard 
 python -m unittest discover -s worlds/stellaris/test
 ```
 
-The suite checks ID stability, item/location counts, region connectivity, fill solvability across all goal types, and option interactions.
+The suite checks ID stability, item/location counts, region connectivity, fill solvability across all goal types (including every catalog tech randomized at once), tech prerequisite logic, and option interactions.
+
+The layers outside the apworld (client, mod) are cross-checked by a standalone script that needs no Archipelago checkout:
+
+```sh
+python setup.py check          # or: python scripts/check_coherence.py
+```
 
 ## Requirements
 
@@ -230,3 +259,14 @@ $env:STELLARIS_GAME_DIR = "D:\SteamLibrary\steamapps\common\Stellaris"
 **Enabled the mod on an existing campaign?** That works — the
 connection-setup popup appears at the next monthly tick instead of
 game start.
+
+**Bridge says "waiting for Stellaris to report in"?** Items are only
+delivered while a save is loaded. Load your game, make sure you
+accepted the Archipelago connection popup, and unpause — the mod
+checks in at the next monthly tick. If it never does, the mod is
+probably not enabled in the launcher, or `-logall` is missing.
+
+**Bridge says "PIPE unavailable"?** The game is in session but the
+DLL isn't answering: check that `version.dll` sits next to
+`stellaris.exe` (`python setup.py status`) and look at
+`archipelago_dll.log` in the game folder.

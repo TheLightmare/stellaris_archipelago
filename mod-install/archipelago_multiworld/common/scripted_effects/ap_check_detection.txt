@@ -522,6 +522,9 @@ ap_check_crisis_milestones = {
 #   ap_goal_4 → All Checks:        client-side completion
 #                                  (mod cannot easily know all locations
 #                                  were checked; bridge handles this)
+#
+# Whichever goal completes, ap_send_check_victory sends the "Victory"
+# location (it exists in every seed) and logs AP_GOAL_COMPLETE.
 # --------------------------------------------------------------------------
 ap_check_victory_condition = {
     # Goal 0: Victory (year 2400)
@@ -533,7 +536,6 @@ ap_check_victory_condition = {
         }
         set_country_flag = ap_sent_victory
         ap_send_check_victory = yes
-        log = "AP_GOAL_COMPLETE"
     }
     # Goal 1: Crisis Averted (endgame crisis defeated)
     if = {
@@ -543,7 +545,7 @@ ap_check_victory_condition = {
             has_country_flag = ap_sent_crisis_defeat
         }
         set_country_flag = ap_sent_victory
-        log = "AP_GOAL_COMPLETE"
+        ap_send_check_victory = yes
     }
     # Goal 2: Ascension (any ascension path completed)
     if = {
@@ -557,7 +559,7 @@ ap_check_victory_condition = {
             }
         }
         set_country_flag = ap_sent_victory
-        log = "AP_GOAL_COMPLETE"
+        ap_send_check_victory = yes
     }
     # Goal 3: Galactic Emperor (formed the imperium)
     if = {
@@ -567,9 +569,11 @@ ap_check_victory_condition = {
             is_galactic_emperor = yes
         }
         set_country_flag = ap_sent_victory
-        log = "AP_GOAL_COMPLETE"
+        ap_send_check_victory = yes
     }
-    # Goal 4: All Checks — handled by the bridge (it knows the location pool)
+    # Goal 4: All Checks — handled by the bridge (it knows the location
+    # pool). It sends the Victory location itself once everything else
+    # has been checked.
 }
 
 # ==========================================================

@@ -4,4 +4,4 @@ tags = {
     "Gameplay"
     "Total Conversion"
 }
-supported_version = "4.0.*"
+supported_version = "4.*"

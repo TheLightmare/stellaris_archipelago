@@ -10,85 +10,37 @@
 //   ExecuteCommand(buf);
 //   StringDestruct(buf);
 //
-// If pattern scanning fails (e.g. after a game update), Phase 1 is used automatically.
+// Phase 2 is only enabled when every pattern matches exactly once inside an
+// executable section AND the two string functions pass a round-trip
+// self-test on a short (inline) and a long (heap) string. Anything less and
+// the DLL falls back to Phase 1 rather than risk calling the wrong function.
 
 #include "console.h"
 #include "logging.h"
+#include "scanner.h"
 #include <windows.h>
-#include <psapi.h>
 #include <shlobj.h>
 #include <queue>
 #include <mutex>
 #include <atomic>
 #include <fstream>
 #include <filesystem>
-#include <sstream>
 
 namespace fs = std::filesystem;
-
-// =========================================================================
-// Pattern Scanner
-// =========================================================================
-
-struct AOBPattern {
-    std::vector<uint8_t> bytes;
-    std::vector<bool> mask; // true = must match, false = wildcard
-};
-
-static AOBPattern parse_pattern(const char* pat) {
-    AOBPattern p;
-    std::istringstream iss(pat);
-    std::string token;
-    while (iss >> token) {
-        if (token == "??" || token == "?") {
-            p.bytes.push_back(0);
-            p.mask.push_back(false);
-        } else {
-            p.bytes.push_back((uint8_t)strtoul(token.c_str(), nullptr, 16));
-            p.mask.push_back(true);
-        }
-    }
-    return p;
-}
-
-static uintptr_t scan_module(HMODULE mod, const char* pattern_str) {
-    MODULEINFO info = {};
-    if (!GetModuleInformation(GetCurrentProcess(), mod, &info, sizeof(info)))
-        return 0;
-
-    auto base = (const uint8_t*)info.lpBaseOfDll;
-    auto size = info.SizeOfImage;
-    auto pat = parse_pattern(pattern_str);
-
-    if (pat.bytes.empty()) return 0;
-
-    for (size_t i = 0; i + pat.bytes.size() <= size; i++) {
-        bool match = true;
-        for (size_t j = 0; j < pat.bytes.size(); j++) {
-            if (pat.mask[j] && base[i + j] != pat.bytes[j]) {
-                match = false;
-                break;
-            }
-        }
-        if (match) return (uintptr_t)(base + i);
-    }
-    return 0;
-}
 
 // =========================================================================
 // Phase 2: Direct engine call types and state
 // =========================================================================
 
-// The engine's internal string object layout (Clausewitz std::string-like):
-//   0x00: int32  — ref count / flags
-//   0x08: int64  — unknown
-//   0x10: char*  — data pointer (or inline SSO buffer for strings <= 15 chars)
-//   0x20: int64  — length
-//   0x28: int64  — capacity (0xF = SSO threshold)
-// Total size: 0x30 bytes. We allocate 0x38 for safety.
+// The engine's internal string object. Offsets 0x10..0x30 are an MSVC
+// std::string (inline buffer or heap pointer at 0x10, size at 0x20,
+// capacity at 0x28 — 0xF while the inline buffer is in use), preceded by
+// a 16-byte header. Total 0x30 bytes; we allocate 0x38 for safety.
 struct EngineString {
     uint8_t data[0x38];
 };
+static const size_t ES_DATA = 0x10, ES_SIZE = 0x20, ES_CAPACITY = 0x28;
+static const uint64_t ES_SSO_CAPACITY = 0xF;
 
 // Function signatures (x64 __fastcall, RCX = first param, RDX = second param):
 //   StringConstruct: RCX = EngineString*, RDX = const char*
@@ -102,6 +54,10 @@ static StringConstructFn g_fnStringConstruct = nullptr;
 static ExecuteCommandFn  g_fnExecuteCommand  = nullptr;
 static StringDestructFn  g_fnStringDestruct  = nullptr;
 static bool g_phase2_ready = false;
+
+// Counters for STATUS.
+static std::atomic<long> g_executed{0};
+static std::atomic<long> g_failed{0};
 
 // AOB Patterns — derived from Stellaris binary analysis via Ghidra.
 // Wildcards (??) cover bytes that may change between game versions:
@@ -252,18 +208,92 @@ static bool phase1_execute_batch(const std::vector<std::string>& commands) {
     if (fg && fg != game) SetForegroundWindow(fg);
     ap_log("Console: Phase 1 — executed batch of %zu command(s) via SendInput",
            commands.size());
+    g_executed += (long)commands.size();
     return true;
 }
 
 // =========================================================================
-// Phase 2: Direct engine call execution
+// Phase 2: locating and verifying the engine functions
 // =========================================================================
+
+static uintptr_t locate(HMODULE exe, const char* name, const char* pattern) {
+    std::string where;
+    ScanResult r = scan_module_unique(exe, pattern, &where);
+    if (r.matches == 0) {
+        ap_log("Console: %s pattern NOT FOUND", name);
+        return 0;
+    }
+    if (r.matches > 1) {
+        // Guessing here is how a game update turns into a crash on the
+        // first delivered item. Refuse and fall back.
+        ap_log("Console: %s pattern is AMBIGUOUS (%zu+ matches) — refusing to guess", name, r.matches);
+        return 0;
+    }
+    ap_log("Console: %s @ %p (section %s)", name, (void*)r.address, where.c_str());
+    return r.address;
+}
+
+// SEH-only helpers (no C++ objects with destructors: C2712).
+
+// Round-trip a C string through StringConstruct/StringDestruct and check
+// the object looks like the layout we assume. Returns false on mismatch
+// or if either function throws.
+static bool selftest_string_fns_seh(const char* text, size_t len) {
+    EngineString buf = {};
+    __try {
+        g_fnStringConstruct(&buf, text);
+        uint64_t size = *(const uint64_t*)(buf.data + ES_SIZE);
+        uint64_t capacity = *(const uint64_t*)(buf.data + ES_CAPACITY);
+        const char* data = capacity > ES_SSO_CAPACITY
+            ? *(const char* const*)(buf.data + ES_DATA)
+            : (const char*)(buf.data + ES_DATA);
+        bool ok = size == len && capacity >= len && data != nullptr
+                  && memcmp(data, text, len) == 0 && data[len] == 0;
+        g_fnStringDestruct(&buf);
+        return ok;
+    } __except (EXCEPTION_EXECUTE_HANDLER) {
+        return false;
+    }
+}
+
+static bool execute_one_seh(const char* cmd, DWORD* code) {
+    EngineString buf = {};
+    __try {
+        g_fnStringConstruct(&buf, cmd);
+        g_fnExecuteCommand(&buf);
+        g_fnStringDestruct(&buf);
+        return true;
+    } __except (EXCEPTION_EXECUTE_HANDLER) {
+        *code = GetExceptionCode();
+        // Do not call StringDestruct on a possibly-uninitialized buf.
+        // Small leak per crashed command, but safer than a secondary
+        // fault inside the destructor.
+        return false;
+    }
+}
+
+static bool phase2_selftest() {
+    // Short string: inline (SSO) path. Long string: heap path, which is
+    // the one every real console command takes.
+    static const char* SHORT_TEXT = "ap";
+    static const char* LONG_TEXT = "archipelago bridge self-test string, longer than sso";
+    if (!selftest_string_fns_seh(SHORT_TEXT, strlen(SHORT_TEXT))) {
+        ap_log("Console: string self-test FAILED on the inline (short) path");
+        return false;
+    }
+    if (!selftest_string_fns_seh(LONG_TEXT, strlen(LONG_TEXT))) {
+        ap_log("Console: string self-test FAILED on the heap (long) path");
+        return false;
+    }
+    ap_log("Console: string construct/destruct self-test passed");
+    return true;
+}
 
 static bool phase2_execute_batch(const std::vector<std::string>& commands) {
     int succeeded = 0;
     int crashed = 0;
     for (const auto& cmd : commands) {
-        EngineString buf = {};
+        DWORD code = 0;
         // SEH around the engine call. ExecuteCommand can crash if the
         // command requires game state that doesn't exist (e.g.
         // set_country_flag at the main menu has no country scope and
@@ -273,25 +303,20 @@ static bool phase2_execute_batch(const std::vector<std::string>& commands) {
         // inconsistent; the next command might fail too, and a delayed
         // crash later is possible. This is strictly better than dying
         // immediately with no diagnostic, but it is not a substitute
-        // for not sending bad commands in the first place.
-        __try {
-            g_fnStringConstruct(&buf, cmd.c_str());
-            g_fnExecuteCommand(&buf);
-            g_fnStringDestruct(&buf);
+        // for not sending bad commands in the first place — which is
+        // why the bridge only delivers once the mod has reported in.
+        if (execute_one_seh(cmd.c_str(), &code)) {
             succeeded++;
-        } __except (EXCEPTION_EXECUTE_HANDLER) {
-            DWORD code = GetExceptionCode();
-            ap_log("Console: Phase 2 EXCEPTION 0x%08lX during command: %s",
-                   code, cmd.c_str());
+        } else {
+            ap_log("Console: Phase 2 EXCEPTION 0x%08lX during command: %s", code, cmd.c_str());
             ap_log("  (likely cause: command requires save game state that "
                    "is not currently loaded, e.g. effect commands at the "
                    "main menu with no country scope)");
             crashed++;
-            // Do not call StringDestruct on a possibly-uninitialized buf.
-            // Small leak per crashed command, but safer than a secondary
-            // fault inside the destructor.
         }
     }
+    g_executed += succeeded;
+    g_failed += crashed;
     ap_log("Console: Phase 2 — executed %d/%zu command(s) directly%s",
            succeeded, commands.size(),
            crashed ? " (some commands triggered exceptions, see above)" : "");
@@ -299,22 +324,15 @@ static bool phase2_execute_batch(const std::vector<std::string>& commands) {
     // was designed for Phase 1's SendInput failures (couldn't focus the game
     // window, etc.) which are genuinely transient. Phase 2 "failures" are
     // SEH-caught access violations from ExecuteCommand — these are NOT
-    // transient. The same command in the same game state (e.g.
-    // set_country_flag at the main menu with no country scope) will crash
+    // transient. The same command in the same game state will crash
     // identically every tick. Re-queuing produces a 5Hz infinite loop of
     // exceptions until the bridge happens to send a different command or
-    // the game state changes.
-    //
-    // The bridge owns the decision to re-send. If a blocking flag failed
-    // because the player wasn't in a save yet, the bridge should re-send
-    // it after the player loads a game (ideally gated on an on_load_game
-    // signal from the log tailer rather than blind retry). The DLL's job
-    // is to execute or drop, not retry.
+    // the game state changes. The bridge owns the decision to re-send.
     return true;
 }
 
 // =========================================================================
-// Shared command queue (unchanged from Phase 1)
+// Shared command queue
 // =========================================================================
 
 static std::queue<std::string> g_commandQueue;
@@ -329,29 +347,31 @@ bool console_init() {
     // Try Phase 2: pattern scan for engine functions
     HMODULE exe = GetModuleHandleA(nullptr);
     if (exe) {
-        uintptr_t addrExecute   = scan_module(exe, PAT_EXECUTE_COMMAND);
-        uintptr_t addrConstruct = scan_module(exe, PAT_STRING_CONSTRUCT);
-        uintptr_t addrDestruct  = scan_module(exe, PAT_STRING_DESTRUCT);
+        size_t nsec = executable_sections(exe).size();
+        ap_log("Console: scanning %zu executable section(s) of the game image", nsec);
+        uintptr_t addrExecute   = locate(exe, "ExecuteCommand", PAT_EXECUTE_COMMAND);
+        uintptr_t addrConstruct = locate(exe, "StringConstruct", PAT_STRING_CONSTRUCT);
+        uintptr_t addrDestruct  = locate(exe, "StringDestruct", PAT_STRING_DESTRUCT);
 
         if (addrExecute && addrConstruct && addrDestruct) {
             g_fnExecuteCommand  = (ExecuteCommandFn)addrExecute;
             g_fnStringConstruct = (StringConstructFn)addrConstruct;
             g_fnStringDestruct  = (StringDestructFn)addrDestruct;
-            g_phase2_ready = true;
-            ap_log("Console: Phase 2 READY — direct engine calls");
-            ap_log("  ExecuteCommand  @ %p", (void*)addrExecute);
-            ap_log("  StringConstruct @ %p", (void*)addrConstruct);
-            ap_log("  StringDestruct  @ %p", (void*)addrDestruct);
+            if (phase2_selftest()) {
+                g_phase2_ready = true;
+                ap_log("Console: Phase 2 READY — direct engine calls");
+            } else {
+                g_fnExecuteCommand = nullptr;
+                g_fnStringConstruct = nullptr;
+                g_fnStringDestruct = nullptr;
+                ap_log("Console: Phase 2 disabled — engine string layout differs from "
+                       "what this build expects (game update?)");
+            }
         } else {
-            ap_log("Console: Phase 2 pattern scan failed:");
-            ap_log("  ExecuteCommand  = %p %s", (void*)addrExecute,
-                   addrExecute ? "OK" : "MISSING");
-            ap_log("  StringConstruct = %p %s", (void*)addrConstruct,
-                   addrConstruct ? "OK" : "MISSING");
-            ap_log("  StringDestruct  = %p %s", (void*)addrDestruct,
-                   addrDestruct ? "OK" : "MISSING");
-            ap_log("Console: falling back to Phase 1 (SendInput)");
+            ap_log("Console: Phase 2 pattern scan failed — the game binary has probably "
+                   "changed; the PAT_* signatures in console.cpp need refreshing");
         }
+        if (!g_phase2_ready) ap_log("Console: falling back to Phase 1 (SendInput)");
     }
 
     // Phase 1 setup (needed as fallback, or as primary if Phase 2 failed)
@@ -367,6 +387,19 @@ bool console_init() {
 }
 
 bool console_is_ready() { return g_ready; }
+
+std::string console_status() {
+    size_t queued;
+    {
+        std::lock_guard<std::mutex> lock(g_queueMutex);
+        queued = g_commandQueue.size();
+    }
+    const char* mode = !g_ready ? "none" : (g_phase2_ready ? "phase2" : "phase1");
+    char buf[160];
+    snprintf(buf, sizeof(buf), "mode=%s ready=%d queued=%zu executed=%ld failed=%ld",
+             mode, g_ready ? 1 : 0, queued, g_executed.load(), g_failed.load());
+    return buf;
+}
 
 void console_queue_command(const std::string& command) {
     std::lock_guard<std::mutex> lock(g_queueMutex);
@@ -418,7 +451,7 @@ int console_process_queue() {
         ap_log("Console: execution failed (streak %d), re-queuing %d command(s), retry in %llu ms",
                g_failStreak, count, delay);
         // Re-queue in original order (queue is FIFO — pushing front-first
-        // preserves order; the old reverse loop inverted it every retry).
+        // preserves order).
         std::lock_guard<std::mutex> lock(g_queueMutex);
         for (const auto& cmd : batch)
             g_commandQueue.push(cmd);

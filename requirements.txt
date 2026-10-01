@@ -2,3 +2,5 @@
 # `python setup.py install` installs these automatically if missing.
 websocket-client>=1.6
 pywin32>=306; sys_platform == "win32"
+# Only used by client/mock_ap_server.py (local testing without a real AP server).
+websockets>=12

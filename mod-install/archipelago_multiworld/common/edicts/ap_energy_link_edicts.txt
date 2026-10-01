@@ -1,6 +1,7 @@
 # ============================================================================
 # EnergyLink — Deposit/withdraw energy to the shared AP pool via edicts
 # Edicts are country-scope (unlike decisions which are planet-scope in 4.x)
+# Only shown while the bridge has flagged EnergyLink as enabled for this slot.
 # ============================================================================
 
 ap_energy_deposit_500 = {
@@ -13,6 +14,8 @@ ap_energy_deposit_500 = {
     potential = {
         is_ai = no
         has_country_flag = ap_connected
+        # Set by the bridge when the slot's YAML enables EnergyLink
+        has_country_flag = ap_energy_link
     }
     allow = {
         resource_stockpile_compare = { resource = energy value >= 500 }
@@ -33,6 +36,8 @@ ap_energy_deposit_2000 = {
     potential = {
         is_ai = no
         has_country_flag = ap_connected
+        # Set by the bridge when the slot's YAML enables EnergyLink
+        has_country_flag = ap_energy_link
     }
     allow = {
         resource_stockpile_compare = { resource = energy value >= 2000 }
@@ -49,6 +54,8 @@ ap_energy_withdraw_500 = {
     potential = {
         is_ai = no
         has_country_flag = ap_connected
+        # Set by the bridge when the slot's YAML enables EnergyLink
+        has_country_flag = ap_energy_link
     }
     effect = {
         log = "AP_ENERGY_WITHDRAW|500"
@@ -62,6 +69,8 @@ ap_energy_withdraw_2000 = {
     potential = {
         is_ai = no
         has_country_flag = ap_connected
+        # Set by the bridge when the slot's YAML enables EnergyLink
+        has_country_flag = ap_energy_link
     }
     effect = {
         log = "AP_ENERGY_WITHDRAW|2000"

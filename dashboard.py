@@ -27,7 +27,7 @@ from pathlib import Path
 from urllib.parse import urlparse, parse_qs
 from io import BytesIO
 
-PORT = 19472  # AP-inspired port
+PORT = int(os.environ.get("AP_DASHBOARD_PORT", "19472"))  # AP-inspired port
 SCRIPT_DIR = Path(__file__).parent.resolve()
 CLIENT_DIR = SCRIPT_DIR / "client"
 DLL_DIR = SCRIPT_DIR / "dll"
@@ -58,7 +58,11 @@ sys.path.insert(0, str(CLIENT_DIR))
 # dir with recent game activity, honors STELLARIS_USER_DIR/GAME_DIR.
 from ap_paths import find_stellaris_user_dir as _find_user_dir  # noqa: E402
 from ap_paths import find_stellaris_game_dir as _find_game_dir  # noqa: E402
+from ap_paths import find_bridge_dll  # noqa: E402
 from mod_installer import install_mod  # noqa: E402
+import game_setup  # noqa: E402
+
+BRIDGE_SETTINGS_FILE = "ap_bridge_settings.json"
 
 
 def find_stellaris_user_dir():
@@ -85,7 +89,9 @@ _YAML_OPTION_GROUPS = [
                "energy_link_enabled", "energy_link_rate"]),
     ("Tech Randomization", ["randomized_techs"]),
     ("DLC", ["dlc_utopia", "dlc_federations", "dlc_nemesis", "dlc_leviathans",
-             "dlc_apocalypse", "dlc_megacorp", "dlc_overlord"]),
+             "dlc_apocalypse", "dlc_megacorp", "dlc_overlord", "dlc_first_contact",
+             "dlc_ancient_relics", "dlc_machine_age", "dlc_distant_stars",
+             "dlc_astral_planes"]),
 ]
 
 
@@ -345,6 +351,8 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
             self._api_tech_catalog()
         elif path == "/api/tech-selection":
             self._api_get_tech_selection()
+        elif path == "/api/bridge-settings":
+            self._api_get_bridge_settings()
         else:
             self.send_error(404)
 
@@ -353,6 +361,22 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
 
         if path == "/api/install":
             self._api_install()
+        elif path == "/api/install-deps":
+            self._json_response(game_setup.install_python_deps())
+        elif path == "/api/set-launch-option":
+            self._json_response(game_setup.set_launch_option())
+        elif path == "/api/enable-mod":
+            user_dir = find_stellaris_user_dir()
+            if not user_dir:
+                self._json_response({"success": False, "error": "Stellaris user dir not found"}, 404)
+            else:
+                self._json_response(game_setup.enable_mod_in_launcher(user_dir))
+        elif path == "/api/launch-game":
+            self._json_response(game_setup.launch_stellaris())
+        elif path == "/api/setup-all":
+            self._api_setup_all()
+        elif path == "/api/bridge-settings":
+            self._api_save_bridge_settings(self._read_body())
         elif path == "/api/apply-config":
             body = self._read_body()
             self._api_apply_config(body)
@@ -443,6 +467,16 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
 
         dll_build = SCRIPT_DIR / "dll" / "build" / "Release" / "version.dll"
         result["dll_built"] = dll_build.exists()
+        result["dll_available"] = find_bridge_dll(SCRIPT_DIR)[0] is not None
+
+        # Setup checklist inputs (see game_setup.py)
+        result["python_deps_missing"] = game_setup.missing_python_deps()
+        result["launch_options"] = game_setup.launch_options_status()
+        result["launcher"] = (
+            game_setup.launcher_status(user_dir) if user_dir
+            else {"db_found": False, "registered": False, "enabled": False}
+        )
+        result["bridge_settings"] = self._load_bridge_settings()
 
         try:
             import websocket
@@ -587,8 +621,8 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
                             "version.dll is in the game folder, and "
                             "wait ~5 seconds after the game window "
                             "appears for the bridge to initialize. If "
-                            "it still fails, look at dll/log.txt next "
-                            "to version.dll for the DLL's own log."
+                            "it still fails, look at archipelago_dll.log "
+                            "next to stellaris.exe for the DLL's own log."
                         )
                     else:
                         error = (
@@ -600,10 +634,25 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
                 self._json_response({"connected": False, "error": error})
                 return
             ping = p.ping()
+            status = p.status() or {}
             p.send_effect("add_resource = { energy = 500 }")
             flushed = p.flush_commands()
             p.disconnect()
-            self._json_response({"connected": True, "ping": ping, "flushed": flushed})
+            mode = status.get("mode")
+            if mode == "phase2":
+                note = "DLL is using direct engine calls (best mode)."
+            elif mode == "phase1":
+                note = ("DLL fell back to typing into the game console (SendInput): the engine "
+                        "signatures don't match this Stellaris version. Items still arrive, but "
+                        "a DLL update is needed for the clean mode.")
+            elif mode == "none":
+                note = "DLL console is not ready — see archipelago_dll.log next to stellaris.exe."
+            else:
+                note = "DLL did not report a mode (older build)."
+            if flushed == -1:
+                note += " The effect is queued; it runs when the game thread is free."
+            self._json_response({"connected": True, "ping": ping, "flushed": flushed,
+                                 "status": status, "note": note})
         except Exception as e:
             self._json_response({"connected": False, "error": str(e)})
 
@@ -628,18 +677,18 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
             # Configure
             r = subprocess.run(
                 ["cmake", "..", "-G", "Visual Studio 17 2022", "-A", "x64"],
-                cwd=build_dir, capture_output=True, text=True, timeout=60
+                cwd=build_dir, capture_output=True, text=True, timeout=180
             )
             if r.returncode != 0:
-                self._json_response({"error": f"CMake configure failed: {r.stderr[:500]}"}, 500)
+                self._json_response({"error": f"CMake configure failed: {(r.stderr or r.stdout)[-800:]}"}, 500)
                 return
-            # Build
+            # Build (MSVC writes compiler errors to stdout, not stderr)
             r = subprocess.run(
                 ["cmake", "--build", ".", "--config", "Release"],
-                cwd=build_dir, capture_output=True, text=True, timeout=120
+                cwd=build_dir, capture_output=True, text=True, timeout=600
             )
             if r.returncode != 0:
-                self._json_response({"error": f"Build failed: {r.stderr[:500]}"}, 500)
+                self._json_response({"error": f"Build failed: {(r.stderr or r.stdout)[-800:]}"}, 500)
                 return
             dll = build_dir / "Release" / "version.dll"
             if dll.exists():
@@ -648,33 +697,121 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
                 self._json_response({"error": "Build output not found"}, 500)
         except FileNotFoundError:
             self._json_response({"error": "CMake not found. Install Visual Studio 2022 Build Tools."}, 500)
+        except subprocess.TimeoutExpired:
+            self._json_response({"error": "Build timed out. Run 'python setup.py build-dll' from a terminal to see progress."}, 500)
         except Exception as e:
             self._json_response({"error": str(e)}, 500)
 
-    def _api_install_dll(self):
+    def _install_dll(self) -> dict:
+        """Copy the bridge DLL next to stellaris.exe (shared by Install DLL
+        and Set up everything). Returns a result dict."""
         # A fresh local build takes priority; otherwise fall back to the
         # prebuilt binary shipped in dll/prebuilt/ so players without
         # CMake/Visual Studio can still install.
-        from ap_paths import find_bridge_dll
         dll, source = find_bridge_dll(SCRIPT_DIR)
         if not dll:
-            self._json_response({"error": "No DLL found (dll/prebuilt/version.dll missing "
-                                          "and nothing built). Click Build DLL first."}, 400)
-            return
+            return {"success": False,
+                    "error": "No DLL found (dll/prebuilt/version.dll missing and nothing built)."}
         # The DLL loads next to stellaris.exe, so require the exe here —
         # a data-only directory would accept a dump folder the game
         # never launches from.
         game_dir = _find_game_dir(require="exe")
         if not game_dir:
-            self._json_response({"error": "Stellaris game directory (with stellaris.exe) not found. "
-                                          "Set STELLARIS_GAME_DIR and restart the dashboard."}, 404)
-            return
+            return {"success": False,
+                    "error": "Stellaris game directory (with stellaris.exe) not found. "
+                             "Set STELLARIS_GAME_DIR and restart the dashboard."}
         try:
             dest = game_dir / "version.dll"
+            if dest.exists() and dest.read_bytes() == dll.read_bytes():
+                return {"success": True, "path": str(dest), "source": source, "unchanged": True}
             shutil.copy2(dll, dest)
-            self._json_response({"success": True, "path": str(dest), "source": source})
+            return {"success": True, "path": str(dest), "source": source}
         except PermissionError:
-            self._json_response({"error": "Permission denied - close Stellaris first"}, 500)
+            return {"success": False, "error": "Permission denied - close Stellaris first"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def _api_install_dll(self):
+        r = self._install_dll()
+        self._json_response(r, 200 if r.get("success") else 500)
+
+    def _api_setup_all(self):
+        """Run every setup step in order and report each one."""
+        steps = []
+
+        def record(name, result, manual=None):
+            ok = bool(result.get("success"))
+            steps.append({
+                "step": name,
+                "success": ok,
+                "detail": result.get("error") or result.get("note") or result.get("path") or "",
+                "manual": None if ok else (result.get("manual") or manual),
+            })
+            return ok
+
+        record("Python packages", game_setup.install_python_deps())
+
+        user_dir = find_stellaris_user_dir()
+        if not user_dir:
+            record("Mod files", {"success": False,
+                                 "error": "Stellaris user directory not found — start Stellaris once, "
+                                          "or set STELLARIS_USER_DIR"})
+        else:
+            try:
+                count = install_mod(SCRIPT_DIR / "mod-install", user_dir)
+                record("Mod files", {"success": True, "path": f"{count} files installed"})
+            except Exception as e:
+                record("Mod files", {"success": False, "error": str(e)})
+
+        record("Bridge DLL", self._install_dll())
+
+        lo = game_setup.launch_options_status()
+        if lo.get("configured"):
+            record("Steam launch option -logall", {"success": True, "path": "already set"})
+        else:
+            record("Steam launch option -logall", game_setup.set_launch_option())
+
+        if user_dir:
+            ls = game_setup.launcher_status(user_dir)
+            if ls.get("enabled"):
+                record("Mod enabled in launcher", {"success": True, "path": f"playset '{ls.get('playset')}'"})
+            else:
+                record("Mod enabled in launcher", game_setup.enable_mod_in_launcher(user_dir))
+
+        self._json_response({"success": all(s["success"] for s in steps), "steps": steps})
+
+    # Remembered connection settings so the player types server/slot once.
+    def _bridge_settings_path(self):
+        user_dir = find_stellaris_user_dir()
+        return (user_dir / BRIDGE_SETTINGS_FILE) if user_dir else None
+
+    def _load_bridge_settings(self) -> dict:
+        path = self._bridge_settings_path()
+        try:
+            if path and path.exists():
+                data = json.loads(path.read_text(encoding="utf-8"))
+                return {k: data.get(k, "") for k in ("server", "slot", "password")}
+        except Exception:
+            pass
+        return {}
+
+    def _api_get_bridge_settings(self):
+        self._json_response(self._load_bridge_settings())
+
+    def _api_save_bridge_settings(self, body):
+        path = self._bridge_settings_path()
+        if not path:
+            self._json_response({"error": "Stellaris user dir not found"}, 404)
+            return
+        try:
+            data = json.loads(body) if body else {}
+            path.write_text(json.dumps({
+                "_help": "Last connection used by the dashboard's Bridge tab.",
+                "server": str(data.get("server", "")),
+                "slot": str(data.get("slot", "")),
+                "password": str(data.get("password", "")),
+            }, indent=2), encoding="utf-8")
+            self._json_response({"success": True})
         except Exception as e:
             self._json_response({"error": str(e)}, 500)
 
@@ -687,9 +824,22 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
             params = json.loads(body) if body else {}
         except Exception:
             params = {}
-        server = params.get("server", "localhost:38281")
-        slot = params.get("slot", "Stellaris")
+        server = (params.get("server") or "").strip()
+        slot = (params.get("slot") or "").strip()
         password = params.get("password", "")
+        if not server or not slot:
+            self._json_response({"error": "Enter the AP server address and your slot name first"}, 400)
+            return
+        # Remember for next time.
+        try:
+            path = self._bridge_settings_path()
+            if path:
+                path.write_text(json.dumps({
+                    "_help": "Last connection used by the dashboard's Bridge tab.",
+                    "server": server, "slot": slot, "password": password,
+                }, indent=2), encoding="utf-8")
+        except Exception:
+            pass
         _process_logs["bridge"] = []
         cmd = [sys.executable, str(CLIENT_DIR / "ap_bridge.py"),
                "--server", server, "--slot", slot]
@@ -875,11 +1025,14 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
                 removed.append(f"Mod descriptor: {mod_file}")
 
             # Remove config and state files
-            for name in ["ap_tech_config.json", "ap_tech_data.py", "ap_bridge_state.json", "ap_bridge_commands.txt"]:
-                f = user_dir / name
+            leftovers = [user_dir / n for n in
+                         ["ap_tech_config.json", "ap_tech_data.py", "ap_tech_selection.json",
+                          "ap_bridge_commands.txt"]]
+            leftovers += sorted(user_dir.glob("ap_bridge_state*.json*"))
+            for f in leftovers:
                 if f.exists():
                     f.unlink()
-                    removed.append(f"Config: {name}")
+                    removed.append(f"Config: {f.name}")
 
         if game_dir:
             dll = game_dir / "version.dll"
@@ -1003,9 +1156,11 @@ function App() {
   const [tierFilter, setTierFilter] = useState("all");
   const [loading, setLoading] = useState({});
   const [bridgeStatus, setBridgeStatus] = useState(null);
-  const [bridgeServer, setBridgeServer] = useState("localhost:38281");
-  const [bridgeSlot, setBridgeSlot] = useState("Stellaris");
+  const [bridgeServer, setBridgeServer] = useState("");
+  const [bridgeSlot, setBridgeSlot] = useState("");
   const [bridgePassword, setBridgePassword] = useState("");
+  const settingsLoaded = useRef(false);
+  const [setupSteps, setSetupSteps] = useState(null);
   const [yamlGroups, setYamlGroups] = useState(null);
   const [yamlValues, setYamlValues] = useState({});
   const [yamlName, setYamlName] = useState("Stellaris");
@@ -1031,8 +1186,36 @@ function App() {
       const r = await fetch(API+"/api/status");
       const d = await r.json();
       setStatus(d);
+      // Pre-fill the Bridge tab with the last connection used.
+      if (!settingsLoaded.current && d.bridge_settings) {
+        settingsLoaded.current = true;
+        if (d.bridge_settings.server) setBridgeServer(d.bridge_settings.server);
+        if (d.bridge_settings.slot) setBridgeSlot(d.bridge_settings.slot);
+        if (d.bridge_settings.password) setBridgePassword(d.bridge_settings.password);
+      }
     } catch(e) { addLog("Failed to fetch status: "+e, "err"); }
   }, []);
+
+  const setupAll = async () => {
+    setLoading(p => ({...p, "Set up everything": true}));
+    addLog("Running full setup...");
+    try {
+      const r = await fetch(API+"/api/setup-all", {method:"POST"});
+      const d = await r.json();
+      setSetupSteps(d.steps || []);
+      for (const s of (d.steps || [])) {
+        addLog((s.success ? "OK   " : "TODO ") + s.step + (s.detail ? " — " + s.detail : ""), s.success ? "ok" : "err");
+        if (s.manual) addLog("     Do it by hand: " + s.manual, "info");
+      }
+      addLog(d.success ? "Setup complete — you're ready to play." : "Some steps need your attention (see above).", d.success ? "ok" : "err");
+    } catch(e) { addLog("Setup failed: "+e, "err"); }
+    finally { setLoading(p => ({...p, "Set up everything": false})); fetchStatus(); }
+  };
+
+  const launchGame = async () => {
+    const d = await doAction("Launch Stellaris", "/api/launch-game", {method:"POST"});
+    if (d && d.success) addLog("Asked Steam to start Stellaris. Click Play in the Paradox launcher, then load your save.", "info");
+  };
 
   // Lazy-load the tech catalog (from apworld/stellaris/data/tech_catalog.py)
   // the first time either Tech Config or YAML Wizard needs it. Initial
@@ -1108,7 +1291,10 @@ function App() {
   };
 
   const installMod = () => doAction("Install Mod", "/api/install", {method:"POST"});
-  const testPipe = () => doAction("Test Pipe", "/api/test-pipe");
+  const testPipe = async () => {
+    const d = await doAction("Test Pipe", "/api/test-pipe");
+    if (d && d.note) addLog("Test Pipe: " + d.note, d.status && d.status.mode === "phase2" ? "ok" : "info");
+  };
 
   const checkErrors = async () => {
     const d = await doAction("Check Errors", "/api/check-errors");
@@ -1158,6 +1344,39 @@ function App() {
     </div>
   );
 
+  // One row of the setup checklist: state icon, label, explanation, fix button.
+  const Check = ({ok, warn, label, detail, action, actionLabel, busy}) => (
+    <div style={{display:"flex",alignItems:"center",gap:14,padding:"10px 12px",borderRadius:6,
+                 background: ok ? "#0a1f1040" : "#1f0a0a40", border:"1px solid "+(ok ? "#1a4a25" : (warn ? "#4a3a1a" : "#4a1a1a"))}}>
+      <div style={{fontFamily:"Orbitron",fontSize:18,width:26,textAlign:"center",color: ok ? "#4dff99" : (warn ? "#ffb44d" : "#ff4d4d")}}>{ok ? "✓" : (warn ? "!" : "✗")}</div>
+      <div style={{flex:1}}>
+        <div style={{fontSize:14,fontWeight:600,color:"#e0e8ff"}}>{label}</div>
+        {detail && <div style={{fontSize:12,color:"#8090a8",marginTop:2,lineHeight:1.5}}>{detail}</div>}
+      </div>
+      {!ok && action && (
+        <button className="btn btn-primary" style={{padding:"6px 14px",fontSize:12}} onClick={action} disabled={busy}>
+          {busy ? "Working..." : (actionLabel || "Fix")}
+        </button>
+      )}
+    </div>
+  );
+
+  // Derived checklist state (null while status is loading)
+  const checks = status ? (() => {
+    const lo = status.launch_options || {};
+    const la = status.launcher || {};
+    const deps = status.python_deps_missing || [];
+    return {
+      deps: deps.length === 0,
+      mod: !!status.mod_installed,
+      dll: !!status.dll_installed,
+      logall: lo.configured === true,
+      launcher: !!la.enabled,
+      lo, la, deps,
+    };
+  })() : null;
+  const allReady = checks && checks.deps && checks.mod && checks.dll && checks.logall && checks.launcher;
+
   return (
     <div>
       <div className="header">
@@ -1183,6 +1402,48 @@ function App() {
 
       {tab === "setup" && (
         <div className="panel">
+          <div className="card">
+            <h3 style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+              <span>Setup Checklist</span>
+              {checks && (allReady
+                ? <span style={{fontSize:12,color:"#4dff99",letterSpacing:1}}>READY TO PLAY</span>
+                : <button className="btn btn-success" onClick={setupAll} disabled={loading["Set up everything"]}>
+                    {loading["Set up everything"] ? "Setting up..." : "Set up everything"}
+                  </button>)}
+            </h3>
+            {!checks ? <div>Loading...</div> : (
+              <div style={{display:"grid",gap:8}}>
+                <Check ok={checks.deps} label="Python packages"
+                  detail={checks.deps ? "websocket-client and pywin32 are installed" : "Missing: "+checks.deps.join(", ")}
+                  action={()=>doAction("Install packages","/api/install-deps",{method:"POST"})} actionLabel="Install" busy={loading["Install packages"]} />
+                <Check ok={checks.mod} label="Mod files in your Stellaris folder"
+                  detail={checks.mod ? status.mod_files+" files in "+status.user_dir : (status.user_dir ? "Not installed yet" : "Stellaris user folder not found — start Stellaris once so it is created")}
+                  action={installMod} actionLabel="Install" busy={loading["Install Mod"]} />
+                <Check ok={checks.dll} label="Bridge DLL next to stellaris.exe"
+                  detail={checks.dll ? status.game_dir : (status.game_dir ? "Not installed yet (uses the prebuilt version.dll, no compiler needed)" : "Stellaris game folder not found — is it installed through Steam?")}
+                  action={()=>doAction("Install DLL","/api/install-dll",{method:"POST"})} actionLabel="Install" busy={loading["Install DLL"]} />
+                <Check ok={checks.logall} warn={checks.lo.steam_running} label="Steam launch option -logall"
+                  detail={checks.logall ? "Set ("+checks.lo.options+")"
+                    : checks.lo.steam_running ? "Can be set automatically once Steam is fully closed (tray icon > Exit). Or by hand: "+checks.lo.manual
+                    : !checks.lo.steam_found ? "Steam not found on this PC. "+checks.lo.manual
+                    : (checks.lo.note ? checks.lo.note+". " : "")+"Click Set to add it."}
+                  action={()=>doAction("Set launch option","/api/set-launch-option",{method:"POST"})} actionLabel="Set" busy={loading["Set launch option"]} />
+                <Check ok={checks.launcher} warn={checks.la.launcher_running} label="Mod enabled in the Paradox launcher"
+                  detail={checks.launcher ? "Enabled in playset '"+checks.la.playset+"'"
+                    : checks.la.launcher_running ? "Close the Paradox launcher (and Stellaris) to enable automatically. Or by hand: "+checks.la.manual
+                    : !checks.la.db_found ? "Open the Paradox launcher once (it creates its database), close it, then click Enable."
+                    : "Not in your active playset"+(checks.la.playset ? " ('"+checks.la.playset+"')" : "")+". Click Enable."}
+                  action={()=>doAction("Enable mod","/api/enable-mod",{method:"POST"})} actionLabel="Enable" busy={loading["Enable mod"]} />
+              </div>
+            )}
+            {checks && allReady && (
+              <div style={{marginTop:14,padding:"12px 14px",background:"#0a1f10",border:"1px solid #1a4a25",borderRadius:6,fontSize:13,color:"#a0d0b0",lineHeight:1.7}}>
+                Everything is in place. Next: build your YAML in <b>Tech Config</b> / <b>YAML Wizard</b> and send it to your host.
+                When the multiworld is up, go to <b>Bridge</b>, enter the server and your slot name, click <b>Start Bridge</b>, then <b>Launch Stellaris</b>.
+              </div>
+            )}
+          </div>
+
           <div className="card">
             <h3>System Status</h3>
             {status ? (
@@ -1238,20 +1499,20 @@ function App() {
               </button>
             </div>
             <div style={{fontSize:12,color:"#6880a0",marginTop:8}}>
-              Build requires CMake + Visual Studio 2022. Test Pipe sends 500 energy to verify the DLL is working.
+              Install DLL uses the prebuilt binary (no compiler needed); Build DLL rebuilds it from source and requires CMake + Visual Studio 2022.
+              Test Pipe sends 500 energy to verify the DLL is working — do this with a save loaded, effects do nothing at the main menu.
             </div>
           </div>
 
           <div className="card">
-            <h3>Quick Start</h3>
+            <h3>How a session works</h3>
             <div style={{lineHeight:1.8,fontSize:14,color:"#8090a8"}}>
-              1. Click <b>Install Mod</b> to copy mod files<br/>
-              2. Click <b>Scan Techs</b> to read your game's technologies<br/>
-              3. Go to <b>Tech Config</b> tab to choose which techs to randomize<br/>
-              4. Click <b>Apply Tech Config</b> to generate overrides<br/>
-              5. Build the DLL: <code style={{background:"#1a2535",padding:"2px 6px",borderRadius:4,color:"#4da6ff"}}>python setup.py build-dll && python setup.py install-dll</code><br/>
-              6. Launch Stellaris with <code style={{background:"#1a2535",padding:"2px 6px",borderRadius:4,color:"#4da6ff"}}>-logall</code>, enable the mod<br/>
-              7. Run the bridge: <code style={{background:"#1a2535",padding:"2px 6px",borderRadius:4,color:"#4da6ff"}}>python client/ap_bridge.py --server host:port --slot Name</code>
+              1. <b>Set up everything</b> above (once per PC)<br/>
+              2. <b>Tech Config</b> → pick techs to randomize (optional), then <b>YAML Wizard</b> → download your YAML and send it to the host with <code style={{background:"#1a2535",padding:"2px 6px",borderRadius:4,color:"#4da6ff"}}>stellaris.apworld</code><br/>
+              3. When the host has generated the multiworld: <b>Bridge</b> tab → server, slot, password → <b>Start Bridge</b><br/>
+              4. When the bridge log says <i>DYNAMIC TECHS GENERATED</i>: <b>Launch Stellaris</b>, click Play in the Paradox launcher, start a new game (or load your save) and accept the Archipelago popup<br/>
+              5. Keep this window open while you play. Items arrive after the mod reports in (the next monthly tick); nothing is lost if you close either side<br/>
+              <span style={{color:"#5a6a80"}}>Scan Techs / Apply Tech Config are only needed to rebuild the vanilla tech overrides after a Stellaris update.</span>
             </div>
           </div>
         </div>
@@ -1264,31 +1525,51 @@ function App() {
             <div style={{display:"flex",gap:12,marginBottom:16,flexWrap:"wrap"}}>
               <div style={{flex:1,minWidth:200}}>
                 <div style={{fontSize:11,color:"#6880a0",marginBottom:4}}>AP SERVER</div>
-                <input value={bridgeServer} onChange={e=>setBridgeServer(e.target.value)} placeholder="localhost:38281" style={{width:"100%",padding:"8px 12px",background:"#0a0e1a",border:"1px solid #1a2a40",borderRadius:6,color:"#c0ccdd",fontSize:14,fontFamily:"Rajdhani",outline:"none"}} />
+                <input value={bridgeServer} onChange={e=>setBridgeServer(e.target.value)} placeholder="archipelago.gg:38281" style={{width:"100%",padding:"8px 12px",background:"#0a0e1a",border:"1px solid #1a2a40",borderRadius:6,color:"#c0ccdd",fontSize:14,fontFamily:"Rajdhani",outline:"none"}} />
               </div>
               <div style={{flex:1,minWidth:150}}>
                 <div style={{fontSize:11,color:"#6880a0",marginBottom:4}}>SLOT NAME</div>
-                <input value={bridgeSlot} onChange={e=>setBridgeSlot(e.target.value)} placeholder="Stellaris" style={{width:"100%",padding:"8px 12px",background:"#0a0e1a",border:"1px solid #1a2a40",borderRadius:6,color:"#c0ccdd",fontSize:14,fontFamily:"Rajdhani",outline:"none"}} />
+                <input value={bridgeSlot} onChange={e=>setBridgeSlot(e.target.value)} placeholder="your slot name from the YAML" style={{width:"100%",padding:"8px 12px",background:"#0a0e1a",border:"1px solid #1a2a40",borderRadius:6,color:"#c0ccdd",fontSize:14,fontFamily:"Rajdhani",outline:"none"}} />
               </div>
               <div style={{minWidth:120}}>
                 <div style={{fontSize:11,color:"#6880a0",marginBottom:4}}>PASSWORD</div>
                 <input value={bridgePassword} onChange={e=>setBridgePassword(e.target.value)} type="password" placeholder="(optional)" style={{width:"100%",padding:"8px 12px",background:"#0a0e1a",border:"1px solid #1a2a40",borderRadius:6,color:"#c0ccdd",fontSize:14,fontFamily:"Rajdhani",outline:"none"}} />
               </div>
             </div>
-            <div className="actions">
-              <button className="btn btn-success" onClick={()=>doAction("Start Bridge","/api/start-bridge",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({server:bridgeServer,slot:bridgeSlot,password:bridgePassword})})} disabled={bridgeStatus?.bridge?.running}>
+            <div className="actions" style={{flexWrap:"wrap"}}>
+              <button className="btn btn-success" onClick={()=>doAction("Start Bridge","/api/start-bridge",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({server:bridgeServer,slot:bridgeSlot,password:bridgePassword})})} disabled={bridgeStatus?.bridge?.running || !bridgeServer.trim() || !bridgeSlot.trim()}>
                 {bridgeStatus?.bridge?.running ? "Bridge Running" : "Start Bridge"}
               </button>
               <button className="btn btn-warn" onClick={()=>doAction("Stop Bridge","/api/stop-bridge",{method:"POST"})} disabled={!bridgeStatus?.bridge?.running}>
                 Stop Bridge
               </button>
-              <button className="btn btn-primary" onClick={()=>doAction("Start Mock","/api/start-mock",{method:"POST"})} disabled={bridgeStatus?.mock?.running}>
-                {bridgeStatus?.mock?.running ? "Mock Running" : "Start Mock Server"}
+              <button className="btn btn-primary" onClick={launchGame} disabled={loading["Launch Stellaris"]}>
+                Launch Stellaris
               </button>
-              <button className="btn btn-warn" onClick={()=>doAction("Stop Mock","/api/stop-mock",{method:"POST"})} disabled={!bridgeStatus?.mock?.running}>
+              <span style={{flex:1}}></span>
+              <button className="btn" style={{fontSize:12,padding:"6px 12px"}} onClick={()=>doAction("Start Mock","/api/start-mock",{method:"POST"})} disabled={bridgeStatus?.mock?.running}>
+                {bridgeStatus?.mock?.running ? "Mock Running" : "Start Mock Server (testing)"}
+              </button>
+              <button className="btn" style={{fontSize:12,padding:"6px 12px"}} onClick={()=>doAction("Stop Mock","/api/stop-mock",{method:"POST"})} disabled={!bridgeStatus?.mock?.running}>
                 Stop Mock
               </button>
             </div>
+            {(() => {
+              const lines = bridgeStatus?.bridge?.log || [];
+              const running = bridgeStatus?.bridge?.running;
+              const generated = lines.some(l => l.includes("DYNAMIC TECHS GENERATED"));
+              const waiting = running && [...lines].reverse().find(l => l.includes("waiting for Stellaris to report in") || l.includes("Stellaris is in-game") || l.includes("game.log reset"));
+              const inGame = waiting && waiting.includes("Stellaris is in-game");
+              const refused = lines.some(l => l.includes("SERVER REFUSED CONNECTION"));
+              if (!running && !lines.length) return null;
+              let text, color, border, bg;
+              if (refused) { text = "The server refused the connection — check the server address, slot name and password, then start the bridge again."; color="#ff9a9a"; border="#4a1a1a"; bg="#1f0a0a"; }
+              else if (!running) { text = "Bridge stopped."; color="#8090a8"; border="#1a2a40"; bg="#0a0e1a"; }
+              else if (inGame) { text = "Connected and in-game: items are being delivered as they arrive."; color="#a0d0b0"; border="#1a4a25"; bg="#0a1f10"; }
+              else if (generated) { text = "AP techs generated. Launch Stellaris (button above), click Play in the launcher, start or load your game and accept the Archipelago popup. Items arrive after the mod reports in at the next monthly tick."; color="#ffd9a0"; border="#4a3a1a"; bg="#1f160a"; }
+              else { text = "Connecting and scouting the multiworld..."; color="#a0c0e0"; border="#1a2a40"; bg="#0a0e1a"; }
+              return <div style={{marginTop:12,padding:"10px 14px",background:bg,border:"1px solid "+border,borderRadius:6,fontSize:13,color,lineHeight:1.6}}>{text}</div>;
+            })()}
           </div>
 
           {bridgeStatus && (

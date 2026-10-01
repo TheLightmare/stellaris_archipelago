@@ -5,8 +5,14 @@ complete a specific location. These are used by the AP generator to
 ensure the game is completable.
 """
 
-from typing import Dict
+from typing import Dict, Iterable, List
 from BaseClasses import CollectionState, Region
+
+from .data.tech_catalog import (
+    TECH_CATALOG,
+    item_name as _tech_item_name,
+    location_name as _tech_location_name,
+)
 
 
 def has(state: CollectionState, player: int, item: str, count: int = 1) -> bool:
@@ -166,7 +172,83 @@ def set_location_rules(regions: Dict[str, Region], player: int, options) -> None
         ))
 
 
-def set_rules(regions: Dict[str, Region], player: int, options) -> None:
+def tech_prerequisite_items(selected_keys: Iterable[str]) -> Dict[str, List[str]]:
+    """Map each randomized tech's location to the Tech: items it needs.
+
+    In-game, the AP tech that replaces vanilla tech T keeps T's vanilla
+    prerequisites. If one of those prerequisites P is *also* randomized,
+    the only way to ever obtain P (and therefore research T's AP tech)
+    is to receive the "Tech: P" item from the multiworld. Without this
+    rule the generator could place "Tech: P" behind "Research T" — a
+    seed that can never be completed.
+
+    Returns {"Research T": ["Tech: P", ...]} for every selected T that
+    has at least one selected prerequisite.
+    """
+    selected = set(selected_keys)
+    by_key = {t.key: t for t in TECH_CATALOG}
+    rules: Dict[str, List[str]] = {}
+    for key in selected:
+        entry = by_key.get(key)
+        if entry is None:
+            continue
+        needed = [
+            _tech_item_name(by_key[p])
+            for p in entry.prereqs
+            if p in selected and p in by_key
+        ]
+        if needed:
+            rules[_tech_location_name(entry)] = needed
+    return rules
+
+
+def gating_tech_keys(selected_keys: Iterable[str]) -> List[str]:
+    """Selected techs that are a prerequisite of another selected tech.
+
+    Their "Tech: X" items gate locations, so they must be classified as
+    progression — the fill algorithm only guarantees reachability for
+    progression items.
+    """
+    selected = set(selected_keys)
+    by_key = {t.key: t for t in TECH_CATALOG}
+    gating = set()
+    for key in selected:
+        entry = by_key.get(key)
+        if entry is None:
+            continue
+        for p in entry.prereqs:
+            if p in selected and p in by_key:
+                gating.add(p)
+    return sorted(gating)
+
+
+def set_tech_prerequisite_rules(
+    regions: Dict[str, Region], player: int, selected_keys: Iterable[str],
+) -> None:
+    """AND the Tech: prerequisite items into each Research-X location's rule.
+
+    Applied *after* set_location_rules so a location that already has a
+    rule (e.g. "Research Mega-Engineering" needing the license) keeps it.
+    """
+    required = tech_prerequisite_items(selected_keys)
+    if not required:
+        return
+    for region in regions.values():
+        for loc in region.locations:
+            items = required.get(loc.name)
+            if not items:
+                continue
+            previous = loc.access_rule
+            loc.access_rule = (
+                lambda state, prev=previous, needed=tuple(items), p=player: (
+                    prev(state) and all(state.has(i, p) for i in needed)
+                )
+            )
+
+
+def set_rules(regions: Dict[str, Region], player: int, options,
+              selected_tech_keys: Iterable[str] = ()) -> None:
     """Set all access rules for the world."""
     set_region_rules(regions, player)
     set_location_rules(regions, player, options)
+    set_tech_prerequisite_rules(regions, player, selected_tech_keys)

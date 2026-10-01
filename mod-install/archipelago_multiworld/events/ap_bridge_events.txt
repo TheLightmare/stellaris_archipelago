@@ -2,8 +2,8 @@
 # Archipelago Bridge Events
 # ============================================================================
 # Communication between the Stellaris mod and the AP Python client
-# happens via log lines written to game.log (outbound) and country
-# flags injected into save files (inbound).
+# happens via log lines written to game.log (outbound) and console
+# effects executed through the bridge DLL (inbound).
 #
 # The client tails game.log for lines prefixed with "AP_".
 # ============================================================================
@@ -24,8 +24,14 @@ country_event = {
     }
 
     immediate = {
-        # Send heartbeat so the client knows the mod is active
+        # Send heartbeat so the client knows the mod is active. The
+        # bridge only delivers items once it has seen this (or any other
+        # AP_* line) for the current game process.
         ap_send_heartbeat = yes
+        # Re-log every check already sent from this save (the bridge
+        # dedupes). Checks made while the bridge was down are picked up
+        # here instead of being lost. See ap_resync.txt.
+        ap_resync_sent_checks = yes
     }
 }
 

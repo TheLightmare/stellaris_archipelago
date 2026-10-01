@@ -24,6 +24,7 @@ REPO = Path(__file__).resolve().parent.parent
 
 # Everything the player needs at runtime.
 FULL_PACKAGE_ITEMS = [
+    "Stellaris Archipelago.bat",
     "setup.py",
     "dashboard.py",
     "requirements.txt",

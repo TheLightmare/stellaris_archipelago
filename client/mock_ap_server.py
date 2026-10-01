@@ -14,7 +14,7 @@ Usage:
     python mock_ap_server.py --port 38281
 
 Then connect the Stellaris client:
-    python stellaris_client.py --server localhost:38281 --slot Stellaris
+    python ap_bridge.py --server localhost:38281 --slot Stellaris
 """
 
 import asyncio
@@ -55,6 +55,9 @@ ITEMS = {
     7_471_220: "Research Boost",
     7_471_300: "Pirate Surge",
     7_471_301: "Diplomatic Incident",
+    # Catalog "Tech:" items: 7_491_000 + offset (tech_catalog.py)
+    7_491_437: "Tech: Robotic Workers",
+    7_491_170: "Tech: Droids",
     # Hollow Knight items (for Alice)
     9_000_001: "Mothwing Cloak",
     9_000_002: "Mantis Claw",
@@ -78,10 +81,23 @@ LOCATIONS = {
     7_472_430: "Achieve 50k Fleet Power",
     # Tech-type (become researchable AP techs)
     7_472_030: "Enter a Wormhole",
-    7_472_120: "Research Mega-Engineering",
     7_472_240: "Build a Megastructure",
     7_472_321: "Form the Galactic Imperium",
     7_472_440: "Defeat a Leviathan",
+    # Catalog Research-X locations: 7_481_000 + offset (tech_catalog.py)
+    7_481_437: "Research Robotic Workers",
+    7_481_170: "Research Droids",
+    # Victory (sent by the mod when the goal completes)
+    7_472_900: "Victory",
+}
+
+# Mirrors what the apworld's fill_slot_data() produces.
+SLOT_DATA = {
+    "goal": 0,
+    "energy_link_enabled": True,
+    "energy_link_rate": 100,
+    "galaxy_size": 1,
+    "randomized_techs": ["tech_droid_workers", "tech_robotic_workers"],
 }
 
 # What item is at each location (the randomized mapping)
@@ -103,14 +119,18 @@ LOCATION_ITEM_MAP = {
     # Tech-type
     7_472_030: {"item": 9_000_002, "player": ALICE_ID, "game": "Hollow Knight",
                 "classification": "progression"},
-    7_472_120: {"item": 7_471_002, "player": PLAYER_ID, "game": "Stellaris",
-                "classification": "progression"},
     7_472_240: {"item": 9_100_002, "player": BOB_ID, "game": "Terraria",
                 "classification": "useful"},
     7_472_321: {"item": 7_471_300, "player": PLAYER_ID, "game": "Stellaris",
                 "classification": "trap"},
     7_472_440: {"item": 9_000_003, "player": ALICE_ID, "game": "Hollow Knight",
                 "classification": "useful"},
+    7_481_437: {"item": 7_471_002, "player": PLAYER_ID, "game": "Stellaris",
+                "classification": "progression"},
+    7_481_170: {"item": 7_491_437, "player": PLAYER_ID, "game": "Stellaris",
+                "classification": "progression"},
+    7_472_900: {"item": 9_000_004, "player": ALICE_ID, "game": "Hollow Knight",
+                "classification": "progression"},
 }
 
 PLAYER_NAMES = {PLAYER_ID: SLOT_NAME, ALICE_ID: "Alice", BOB_ID: "Bob"}
@@ -126,6 +146,7 @@ class MockServer:
         self.items_sent: List[dict] = []
         self.item_index = 0
         self.energy_link_pool: int = 0
+        self.notify_keys: Set[str] = set()
 
     async def handle_client(self, ws):
         self.client_ws = ws
@@ -164,8 +185,8 @@ class MockServer:
         cmd = packet.get("cmd", "")
 
         if cmd == "Connect":
-            slot = packet.get("slot", "?")
-            logger.info(f"Client connecting as slot '{slot}'")
+            slot = packet.get("name", "?")
+            logger.info(f"Client connecting as slot '{slot}' (game={packet.get('game')})")
 
             # Send Connected
             await self.client_ws.send(json.dumps([{
@@ -177,9 +198,9 @@ class MockServer:
                     {"team": 0, "slot": ALICE_ID, "alias": "Alice", "name": "Alice"},
                     {"team": 0, "slot": BOB_ID, "alias": "Bob", "name": "Bob"},
                 ],
-                "missing_locations": list(LOCATIONS.keys()),
-                "checked_locations": [],
-                "slot_data": {},
+                "missing_locations": [l for l in LOCATIONS if l not in self.checked_locations],
+                "checked_locations": sorted(self.checked_locations),
+                "slot_data": SLOT_DATA,
                 "slot_info": {
                     str(PLAYER_ID): {"game": GAME_NAME, "name": SLOT_NAME},
                     str(ALICE_ID): {"game": "Hollow Knight", "name": "Alice"},
@@ -195,6 +216,10 @@ class MockServer:
                 if loc_id not in self.checked_locations:
                     self.checked_locations.add(loc_id)
                     logger.info(f"  ✓ CHECK RECEIVED: {name} (ID={loc_id})")
+
+        elif cmd == "StatusUpdate":
+            logger.info(f"  ★ STATUS UPDATE: {packet.get('status')} "
+                        f"({'GOAL COMPLETE' if packet.get('status') == 30 else 'other'})")
 
         elif cmd == "Sync":
             pass  # Client requesting sync, ignore
@@ -245,7 +270,9 @@ class MockServer:
                     elif op["operation"] == "max":
                         self.energy_link_pool = max(self.energy_link_pool, int(op["value"]))
                 logger.info(f"  EnergyLink: {original} -> {self.energy_link_pool}")
-                if packet.get("want_reply"):
+                # Like the real server: reply to the requester if asked,
+                # and to anyone who SetNotify'd the key.
+                if packet.get("want_reply") or key in self.notify_keys:
                     reply = {
                         "cmd": "SetReply",
                         "key": key,
@@ -270,7 +297,7 @@ class MockServer:
             }]))
 
         elif cmd == "SetNotify":
-            pass  # We handle this implicitly
+            self.notify_keys.update(packet.get("keys", []))
 
         else:
             logger.debug(f"Unhandled command: {cmd}")
@@ -318,6 +345,7 @@ async def console_loop(server: MockServer):
     print("  research— Send Research Boost")
     print("  trap    — Send Pirate Surge (trap)")
     print("  diplo   — Send Diplomatic Incident (trap)")
+    print("  robots  — Send Tech: Robotic Workers (catalog tech item)")
     print("  <id>    — Send item by numeric ID")
     print("  status  — Show server status")
     print("  quit    — Stop server")
@@ -333,6 +361,7 @@ async def console_loop(server: MockServer):
         "research": 7_471_220,
         "trap": 7_471_300,
         "diplo": 7_471_301,
+        "robots": 7_491_437,
     }
 
     while True:
@@ -376,7 +405,7 @@ async def main(port: int = 38281):
 
     async with websockets.serve(server.handle_client, "localhost", port):
         logger.info(f"Mock AP server running on ws://localhost:{port}")
-        logger.info(f"Connect with: python stellaris_client.py --server localhost:{port} --slot {SLOT_NAME}")
+        logger.info(f"Connect with: python ap_bridge.py --server localhost:{port} --slot {SLOT_NAME}")
         await console_loop(server)
 
     logger.info("Server stopped")
@@ -386,7 +415,14 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Mock Archipelago server")
     parser.add_argument("--port", type=int, default=38281)
+    parser.add_argument("--goal", type=int, default=SLOT_DATA["goal"],
+                        help="goal option to advertise in slot_data (0-4)")
+    parser.add_argument("--no-energy-link", action="store_true",
+                        help="advertise energy_link_enabled: false")
     args = parser.parse_args()
+    SLOT_DATA["goal"] = args.goal
+    if args.no_energy_link:
+        SLOT_DATA["energy_link_enabled"] = False
 
     try:
         asyncio.run(main(args.port))

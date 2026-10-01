@@ -26,6 +26,8 @@ env/
 # DLL build outputs (CMake / Visual Studio)
 # =============================================================================
 dll/build/
+dll/build-*/
+dll/*.log
 dll/out/
 dll/.vs/
 dll/CMakeFiles/
